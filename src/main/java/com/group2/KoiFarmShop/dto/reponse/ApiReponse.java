@@ -17,8 +17,5 @@ public class ApiReponse <T> {
     private String message = "Xử lý thành công!";
     private T data;
     private Date dateTime = new Date();
-    private String email;
-    private String fullName;
-    private Role role;
-    private String accessToken;
+    private Content content;
 }
