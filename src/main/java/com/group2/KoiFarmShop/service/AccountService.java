@@ -49,10 +49,10 @@ public class AccountService implements AccountServiceImp{
                 apiReponse.setMessage("Đăng nhập thành công");
                 // Tài khoản đăng nhập thành công
             } else {
-                apiReponse.setMessage("Sai mật khẩu");
+                throw new AppException(ErrorCode.WRONGPASSWORD);
             }
         }else{
-            apiReponse.setMessage("Không tìm thấy tài khoản");
+            throw new AppException(ErrorCode.INVALIDACCOUNT);
         }
 
         return apiReponse;
