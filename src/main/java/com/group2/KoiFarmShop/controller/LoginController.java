@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.controller;
 
+import com.group2.KoiFarmShop.dto.reponse.AccountReponse;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.service.AccountServiceImp;
@@ -24,9 +25,9 @@ public class LoginController {
     private AccountServiceImp accountServiceImp;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ApiReponse<AccountReponse> login(@RequestBody LoginRequest loginRequest) {
         ApiReponse apiReponse = accountServiceImp.login(loginRequest);
-        return new ResponseEntity<>(apiReponse, HttpStatus.OK);
+        return apiReponse;
     }
 
 
