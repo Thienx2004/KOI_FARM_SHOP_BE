@@ -1,21 +1,21 @@
-package com.koifarm.koifarmshop.controller;
+package com.group2.KoiFarmShop.controller;
 
-import com.koifarm.koifarmshop.model.LoginRequest;
-import com.koifarm.koifarmshop.service.LoginService;
+import com.group2.KoiFarmShop.dto.request.LoginRequest;
+import com.group2.KoiFarmShop.service.AccountServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/koi")
+//@RequestMapping("/koi")
 public class LoginController {
 
     @Autowired
-    private LoginService loginService;
+    private AccountServiceImp accountServiceImp;
 
     @PostMapping("/signin")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        String result = loginService.login(loginRequest);
+        String result = accountServiceImp.login(loginRequest);
         return ResponseEntity.ok(result);
     }
 }
