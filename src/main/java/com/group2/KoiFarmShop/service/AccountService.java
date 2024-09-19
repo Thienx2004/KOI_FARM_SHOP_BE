@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
@@ -7,6 +8,7 @@ import com.group2.KoiFarmShop.entity.Role;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
+import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,31 +21,33 @@ public class AccountService implements AccountServiceImp{
 
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JWTUltilsHelper jwtUltilsHelper;
     @Override
-    public String login(LoginRequest loginRequest) {
+    public ApiReponse login(LoginRequest loginRequest) {
         // Tìm kiếm tài khoản dựa trên email
         Optional<Account> optionalAccount = accountRepository.findByEmail(loginRequest.getEmail());
-
+        ApiReponse apiReponse = new ApiReponse();
         if (optionalAccount.isPresent()) {
             Account account = optionalAccount.get();
 
             // Kiểm tra mật khẩu
-            if (loginRequest.getPassword().matches(account.getPassword())) {
+            if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
                 // Kiểm tra trạng thái xác thực
-                if (!account.isVerified()) {
-                    return "Account not verified. Please verify your email.";
-                }
-
+            String Token=jwtUltilsHelper.generateToken(account.getEmail());
+                apiReponse.setData(Token);
+                apiReponse.setMessage("Đăng nhập thành công");
                 // Tài khoản đăng nhập thành công
-                return "Login successful!";
             } else {
-                return "Invalid password.";
+                apiReponse.setMessage("Sai mật khẩu");
             }
+        }else{
+            apiReponse.setMessage("Không tìm thấy tài khoản");
         }
 
-        // Email không tồn tại
-        return "Account not found.";
+        return apiReponse;
     }
 
     @Override
@@ -53,7 +57,7 @@ public class AccountService implements AccountServiceImp{
             throw new AppException(ErrorCode.USER_EXISTED);
         
         Role role = new Role();
-        role.setRoleID(3);
+        role.setRoleID(1);
 
         Account account = new Account();
         account.setEmail(accountCreationDTO.getEmail());
