@@ -37,7 +37,10 @@ public class AccountService implements AccountServiceImp{
             if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
                 // Kiểm tra trạng thái xác thực
             String Token=jwtUltilsHelper.generateToken(account.getEmail());
-                apiReponse.setData(Token);
+                apiReponse.setEmail(account.getEmail());
+                apiReponse.setFullName(account.getFullName());
+                apiReponse.setRole(account.getRole());
+                apiReponse.setAccessToken(Token);
                 apiReponse.setMessage("Đăng nhập thành công");
                 // Tài khoản đăng nhập thành công
             } else {
