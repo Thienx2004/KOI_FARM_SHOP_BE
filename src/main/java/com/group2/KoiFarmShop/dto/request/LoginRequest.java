@@ -1,4 +1,4 @@
-package com.group2.KoiFarmShop.dto;
+package com.group2.KoiFarmShop.dto.request;
 
 import lombok.Data;
 

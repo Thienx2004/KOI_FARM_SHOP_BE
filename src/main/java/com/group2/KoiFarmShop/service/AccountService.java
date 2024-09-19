@@ -1,6 +1,6 @@
 package com.group2.KoiFarmShop.service;
 
-import com.group2.KoiFarmShop.dto.LoginRequest;
+import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Role;
@@ -51,10 +51,7 @@ public class AccountService implements AccountServiceImp{
 
         if(accountRepository.existsByEmail(accountCreationDTO.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
-
-        if(!accountCreationDTO.getPassword().equals(accountCreationDTO.getConfirmPassword()))
-            throw new AppException(ErrorCode.CONFIRMPASSWORD_INVALID);
-
+        
         Role role = new Role();
         role.setRoleID(3);
 
