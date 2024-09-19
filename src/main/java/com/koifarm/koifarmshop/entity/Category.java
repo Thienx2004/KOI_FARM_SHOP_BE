@@ -1,4 +1,5 @@
 package com.koifarm.koifarmshop.entity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,22 +7,27 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Role")
-public class Role {
+@Entity
+@Table(name = "Category")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int roleID;
+    private int categoryID;
 
     @Column(nullable = false)
-    private String roleName;
+    private String categoryName;
 
-    @OneToMany(mappedBy = "role")
-    private Set<Account> accounts;
+    @OneToMany(mappedBy = "category")
+    private Set<KoiFish> koiFish;
 
-    // Getters and Setters
+    @OneToMany(mappedBy = "category")
+    private Set<Batch> batches;
+
+    private String description;
+    private boolean status;
+
 }

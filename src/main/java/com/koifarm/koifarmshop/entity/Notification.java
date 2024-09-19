@@ -4,24 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.Date;
 
-@Entity
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Role")
-public class Role {
+@Entity
+@Table(name = "Notification")
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int roleID;
+    private Long notificationID;
 
-    @Column(nullable = false)
-    private String roleName;
+    private String message;
 
-    @OneToMany(mappedBy = "role")
-    private Set<Account> accounts;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateSent;
+
+    private boolean status;
 
     // Getters and Setters
 }
