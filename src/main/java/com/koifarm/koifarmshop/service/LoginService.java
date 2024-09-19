@@ -1,9 +1,9 @@
-package com.koifarm.koifarmshop.security;
+package com.koifarm.koifarmshop.service;
 
 import com.koifarm.koifarmshop.entity.Account;
 import com.koifarm.koifarmshop.model.LoginRequest;
+import com.koifarm.koifarmshop.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,8 +13,6 @@ public class LoginService {
     @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public String login(LoginRequest loginRequest) {
         // Tìm kiếm tài khoản dựa trên email
@@ -24,9 +22,9 @@ public class LoginService {
             Account account = optionalAccount.get();
 
             // Kiểm tra mật khẩu
-            if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
+            if (loginRequest.getPassword().matches(account.getPassword())) {
                 // Kiểm tra trạng thái xác thực
-                if (!account.getIsVerify()) {
+                if (!account.isVerified()) {
                     return "Account not verified. Please verify your email.";
                 }
 

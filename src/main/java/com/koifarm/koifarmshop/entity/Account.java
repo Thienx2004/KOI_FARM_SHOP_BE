@@ -1,53 +1,45 @@
 package com.koifarm.koifarmshop.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Set;
+
 @Data
-@Entity (name = "account")
-public class Account {
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+    @Table(name = "Account")
+    public class Account {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer accountID;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int accountID;
 
-    @Column(name="Email")
-    private String email;
+        @Column(nullable = false, unique = true)
+        private String email;
 
-    @Column(name="password")
-    private String password;
+        @Column(nullable = false)
+        private String password;
 
-    @Column(name="fullName")
-    private String fullName;
+        private String fullName;
+        private int loyaltyPoints = 0;
+        private String verificationToken;
+        private boolean isVerified = false;
+        private String address;
+        private String phone;
 
-    @Column(name="phone")
-    private String phone;
+        @ManyToOne
+        @JoinColumn(name = "roleID")
+        private Role role;
 
-    @Column(name="loyaltyPoints")
-    private Integer loyaltyPoints = 0;
+        @OneToMany(mappedBy = "account")
+        private Set<Orders> orders;
 
-    @ManyToOne
-    @JoinColumn(name = "roleID", referencedColumnName = "roleID")
-    private Role role;
+        @OneToMany(mappedBy = "account")
+        private Set<Feedback> feedbacks;
 
-    @Column(name="isVerify")
-    private Boolean isVerify = false;
-
-    @Column(name="verificationToken")
-    private String verificationToken;
-
-    @Column(name="createdAt")
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name="updatedAt")
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @Column(name="status")
-    private String status;
-
-    @Column(name="avatar")
-    private String avatar;
-
-
+        private boolean status = true;
 }
