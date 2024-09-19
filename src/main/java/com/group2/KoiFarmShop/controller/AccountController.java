@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.controller;
 
+import com.group2.KoiFarmShop.dto.reponse.AccountReponse;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
@@ -17,10 +18,17 @@ public class AccountController {
     private AccountServiceImp accountServiceImp;
 
     @PostMapping("/register")
-    public ApiReponse<Account> createAccount(@RequestBody AccountCreationDTO accountCreationDTO) {
+    public ApiReponse<AccountReponse> createAccount(@RequestBody AccountCreationDTO accountCreationDTO) {
 
-        ApiReponse<Account> reponse = new ApiReponse<>();
-        reponse.setData(accountServiceImp.createAccount(accountCreationDTO));
+        ApiReponse<AccountReponse> reponse = new ApiReponse<>();
+        Account account = new Account();
+        account = accountServiceImp.createAccount(accountCreationDTO);
+        AccountReponse accountReponse = new AccountReponse();
+        accountReponse.setFullName(account.getFullName());
+        accountReponse.setEmail(account.getEmail());
+        accountReponse.setPassword(account.getPassword());
+
+        reponse.setData(accountReponse);
         return reponse;
     }
 }

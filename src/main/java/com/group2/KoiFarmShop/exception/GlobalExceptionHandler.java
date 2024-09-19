@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiReponse> handleRuntimeException(Exception e) {
         ApiReponse apiReponse = new ApiReponse();
 
-        apiReponse.setCode(9999);
+        apiReponse.setStatusCode(9999);
         apiReponse.setMessage(e.getMessage());
 
         return ResponseEntity.badRequest().body(apiReponse);
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         ApiReponse apiReponse = new ApiReponse();
 
-        apiReponse.setCode(errorCode.getCode());
+        apiReponse.setStatusCode(errorCode.getCode());
         apiReponse.setMessage(e.getMessage());
 
         return ResponseEntity.badRequest().body(apiReponse);
