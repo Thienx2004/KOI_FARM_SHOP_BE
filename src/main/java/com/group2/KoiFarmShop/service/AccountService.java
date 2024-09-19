@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.reponse.Content;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
@@ -37,10 +38,14 @@ public class AccountService implements AccountServiceImp{
             if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
                 // Kiểm tra trạng thái xác thực
             String Token=jwtUltilsHelper.generateToken(account.getEmail());
-                apiReponse.setEmail(account.getEmail());
-                apiReponse.setFullName(account.getFullName());
-                apiReponse.setRole(account.getRole());
-                apiReponse.setAccessToken(Token);
+                Content content = new Content();
+                content.setEmail(account.getEmail());
+                content.setPhone(account.getPhone());
+                content.setFullName(account.getFullName());
+                content.setRole(account.getRole().getRoleName());
+                content.setPhone(account.getPhone());
+                content.setAccessToken(Token);
+                apiReponse.setContent(content);
                 apiReponse.setMessage("Đăng nhập thành công");
                 // Tài khoản đăng nhập thành công
             } else {
