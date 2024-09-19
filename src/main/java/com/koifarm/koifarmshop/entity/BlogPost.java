@@ -4,24 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.Date;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Role")
-public class Role {
+@Entity
+@Table(name = "BlogPost")
+public class BlogPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int roleID;
+    private int blogPostID;
 
     @Column(nullable = false)
-    private String roleName;
+    private String title;
 
-    @OneToMany(mappedBy = "role")
-    private Set<Account> accounts;
+    private String content;
 
-    // Getters and Setters
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date postDate;
+
 }
