@@ -15,8 +15,9 @@ import java.util.Date;
 public class Certificate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int certificateID;
+
+    @Column(name = "koi_ID")
+    private int id;
 
     @Column(nullable = false)
     private String name;
@@ -26,7 +27,9 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
 
-    @OneToOne(mappedBy = "certificate")
+    @OneToOne()
+    @MapsId
+    @JoinColumn(name = "koi_ID")
     private KoiFish koiFish;
 
 }
