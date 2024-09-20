@@ -82,6 +82,7 @@ public class AccountService implements AccountServiceImp{
         Role role = new Role();
         role.setRoleID(1);
 
+
         Account account = new Account();
         account.setEmail(accountCreationDTO.getEmail());
         account.setFullName(accountCreationDTO.getFullName());
