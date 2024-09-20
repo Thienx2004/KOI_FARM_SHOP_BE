@@ -28,8 +28,8 @@ public class KoiFish {
     private String koiImage;
     private int status;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "certificateID", referencedColumnName = "certificateID")
+    @OneToOne(mappedBy = "koiFish",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Certificate certificate;
 
     @OneToOne(mappedBy = "koiFish", cascade = CascadeType.ALL)
