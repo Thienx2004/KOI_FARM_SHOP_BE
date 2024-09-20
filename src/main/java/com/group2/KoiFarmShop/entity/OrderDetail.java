@@ -24,6 +24,10 @@ public class OrderDetail {
     @JoinColumn(name = "koiID")
     private KoiFish koiFish;
 
+    @ManyToOne
+    @JoinColumn(name = "batchID")
+    private Batch batch;
+
     private boolean type; // true/false for Batch/Fish
     private int quantity;
     private double price;

@@ -27,8 +27,11 @@ public class Batch {
     private String origin;
     private double price;
 
+//    @OneToMany(mappedBy = "batch")
+//    private Set<Feedback> feedbacks;
+
     @OneToMany(mappedBy = "batch")
-    private Set<Feedback> feedbacks;
+    private Set<OrderDetail> orderDetails;
 
     private int status = 1;
 

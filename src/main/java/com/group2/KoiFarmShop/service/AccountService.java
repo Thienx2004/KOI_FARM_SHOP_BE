@@ -1,49 +1,76 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.reponse.Content;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Role;
+import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
+import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
+import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AccountService implements AccountServiceImp{
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JWTUltilsHelper jwtUltilsHelper;
+    @Autowired
+    private JavaMailSenderImpl mailSender;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
 
     @Override
-    public String login(LoginRequest loginRequest) {
+    public ApiReponse login(LoginRequest loginRequest) {
         // Tìm kiếm tài khoản dựa trên email
         Optional<Account> optionalAccount = accountRepository.findByEmail(loginRequest.getEmail());
-
+        ApiReponse apiReponse = new ApiReponse();
         if (optionalAccount.isPresent()) {
             Account account = optionalAccount.get();
 
             // Kiểm tra mật khẩu
-            if (loginRequest.getPassword().matches(account.getPassword())) {
+            if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
                 // Kiểm tra trạng thái xác thực
-                if (!account.isVerified()) {
-                    return "Account not verified. Please verify your email.";
-                }
-
+            String Token=jwtUltilsHelper.generateToken(account.getEmail());
+                Content content = new Content();
+                content.setEmail(account.getEmail());
+                content.setPhone(account.getPhone());
+                content.setFullName(account.getFullName());
+                content.setRole(account.getRole().getRoleName());
+                content.setPhone(account.getPhone());
+                content.setAccessToken(Token);
+                apiReponse.setContent(content);
+                apiReponse.setMessage("Đăng nhập thành công");
                 // Tài khoản đăng nhập thành công
-                return "Login successful!";
             } else {
-                return "Invalid password.";
+                throw new AppException(ErrorCode.WRONGPASSWORD);
             }
+        }else{
+            throw new AppException(ErrorCode.INVALIDACCOUNT);
         }
 
-        // Email không tồn tại
-        return "Account not found.";
+        return apiReponse;
     }
 
     @Override
@@ -53,7 +80,7 @@ public class AccountService implements AccountServiceImp{
             throw new AppException(ErrorCode.USER_EXISTED);
         
         Role role = new Role();
-        role.setRoleID(3);
+        role.setRoleID(1);
 
         Account account = new Account();
         account.setEmail(accountCreationDTO.getEmail());
@@ -63,7 +90,21 @@ public class AccountService implements AccountServiceImp{
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         account.setPassword(passwordEncoder.encode(accountCreationDTO.getPassword()));
 
-        return accountRepository.save(account);
+        accountRepository.save(account);
+
+        // Tạo mã xác thực
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setAccount(account);
+        verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
+
+        verificationTokenRepository.save(verificationToken);
+
+        // Gửi email xác thực
+        String verificationUrl = "http://localhost:8080/koifarm/verify?token=" + token;
+        emailService.sendVerificationEmail(accountCreationDTO.getEmail(), verificationUrl);
+        return account;
     }
 
     @Override
