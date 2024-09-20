@@ -32,7 +32,7 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signin", "/register",
+                        .requestMatchers("/signin", "/register","/koifarm/**",
                                 "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()  // Permit all access to /signin and swagger
                         .anyRequest().authenticated()  // All other requests require authentication
                 )

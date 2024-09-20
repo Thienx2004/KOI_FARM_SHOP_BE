@@ -41,5 +41,8 @@ import java.util.Set;
         @OneToMany(mappedBy = "account")
         private Set<Feedback> feedbacks;
 
+        @OneToOne(mappedBy = "account")
+        private ForgotPassword forgotPassword;
+
         private boolean status = true;
 }
