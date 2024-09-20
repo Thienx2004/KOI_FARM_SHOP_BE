@@ -20,9 +20,9 @@ public class Feedback {
     @JoinColumn(name = "accountID")
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "batchID")
-    private Batch batch;
+//    @ManyToOne
+//    @JoinColumn(name = "batchID")
+//    private Batch batch;
 
     private int rating;
     private String comment;

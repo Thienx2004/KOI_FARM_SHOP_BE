@@ -2,9 +2,11 @@ package com.group2.KoiFarmShop.exception;
 
 
 public enum ErrorCode {
-    USER_EXISTED(1001, "User existed"),
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized exception"),
-    CONFIRMPASSWORD_INVALID(5000,"Confirm password is wrong"),
+    USER_EXISTED(1001, "Email đã tồn tại"),
+    UNCATEGORIZED_EXCEPTION(9999, "Không xác định"),
+    WRONGPASSWORD(5001,"Sai mật khẩu"),
+    INVALIDACCOUNT(5002,"Không tìm thấy account"),
+    INVALIDOTP(5003,"OTP không hợp lệ")
     ;
 
 
