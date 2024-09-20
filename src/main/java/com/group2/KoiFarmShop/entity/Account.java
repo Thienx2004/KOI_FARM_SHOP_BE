@@ -31,6 +31,7 @@ import java.util.Set;
         private String address;
         private String phone;
 
+
         @ManyToOne
         @JoinColumn(name = "roleID")
         private Role role;

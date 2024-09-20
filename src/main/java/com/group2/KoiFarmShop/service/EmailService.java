@@ -22,4 +22,13 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendVerificationEmail(String toEmail, String verificationUrl) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Email Verification");
+        message.setText("Please verify your email by clicking the link: " + verificationUrl);
+
+        javaMailSender.send(message);
+    }
+
 }

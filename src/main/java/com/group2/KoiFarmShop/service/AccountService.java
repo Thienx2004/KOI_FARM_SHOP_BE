@@ -6,16 +6,24 @@ import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Role;
+import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
+import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AccountService implements AccountServiceImp{
@@ -26,6 +34,13 @@ public class AccountService implements AccountServiceImp{
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JWTUltilsHelper jwtUltilsHelper;
+    @Autowired
+    private JavaMailSenderImpl mailSender;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
     @Override
     public ApiReponse login(LoginRequest loginRequest) {
         // Tìm kiếm tài khoản dựa trên email
@@ -75,7 +90,21 @@ public class AccountService implements AccountServiceImp{
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         account.setPassword(passwordEncoder.encode(accountCreationDTO.getPassword()));
 
-        return accountRepository.save(account);
+        accountRepository.save(account);
+
+        // Tạo mã xác thực
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setAccount(account);
+        verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
+
+        verificationTokenRepository.save(verificationToken);
+
+        // Gửi email xác thực
+        String verificationUrl = "http://localhost:8080/koifarm/verify?token=" + token;
+        emailService.sendVerificationEmail(accountCreationDTO.getEmail(), verificationUrl);
+        return account;
     }
 
     @Override
