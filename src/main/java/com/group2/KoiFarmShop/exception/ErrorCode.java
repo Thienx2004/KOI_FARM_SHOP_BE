@@ -7,8 +7,8 @@ public enum ErrorCode {
     WRONGPASSWORD(5001,"Sai mật khẩu"),
     INVALIDACCOUNT(5002,"Không tìm thấy account"),
     INVALIDOTP(5003,"OTP không hợp lệ"),
-    OTP_EXPIRED(5004, "OTP hết hạn")
-
+    NOTVERIFYACCOUNT(5004,"Tài khoản chưa xác thực")
+    OTP_EXPIRED(5005, "OTP hết hạn")
     ;
 
 

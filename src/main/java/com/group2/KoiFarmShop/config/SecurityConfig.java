@@ -1,11 +1,15 @@
 package com.group2.KoiFarmShop.config;
 
 import com.group2.KoiFarmShop.security.CustomUserDetailsService;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,32 +17,49 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    private final String[] ADMIN_URLS = {"/introspect",};
     @Autowired
     CustomUserDetailsService customUserDetailsService;
+    @Value("${jwt.secret}")
+    private String secret;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signin", "/register","/koifarm/**",
-                                "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/verify").permitAll()  // Permit all access to /signin and swagger
-                        .anyRequest().permitAll()  // All other requests require authentication
+                        .requestMatchers(ADMIN_URLS).hasAuthority("SCOPE_Admin").
+                        anyRequest().permitAll()  // All other requests require authentication
                 )
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection if not needed
-                .httpBasic(withDefaults());
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
+                .oauth2Login(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable); // Disable CSRF protection if not needed
+;
         return http.build();
+    }
+    @Bean
+    JwtDecoder jwtDecoder() {
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        return NimbusJwtDecoder
+                .withSecretKey(key)
+                .build();
     }
 
     // Define CORS configuration
