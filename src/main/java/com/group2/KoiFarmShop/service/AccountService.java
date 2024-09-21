@@ -12,8 +12,10 @@ import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,8 +23,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
 import java.util.Optional;
 import java.util.UUID;
+
+import java.util.*;
+
 
 @Service
 public class AccountService implements AccountServiceImp{
@@ -128,9 +134,10 @@ public class AccountService implements AccountServiceImp{
     @Override
     public Account createAccount(AccountCreationDTO accountCreationDTO) {
 
-        if(accountRepository.existsByEmail(accountCreationDTO.getEmail()))
+        if (accountRepository.existsByEmail(accountCreationDTO.getEmail())) {
             throw new AppException(ErrorCode.USER_EXISTED);
-        
+        }
+
         Role role = new Role();
         role.setRoleID(1);
 
@@ -143,20 +150,26 @@ public class AccountService implements AccountServiceImp{
             account.setPassword(passwordEncoder.encode(accountCreationDTO.getPassword()));
         }
         accountRepository.save(account);
+
         if(!accountCreationDTO.isVerified()) {
-            // Tạo mã xác thực
-            String token = UUID.randomUUID().toString();
-            VerificationToken verificationToken = new VerificationToken();
-            verificationToken.setToken(token);
-            verificationToken.setAccount(account);
-            verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
+        // Tạo mã OTP
+        String otp = generateOTP();
 
-            verificationTokenRepository.save(verificationToken);
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(otp); // Lưu OTP trong trường token
+        verificationToken.setAccount(account);
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(10)); // OTP hết hạn sau 10 phút
 
-            // Gửi email xác thực
-            String verificationUrl = "http://localhost:8080/koifarm/verify?token=" + token;
-            emailService.sendVerificationEmail(accountCreationDTO.getEmail(), verificationUrl);
+        verificationTokenRepository.save(verificationToken);
+
+        // Gửi OTP qua email
+        emailService.sendVerificationEmail(accountCreationDTO.getEmail(), otp);
         }
+
+
+
+
+
         return account;
     }
 
@@ -164,4 +177,37 @@ public class AccountService implements AccountServiceImp{
     public Account getAccount(int id) {
         return null;
     }
+
+    @Override
+    public String generateOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000); // Tạo mã OTP 6 chữ số
+        return String.valueOf(otp);
+    }
+
+
+    @Override
+    public ApiReponse<String> verifyOTP(String email, String otp) {
+        ApiReponse apiReponse = new ApiReponse();
+        // Tìm tài khoản qua email
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+
+        // Tìm mã OTP trong bảng VerificationToken
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
+
+        // Kiểm tra xem OTP có hết hạn không
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new AppException(ErrorCode.OTP_EXPIRED);
+        }
+
+        // Xác thực tài khoản
+        account.setVerified(true);
+        accountRepository.save(account);
+        apiReponse.setData("Xác thực tài khoản thành công!");
+        return apiReponse;
+    }
+
+
 }
