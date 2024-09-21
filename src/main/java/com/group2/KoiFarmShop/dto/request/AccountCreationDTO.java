@@ -13,6 +13,7 @@ public class AccountCreationDTO {
     private String fullName;
     private String email;
     private String password;
+    private boolean verified=false;
 
 }
 

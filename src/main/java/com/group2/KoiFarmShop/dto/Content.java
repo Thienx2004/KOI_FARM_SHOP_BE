@@ -1,7 +1,6 @@
-package com.group2.KoiFarmShop.dto.reponse;
+package com.group2.KoiFarmShop.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.group2.KoiFarmShop.entity.Role;
 import lombok.Data;
 
 @Data

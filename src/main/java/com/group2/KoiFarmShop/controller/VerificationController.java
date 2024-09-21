@@ -1,14 +1,15 @@
 package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.reponse.IntrospectResponse;
+import com.group2.KoiFarmShop.dto.request.IntrospectRequest;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
+import com.group2.KoiFarmShop.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,6 +22,9 @@ public class VerificationController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @GetMapping("/verify")
     public ApiReponse<String> verifyEmail(@RequestParam String token) {
@@ -50,4 +54,12 @@ public class VerificationController {
         apiReponse.setMessage("Xác thực email thành công!");
         return apiReponse;
     }
+    @PostMapping("/introspect")
+    public ApiReponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) {
+        IntrospectResponse introspect= authenticationService.introspect(request);
+        ApiReponse<IntrospectResponse> response= new ApiReponse<>();
+        response.setData(introspect);
+        return response;
+    }
+
 }
