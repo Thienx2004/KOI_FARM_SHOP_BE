@@ -12,5 +12,7 @@ public interface AccountServiceImp {
     public Account createAccount(AccountCreationDTO accountCreationDTO);
     public Account getAccount(int id);
     public ApiReponse login(LoginRequest loginRequest);
+    public String generateOTP();
 
+    ApiReponse<String> verifyOTP(String email, String otp);
 }
