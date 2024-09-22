@@ -17,7 +17,7 @@ public interface AccountServiceImp {
     public ApiReponse logingg(LoginGoogleRequest loginGoogleRequest);
 
     public String generateOTP();
-
+    public ApiReponse<String> resendOTP(String email);
     ApiReponse<String> verifyOTP(String email, String otp);
 
 }

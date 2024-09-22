@@ -40,6 +40,14 @@ public class VerificationController {
 
         return apiReponse;
     }
+
+    @PostMapping("/resend-otp")
+    public ApiReponse<String> resendOtp(@RequestParam String email) {
+        ApiReponse apiReponse = accountService.resendOTP(email);
+
+
+        return apiReponse;
+    }
     @PostMapping("/introspect")
     public ApiReponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) {
         IntrospectResponse introspect= authenticationService.introspect(request);

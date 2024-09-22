@@ -24,6 +24,6 @@ public class ForgotPassword {
     @Column(nullable = false)
     private Date expirationTime;
 
-    @OneToOne
+    @ManyToOne
     private Account account;
 }

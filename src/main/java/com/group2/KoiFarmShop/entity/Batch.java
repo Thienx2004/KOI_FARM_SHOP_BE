@@ -16,7 +16,7 @@ public class Batch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long batchID;
+    private int batchID;
 
     @ManyToOne
     @JoinColumn(name = "categoryID")
