@@ -9,11 +9,9 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.service.AccountService;
+import com.group2.KoiFarmShop.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.time.LocalDateTime;
@@ -30,6 +28,10 @@ public class VerificationController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    AuthenticationService authenticationService;
+
 
     @PostMapping("/verify-otp")
     public ApiReponse<String> verifyOtp(@RequestParam String email, @RequestParam String otp) {
