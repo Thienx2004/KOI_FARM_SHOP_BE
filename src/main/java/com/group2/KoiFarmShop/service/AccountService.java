@@ -104,7 +104,6 @@ public class AccountService implements AccountServiceImp{
                 AccountCreationDTO accountCreationDTO = new AccountCreationDTO();
                 accountCreationDTO.setEmail(loginGoogleRequest.getEmail());
                 accountCreationDTO.setFullName(loginGoogleRequest.getName());
-
                 account = createAccount(accountCreationDTO);
             }
             // Kiểm tra trạng thái xác thực
