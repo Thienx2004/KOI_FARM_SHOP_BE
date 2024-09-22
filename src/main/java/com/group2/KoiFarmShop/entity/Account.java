@@ -45,5 +45,7 @@ import java.util.Set;
         @OneToMany(mappedBy = "account")
         private Set<ForgotPassword> forgotPassword;
 
+        private String OTPcheck ;
+
         private boolean status = true;
 }

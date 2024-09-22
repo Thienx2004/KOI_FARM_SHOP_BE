@@ -35,7 +35,7 @@ import java.util.Arrays;
 public class SecurityConfig {
     private final String[] ADMIN_URLS = {"/introspect",};
     @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    CustomUserDetailsService userDetailsService;
     @Value("${jwt.secret}")
     private String secret;
 
@@ -44,7 +44,8 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(ADMIN_URLS).hasAuthority("SCOPE_Admin").
+                        .requestMatchers(ADMIN_URLS).hasAuthority("SCOPE_admin")
+                        .requestMatchers("/changePassword/**").hasAuthority("SCOPE_true").
                         anyRequest().permitAll()  // All other requests require authentication
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
@@ -84,7 +85,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 }
