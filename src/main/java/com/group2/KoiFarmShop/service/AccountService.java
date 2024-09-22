@@ -104,7 +104,7 @@ public class AccountService implements AccountServiceImp{
                 AccountCreationDTO accountCreationDTO = new AccountCreationDTO();
                 accountCreationDTO.setEmail(loginGoogleRequest.getEmail());
                 accountCreationDTO.setFullName(loginGoogleRequest.getName());
-                accountCreationDTO.setVerified(true);
+
                 account = createAccount(accountCreationDTO);
             }
             // Kiểm tra trạng thái xác thực
@@ -153,7 +153,7 @@ public class AccountService implements AccountServiceImp{
         }
         accountRepository.save(account);
 
-        if(!accountCreationDTO.isVerified()) {
+        if(!account.isVerified()) {
         // Tạo mã OTP
         String otp = generateOTP();
 
@@ -232,10 +232,12 @@ public class AccountService implements AccountServiceImp{
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
         // Tìm mã OTP trong bảng VerificationToken
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
+        VerificationToken verificationToken = verificationTokenRepository.findByAccount_AccountID(account.getAccountID())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
+        System.out.println(verificationToken.getId());
+        System.out.println(verificationToken.getToken());
 
-        if(verificationTokenRepository.findByAccount_AccountID(account.getAccountID()).isEmpty())
+        if(!verificationToken.getToken().equals(otp))
             throw new AppException(ErrorCode.INVALIDOTP);
 
 
