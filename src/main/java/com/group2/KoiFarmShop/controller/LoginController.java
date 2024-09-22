@@ -5,6 +5,7 @@ import com.group2.KoiFarmShop.dto.reponse.AccountReponse;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.reponse.IntrospectResponse;
 import com.group2.KoiFarmShop.dto.request.IntrospectRequest;
+import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.service.AccountServiceImp;
 import com.group2.KoiFarmShop.service.AuthenticationService;
@@ -36,8 +37,8 @@ public class LoginController {
         return reponse;
     }
     @PostMapping("/signingoogle")
-    public ApiReponse<Content> logingoogle(@RequestBody String token) {
-        ApiReponse<Content> reponse = accountServiceImp.logingg(token);
+    public ApiReponse<Content> logingoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
+        ApiReponse<Content> reponse = accountServiceImp.logingg(loginGoogleRequest);
         return reponse;
     }
 }
