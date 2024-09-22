@@ -8,7 +8,8 @@ public enum ErrorCode {
     INVALIDACCOUNT(5002,"Không tìm thấy account"),
     INVALIDOTP(5003,"OTP không hợp lệ"),
     OTP_EXPIRED(5004, "OTP hết hạn"),
-    ACCOUNT_ALREADY_VERIFIED(5010, "Email đã xác thực")
+    ACCOUNT_ALREADY_VERIFIED(5010, "Email đã xác thực"),
+    PASSWORDINVALID(5011,"Nhập lại pass word")
 
     ;
 

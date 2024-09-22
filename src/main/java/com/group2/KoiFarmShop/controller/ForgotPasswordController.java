@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.MailBody;
+import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.ForgotPassword;
 import com.group2.KoiFarmShop.exception.AppException;
@@ -38,50 +39,57 @@ public class ForgotPasswordController {
 
     //send mail for otp
     @PostMapping("/forgotPassword/{email}")
-    public ResponseEntity<String> verifyEmail(@PathVariable String email) {
+    public ApiReponse<String> verifyEmail(@PathVariable String email) {
+        ApiReponse apiReponse = new ApiReponse();
         Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
         int otp =otpGen();
 
         MailBody mailBody=MailBody.builder()
                 .to(email)
-                .text("This is OTP" + otp)
+                .text("This is OTP: " + otp)
                 .subject("OTP for forgot password")
                 .build();
         ForgotPassword fp = ForgotPassword.builder()
                 .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() +70 *1000))
+                .expirationTime(new Date(System.currentTimeMillis() +60 *1000*5))
                 .account(account)
                 .build();
         emailService.sendSimpleMess(mailBody);
         forgotPasswordRepository.save(fp);
-        return ResponseEntity.ok("Email send");
+        apiReponse.setData("Email send");
+        return apiReponse;
     }
 
     @PostMapping("/otp/{otp}/{email}")
-    public ResponseEntity<String> verifyOTP(@PathVariable Integer otp, @PathVariable String email) {
+    public  ApiReponse<String> verifyOTP(@PathVariable Integer otp, @PathVariable String email) {
+        ApiReponse apiReponse = new ApiReponse();
+
         Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
         ForgotPassword fp = forgotPasswordRepository.findByOptAndAccount(otp, account).orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
 
         if(fp.getExpirationTime().before(Date.from(Instant.now()))){
             forgotPasswordRepository.deleteById(fp.getFpid());
-            return new ResponseEntity<>("OTP expired", HttpStatus.EXPECTATION_FAILED);
+            throw new AppException(ErrorCode.INVALIDOTP);
         }
-        return ResponseEntity.ok("OTP verified");
+        apiReponse.setData("OTP verified");
+        return apiReponse;
     }
 
     @PostMapping("/changePassword/{email}")
-    public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
-                                                        @PathVariable String email) {
+    public ApiReponse<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
+                                                    @PathVariable String email) {
+        ApiReponse apiReponse = new ApiReponse();
+
         if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
-            return new ResponseEntity<>("Please enter the password again!", HttpStatus.EXPECTATION_FAILED);
+             throw new AppException(ErrorCode.PASSWORDINVALID);
         }
 
         String encodedPassword = passwordEncoder.encode(changePassword.password());
         accountRepository.updatePassword(email, encodedPassword);
-
-        return ResponseEntity.ok("Password has been changed!");
+        apiReponse.setData("Password has been changed!");
+        return apiReponse;
     }
 
     private Integer otpGen(){
