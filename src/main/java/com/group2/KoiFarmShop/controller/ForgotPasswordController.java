@@ -83,7 +83,7 @@ public class ForgotPasswordController {
         ApiReponse apiReponse = new ApiReponse();
 
         if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
-             throw new AppException(ErrorCode.PASSWORDINVALID);
+             throw new AppException(ErrorCode.PASSWORDINVALID)  ;
         }
 
         String encodedPassword = passwordEncoder.encode(changePassword.password());
