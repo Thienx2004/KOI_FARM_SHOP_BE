@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.Content;
+import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
@@ -21,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -85,33 +89,29 @@ public class AccountService implements AccountServiceImp{
     }
 
     @Override
-    public ApiReponse logingg(String token) {
+    public ApiReponse logingg(LoginGoogleRequest loginGoogleRequest) {
         ApiReponse apiReponse = new ApiReponse();
 
         try {
-            Claims claims = Jwts.parser().build().parseClaimsJws(token).getBody();
-
             // Tìm kiếm tài khoản dựa trên email
-            Optional<Account> optionalAccount = accountRepository.findByEmail(claims.get("email", String.class));
+            Optional<Account> optionalAccount = accountRepository.findByEmail(loginGoogleRequest.getEmail());
             Account account;
 
             if (optionalAccount.isPresent()) {
                 account = optionalAccount.get();
-
-                // Kiểm tra trạng thái xác thực
-                if (!account.isVerified()) {
-                    account.setVerified(true);
-                    accountRepository.updateVerify(claims.get("email", String.class),true);
-                }
             } else {
                 // Tạo tài khoản mới
                 AccountCreationDTO accountCreationDTO = new AccountCreationDTO();
-                accountCreationDTO.setEmail(claims.get("email", String.class));
-                accountCreationDTO.setFullName(claims.get("name", String.class));
-                accountCreationDTO.setVerified(true);
+                accountCreationDTO.setEmail(loginGoogleRequest.getEmail());
+                accountCreationDTO.setFullName(loginGoogleRequest.getName());
+
                 account = createAccount(accountCreationDTO);
             }
-
+            // Kiểm tra trạng thái xác thực
+            if (!account.isVerified()) {
+                account.setVerified(true);
+                accountRepository.updateVerify(loginGoogleRequest.getEmail(),true);
+            }
             // Tạo token mới
             String newToken = jwtUltilsHelper.generateToken(account);
 
@@ -141,7 +141,7 @@ public class AccountService implements AccountServiceImp{
         }
 
         Role role = new Role();
-        role.setRoleID(1);
+        role.setRoleID(3);
 
         Account account = new Account();
         account.setEmail(accountCreationDTO.getEmail());
@@ -153,7 +153,7 @@ public class AccountService implements AccountServiceImp{
         }
         accountRepository.save(account);
 
-        if(!accountCreationDTO.isVerified()) {
+        if(!account.isVerified()) {
         // Tạo mã OTP
         String otp = generateOTP();
 
@@ -232,10 +232,12 @@ public class AccountService implements AccountServiceImp{
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
         // Tìm mã OTP trong bảng VerificationToken
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
+        VerificationToken verificationToken = verificationTokenRepository.findByAccount_AccountID(account.getAccountID())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
+        System.out.println(verificationToken.getId());
+        System.out.println(verificationToken.getToken());
 
-        if(verificationTokenRepository.findByAccount_AccountID(account.getAccountID()).isEmpty())
+        if(!verificationToken.getToken().equals(otp))
             throw new AppException(ErrorCode.INVALIDOTP);
 
 
