@@ -29,13 +29,19 @@ public class VerificationController {
     private AccountRepository accountRepository;
 
     @Autowired
-
     AccountService accountService;
-
 
     @PostMapping("/verify-otp")
     public ApiReponse<String> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         ApiReponse apiReponse = accountService.verifyOTP(email, otp);
+
+
+        return apiReponse;
+    }
+
+    @PostMapping("/resend-otp")
+    public ApiReponse<String> resendOtp(@RequestParam String email) {
+        ApiReponse apiReponse = accountService.resendOTP(email);
 
 
         return apiReponse;
