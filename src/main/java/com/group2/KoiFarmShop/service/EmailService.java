@@ -22,4 +22,17 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendVerificationEmail(String email, String otp) {
+        String subject = "Your OTP Verification Code";
+        String message = "Your OTP code is: " + otp + ". It will expire in 10 minutes.";
+
+        // Gửi email với OTP
+        SimpleMailMessage emailMessage = new SimpleMailMessage();
+        emailMessage.setTo(email);
+        emailMessage.setSubject(subject);
+        emailMessage.setText(message);
+
+        javaMailSender.send(emailMessage);
+    }
+
 }

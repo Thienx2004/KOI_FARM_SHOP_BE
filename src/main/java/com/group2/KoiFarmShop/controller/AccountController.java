@@ -27,8 +27,13 @@ public class AccountController {
         accountReponse.setFullName(account.getFullName());
         accountReponse.setEmail(account.getEmail());
         accountReponse.setPassword(account.getPassword());
+        reponse.setMessage("Đăng kí thành công! Kiểm tra email của bạn để xác thực.");
+
 
         reponse.setData(accountReponse);
         return reponse;
+//            accountServiceImp.createAccount(accountCreationDTO);
+//            ApiReponse apiReponse = new ApiReponse();
+            //return reponse;
     }
 }

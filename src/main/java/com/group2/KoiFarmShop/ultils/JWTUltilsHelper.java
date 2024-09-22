@@ -1,5 +1,10 @@
 package com.group2.KoiFarmShop.ultils;
 
+import com.group2.KoiFarmShop.dto.reponse.IntrospectResponse;
+import com.group2.KoiFarmShop.dto.request.IntrospectRequest;
+import com.group2.KoiFarmShop.entity.Account;
+import com.group2.KoiFarmShop.repository.AccountRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -7,15 +12,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.util.Date;
 
 @Component
 public class JWTUltilsHelper {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    public String generateToken(String data){
+    public String generateToken(Account data){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-        String jws = Jwts.builder().subject(data).signWith(key).compact();
+        String jws = Jwts.builder().subject(data.getEmail()).issuedAt(new Date()).claim("scope",data.getRole().getRoleName()).signWith(key).compact();
+
         return jws;
     }
+
 }

@@ -31,6 +31,7 @@ import java.util.Set;
         private String address;
         private String phone;
 
+
         @ManyToOne
         @JoinColumn(name = "roleID")
         private Role role;
@@ -41,8 +42,8 @@ import java.util.Set;
         @OneToMany(mappedBy = "account")
         private Set<Feedback> feedbacks;
 
-        @OneToOne(mappedBy = "account")
-        private ForgotPassword forgotPassword;
+        @OneToMany(mappedBy = "account")
+        private Set<ForgotPassword> forgotPassword;
 
         private boolean status = true;
 }
