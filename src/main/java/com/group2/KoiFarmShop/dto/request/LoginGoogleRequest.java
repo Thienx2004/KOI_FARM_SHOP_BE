@@ -6,4 +6,5 @@ import lombok.Data;
 public class LoginGoogleRequest {
     private String email;
     private String name;
+
 }
