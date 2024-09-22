@@ -10,9 +10,8 @@ import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
 import com.group2.KoiFarmShop.service.EmailService;
 import com.group2.KoiFarmShop.ultils.ChangePassword;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +46,7 @@ public class ForgotPasswordController {
 
         MailBody mailBody=MailBody.builder()
                 .to(email)
-                .text("This is OTP: " + otp)
+                .text("OTP của bạn : " + otp)
                 .subject("OTP for forgot password")
                 .build();
         ForgotPassword fp = ForgotPassword.builder()
@@ -57,12 +56,15 @@ public class ForgotPasswordController {
                 .build();
         emailService.sendSimpleMess(mailBody);
         forgotPasswordRepository.save(fp);
-        apiReponse.setData("Email send");
+        apiReponse.setData("Đã gửi OTP");
         return apiReponse;
     }
 
+    ;
+    @Autowired
+    private JWTUltilsHelper jwtUltilsHelper;
     @PostMapping("/otp/{otp}/{email}")
-    public  ApiReponse<String> verifyOTP(@PathVariable Integer otp, @PathVariable String email) {
+        public ApiReponse verifyOTP(@PathVariable Integer otp, @PathVariable String email) {
         ApiReponse apiReponse = new ApiReponse();
 
         Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
@@ -73,7 +75,13 @@ public class ForgotPasswordController {
             forgotPasswordRepository.deleteById(fp.getFpid());
             throw new AppException(ErrorCode.INVALIDOTP);
         }
-        apiReponse.setData("OTP verified");
+
+        apiReponse.setMessage("OTP hợp lệ");
+
+        account.setOTPcheck("true");
+
+        String tokenOTP = jwtUltilsHelper.generateTokenForOTP(account);
+        apiReponse.setData(tokenOTP);
         return apiReponse;
     }
 
@@ -88,7 +96,7 @@ public class ForgotPasswordController {
 
         String encodedPassword = passwordEncoder.encode(changePassword.password());
         accountRepository.updatePassword(email, encodedPassword);
-        apiReponse.setData("Password has been changed!");
+        apiReponse.setData("Đổi mật khẩu thành công!");
         return apiReponse;
     }
 
