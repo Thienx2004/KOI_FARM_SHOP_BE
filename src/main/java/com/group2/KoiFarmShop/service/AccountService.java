@@ -6,11 +6,13 @@ import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.entity.Account;
+import com.group2.KoiFarmShop.entity.ForgotPassword;
 import com.group2.KoiFarmShop.entity.Role;
 import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
+import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
 
@@ -27,6 +29,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import java.util.Optional;
@@ -51,6 +54,8 @@ public class AccountService implements AccountServiceImp{
     private EmailService emailService;
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    private ForgotPasswordRepositoryI forgotPasswordRepository;
 
     @Override
         public ApiReponse login(LoginRequest loginRequest) {
@@ -153,7 +158,7 @@ public class AccountService implements AccountServiceImp{
         }
         accountRepository.save(account);
 
-        if(!accountCreationDTO.isVerified()) {
+        if(!account.isVerified()) {
         // Tạo mã OTP
         String otp = generateOTP();
 
@@ -197,12 +202,12 @@ public class AccountService implements AccountServiceImp{
             throw new AppException(ErrorCode.ACCOUNT_ALREADY_VERIFIED);
         }
 
-        VerificationToken verificationToken1 = verificationTokenRepository.findByAccount_AccountID(account.getAccountID())
-                .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
-        System.out.println(verificationToken1.getToken());
-
-        // Xóa mã OTP cũ (nếu có)
-        verificationTokenRepository.deleteById(verificationToken1.getId());
+//        VerificationToken verificationToken1 = verificationTokenRepository.findByAccount_AccountID(account.getAccountID())
+//                .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+//        System.out.println(verificationToken1.getToken());
+//
+//        // Xóa mã OTP cũ (nếu có)
+//        verificationTokenRepository.deleteById(verificationToken1.getId());
 
         // Tạo mã OTP mới
         String newOtp = generateOTP();
@@ -227,27 +232,59 @@ public class AccountService implements AccountServiceImp{
     @Override
     public ApiReponse<String> verifyOTP(String email, String otp) {
         ApiReponse apiReponse = new ApiReponse();
+
         // Tìm tài khoản qua email
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
-        // Tìm mã OTP trong bảng VerificationToken
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
-                .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
+        if(account.isVerified()) {
+            List<VerificationToken> verificationTokenList = verificationTokenRepository.findByAccount_AccountID(account.getAccountID());
+            if(!verificationTokenList.isEmpty()) {
+                VerificationToken tmp = new VerificationToken();
+                for(VerificationToken verificationToken : verificationTokenList) {
+                    if(verificationToken.getToken().equals(otp)) {
+                        tmp = verificationToken;
+                        apiReponse.setMessage("OTP hợp lệ");
 
-        if(verificationTokenRepository.findByAccount_AccountID(account.getAccountID()).isEmpty())
-            throw new AppException(ErrorCode.INVALIDOTP);
+                        account.setOTPcheck("true");
+                        accountRepository.save(account);
 
+                        String tokenOTP = jwtUltilsHelper.generateTokenForOTP(account);
+                        apiReponse.setData(tokenOTP);
 
-        // Kiểm tra xem OTP có hết hạn không
-        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new AppException(ErrorCode.OTP_EXPIRED);
+                    }
+                }
+                if(tmp.getToken() != null) {
+                    for (VerificationToken verificationToken : verificationTokenList) {
+                        verificationTokenRepository.delete(verificationToken);
+                    }
+                } else throw new AppException(ErrorCode.INVALIDOTP);
+            }
+
         }
+        else {
+            // Tìm mã OTP trong bảng VerificationToken
+            VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
+                    .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
+            System.out.println(verificationToken.getId());
+            System.out.println(verificationToken.getToken());
 
-        // Xác thực tài khoản
-        account.setVerified(true);
-        accountRepository.save(account);
-        apiReponse.setData("Xác thực tài khoản thành công!");
+            if (!verificationToken.getToken().equals(otp))
+                throw new AppException(ErrorCode.INVALIDOTP);
+
+
+            // Kiểm tra xem OTP có hết hạn không
+            if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+                throw new AppException(ErrorCode.OTP_EXPIRED);
+            }
+
+
+            // Xác thực tài khoản
+            account.setVerified(true);
+
+            accountRepository.save(account);
+            apiReponse.setMessage("Xác thực tài khoản thành công!");
+        }
         return apiReponse;
     }
 
