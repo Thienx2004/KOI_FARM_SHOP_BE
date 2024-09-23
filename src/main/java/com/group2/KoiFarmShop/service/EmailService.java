@@ -15,7 +15,7 @@ public class EmailService {
     public void sendSimpleMess(MailBody mailBody){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(mailBody.to());
-//        message.setFrom("trananhhao225@gmail.com");
+        message.setFrom("locttse182329@fpt.edu.vn");
         message.setSubject(mailBody.subject());
         message.setText(mailBody.text());
 
@@ -27,7 +27,9 @@ public class EmailService {
         String message = "Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 10 phút.";
 
         // Gửi email với OTP
+
         SimpleMailMessage emailMessage = new SimpleMailMessage();
+        emailMessage.setFrom("koifarmofficial@gmail.com");
         emailMessage.setTo(email);
         emailMessage.setSubject(subject);
         emailMessage.setText(message);
