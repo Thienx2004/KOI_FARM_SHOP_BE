@@ -15,7 +15,7 @@ public class EmailService {
     public void sendSimpleMess(MailBody mailBody){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(mailBody.to());
-        message.setFrom("trananhhao225@gmail.com");
+//        message.setFrom("trananhhao225@gmail.com");
         message.setSubject(mailBody.subject());
         message.setText(mailBody.text());
 
@@ -23,8 +23,8 @@ public class EmailService {
     }
 
     public void sendVerificationEmail(String email, String otp) {
-        String subject = "Your OTP Verification Code";
-        String message = "Your OTP code is: " + otp + ". It will expire in 10 minutes.";
+        String subject = "Mã xác nhận OTP";
+        String message = "Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 10 phút.";
 
         // Gửi email với OTP
         SimpleMailMessage emailMessage = new SimpleMailMessage();

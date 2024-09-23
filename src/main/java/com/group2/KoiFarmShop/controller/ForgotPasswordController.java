@@ -4,19 +4,21 @@ import com.group2.KoiFarmShop.dto.MailBody;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.ForgotPassword;
+import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
+import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.service.EmailService;
 import com.group2.KoiFarmShop.ultils.ChangePassword;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
@@ -29,6 +31,8 @@ public class ForgotPasswordController {
     private final AccountRepository accountRepository;
     private final ForgotPasswordRepositoryI forgotPasswordRepository;
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
 
     public ForgotPasswordController(AccountRepository accountRepository, EmailService emailService, ForgotPasswordRepositoryI forgotPasswordRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
@@ -47,35 +51,43 @@ public class ForgotPasswordController {
 
         MailBody mailBody=MailBody.builder()
                 .to(email)
-                .text("This is OTP: " + otp)
+                .text("OTP của bạn : " + otp)
                 .subject("OTP for forgot password")
                 .build();
-        ForgotPassword fp = ForgotPassword.builder()
-                .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() +60 *1000*5))
-                .account(account)
-                .build();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(String.valueOf(otp));
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(10)); // Hết hạn sau 10 phút
+        verificationToken.setAccount(account);
         emailService.sendSimpleMess(mailBody);
-        forgotPasswordRepository.save(fp);
-        apiReponse.setData("Email send");
+        verificationTokenRepository.save(verificationToken);
+        apiReponse.setData("Đã gửi OTP");
         return apiReponse;
     }
 
-    @PostMapping("/otp/{otp}/{email}")
-    public  ApiReponse<String> verifyOTP(@PathVariable Integer otp, @PathVariable String email) {
-        ApiReponse apiReponse = new ApiReponse();
-
-        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
-
-        ForgotPassword fp = forgotPasswordRepository.findByOptAndAccount(otp, account).orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
-
-        if(fp.getExpirationTime().before(Date.from(Instant.now()))){
-            forgotPasswordRepository.deleteById(fp.getFpid());
-            throw new AppException(ErrorCode.INVALIDOTP);
-        }
-        apiReponse.setData("OTP verified");
-        return apiReponse;
-    }
+    ;
+//    @Autowired
+//    private JWTUltilsHelper jwtUltilsHelper;
+//    @PostMapping("/otp/{otp}/{email}")
+//        public ApiReponse verifyOTP(@PathVariable Integer otp, @PathVariable String email) {
+//        ApiReponse apiReponse = new ApiReponse();
+//
+//        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+//
+//        ForgotPassword fp = forgotPasswordRepository.findByOptAndAccount(otp, account).orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
+//
+//        if(fp.getExpirationTime().before(Date.from(Instant.now()))){
+//            forgotPasswordRepository.deleteById(fp.getFpid());
+//            throw new AppException(ErrorCode.INVALIDOTP);
+//        }
+//
+//        apiReponse.setMessage("OTP hợp lệ");
+//
+//        account.setOTPcheck("true");
+//
+//        String tokenOTP = jwtUltilsHelper.generateTokenForOTP(account);
+//        apiReponse.setData(tokenOTP);
+//        return apiReponse;
+//    }
 
     @PostMapping("/changePassword/{email}")
     public ApiReponse<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
@@ -83,12 +95,12 @@ public class ForgotPasswordController {
         ApiReponse apiReponse = new ApiReponse();
 
         if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
-             throw new AppException(ErrorCode.PASSWORDINVALID);
+             throw new AppException(ErrorCode.PASSWORDINVALID)  ;
         }
 
         String encodedPassword = passwordEncoder.encode(changePassword.password());
         accountRepository.updatePassword(email, encodedPassword);
-        apiReponse.setData("Password has been changed!");
+        apiReponse.setData("Đổi mật khẩu thành công!");
         return apiReponse;
     }
 

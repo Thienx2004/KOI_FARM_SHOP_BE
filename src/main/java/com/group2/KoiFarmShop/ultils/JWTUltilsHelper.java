@@ -26,4 +26,11 @@ public class JWTUltilsHelper {
         return jws;
     }
 
+    public String generateTokenForOTP(Account data){
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        String jws = Jwts.builder().subject(data.getEmail()).issuedAt(new Date()).claim("scope",data.getOTPcheck()).signWith(key).compact();
+
+        return jws;
+    }
+
 }
