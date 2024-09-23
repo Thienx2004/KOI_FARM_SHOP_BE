@@ -51,8 +51,8 @@ public class ForgotPasswordController {
 
         MailBody mailBody=MailBody.builder()
                 .to(email)
-                .text("OTP của bạn : " + otp)
-                .subject("OTP for forgot password")
+                .text("Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 10 phút.")
+                .subject("Mã xác nhận OTP")
                 .build();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(String.valueOf(otp));
