@@ -43,7 +43,7 @@ import java.util.Set;
         private Set<Feedback> feedbacks;
 
         @OneToMany(mappedBy = "account")
-        private Set<ForgotPassword> forgotPassword;
+        private Set<VerificationToken> verificationTokens;
 
         private String OTPcheck ;
 
