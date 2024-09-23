@@ -106,10 +106,13 @@ public class AccountService implements AccountServiceImp{
                 account = optionalAccount.get();
             } else {
                 // Tạo tài khoản mới
-                AccountCreationDTO accountCreationDTO = new AccountCreationDTO();
-                accountCreationDTO.setEmail(loginGoogleRequest.getEmail());
-                accountCreationDTO.setFullName(loginGoogleRequest.getName());
-                account = createAccount(accountCreationDTO);
+                Role role = new Role();
+                role.setRoleID(3);
+                account = new Account();
+                account.setEmail(loginGoogleRequest.getEmail());
+                account.setFullName(loginGoogleRequest.getName());
+                account.setRole(role);
+                accountRepository.save(account);
             }
             // Kiểm tra trạng thái xác thực
             if (!account.isVerified()) {
@@ -126,14 +129,12 @@ public class AccountService implements AccountServiceImp{
             content.setFullName(account.getFullName());
             content.setRole(account.getRole().getRoleName());
             content.setAccessToken(newToken);
-
             apiReponse.setData(content);
             apiReponse.setMessage("Đăng nhập thành công");
         } catch (Exception e) {
             apiReponse.setMessage("Đã xảy ra lỗi: " + e.getMessage());
             apiReponse.setData(null);
         }
-
         return apiReponse;
     }
 
