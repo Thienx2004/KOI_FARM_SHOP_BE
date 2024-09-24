@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 public class CategoryHomeReponse {
     List<CategoryReponse> categoryReponses;
+    private int pageNum;
+    private int pageSize;
     private int totalElements;
     private int totalPages;
 }

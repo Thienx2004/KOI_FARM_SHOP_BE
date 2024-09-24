@@ -16,7 +16,7 @@ public class CategoryReponse {
     private String categoryName;
     private String description;
     private String cateImg;
-    private List<KoiFish> koiFishList;
+    private List<KoiFishReponse> koiFishList;
 
 
 }

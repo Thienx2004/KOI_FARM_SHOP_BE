@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.CategoryHomeReponse;
 import com.group2.KoiFarmShop.dto.reponse.CategoryReponse;
+import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
@@ -22,9 +23,17 @@ public class CategoryService implements CategoryServiceImp{
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<Category> getAllCategories() {
+    public List<CategoryReponse> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
-        return categories;
+        List<CategoryReponse> categoryReponses = new ArrayList<>();
+        for (Category c : categories) {
+            CategoryReponse categoryReponse = new CategoryReponse();
+            categoryReponse.setCategoryName(c.getCategoryName());
+            categoryReponse.setDescription(c.getDescription());
+            categoryReponse.setCateImg(c.getCategoryImage());
+            categoryReponses.add(categoryReponse);
+        }
+        return categoryReponses;
     }
 
     @Override
@@ -49,7 +58,7 @@ public class CategoryService implements CategoryServiceImp{
     }
 
     @Override
-    public List<Category> getListHomeCategory(int pageNum, int pageSize) {
+    public CategoryHomeReponse getListHomeCategory(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Category> categories = categoryRepository.findAll(pageable);
         List<Category> categoryHome = categories.getContent();
@@ -58,15 +67,31 @@ public class CategoryService implements CategoryServiceImp{
 
         for(Category category : categoryHome){
             CategoryReponse categoryReponse = new CategoryReponse();
+            List<KoiFishReponse> koiFishList = new ArrayList<>();
             categoryReponse.setCategoryName(category.getCategoryName());
             categoryReponse.setDescription(category.getDescription());
             categoryReponse.setCateImg(category.getCategoryImage());
 
             for(KoiFish koiFish : category.getKoiFish()){
+                KoiFishReponse koiFishReponse = new KoiFishReponse();
+                koiFishReponse.setOrigin(koiFish.getOrigin());
+                koiFishReponse.setAge(koiFish.getAge());
+                koiFishReponse.setGender(koiFish.getGender());
+                koiFishReponse.setSize(koiFish.getSize());
+                koiFishReponse.setPrice(koiFish.getPrice());
+                koiFishReponse.setKoiImage(koiFish.getKoiImage());
 
+                koiFishList.add(koiFishReponse);
             }
+            categoryReponse.setKoiFishList(koiFishList);
+            categoryReponses.add(categoryReponse);
         }
+        categoryHomeReponse.setCategoryReponses(categoryReponses);
+        categoryHomeReponse.setPageNum(categories.getNumber());
+        categoryHomeReponse.setPageSize(categories.getSize());
+        categoryHomeReponse.setTotalElements(categories.getNumberOfElements());
+        categoryHomeReponse.setTotalPages(categories.getTotalPages());
 
-        return List.of();
+        return categoryHomeReponse;
     }
 }
