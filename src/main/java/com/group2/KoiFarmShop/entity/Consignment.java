@@ -16,11 +16,11 @@ public class Consignment {
     @JoinColumn(name = "accountID")
     private Account account;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "koiID", referencedColumnName = "koiID")
     private KoiFish koiFish;
 
-    private Boolean consignmentType; // true/false for Sale/Care
+    private boolean consignmentType; // true/false for Sale/Care
     private double agreedPrice;
 
     @Temporal(TemporalType.DATE)
