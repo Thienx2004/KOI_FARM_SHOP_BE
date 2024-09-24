@@ -27,6 +27,12 @@ public class KoiFish {
     private double price;
     private String koiImage;
     private int status;
+    /*
+    1_Còn Hàng
+    2_Đâ bán
+    3_Ký gửi
+    */
+
 
     @OneToOne(mappedBy = "koiFish",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
