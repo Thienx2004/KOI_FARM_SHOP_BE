@@ -84,6 +84,7 @@ public class CategoryService implements CategoryServiceImp{
                 koiFishList.add(koiFishReponse);
             }
             categoryReponse.setKoiFishList(koiFishList);
+            categoryReponses.add(categoryReponse);
         }
         categoryHomeReponse.setCategoryReponses(categoryReponses);
         categoryHomeReponse.setPageNum(categories.getNumber());
