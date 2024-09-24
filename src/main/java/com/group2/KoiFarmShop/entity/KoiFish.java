@@ -38,8 +38,8 @@ public class KoiFish {
     @PrimaryKeyJoinColumn
     private Certificate certificate;
 
-    @OneToOne(mappedBy = "koiFish", cascade = CascadeType.ALL)
-    private Consignment consignment;
+    @OneToMany(mappedBy = "koiFish")
+    private Set<Consignment> consignment;
 
     @ManyToOne
     @JoinColumn(name = "categoryID")

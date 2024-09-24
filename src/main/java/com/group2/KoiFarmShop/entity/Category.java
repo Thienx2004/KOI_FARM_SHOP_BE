@@ -28,7 +28,9 @@ public class Category {
     private Set<Batch> batches;
     @Column(length = 500)
     private String description;
+
     @Column(columnDefinition =  "boolean default true")
-    private boolean status=true;
+
+    private boolean status;
 
 }
