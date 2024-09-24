@@ -29,8 +29,9 @@ public class Category {
     @Column(length = 500)
     private String description;
 
+    private String categoryImage;
     @Column(columnDefinition =  "boolean default true")
-
     private boolean status;
+
 
 }
