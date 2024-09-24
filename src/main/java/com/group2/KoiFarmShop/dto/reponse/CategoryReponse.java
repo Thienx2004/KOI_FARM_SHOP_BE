@@ -18,4 +18,5 @@ public class CategoryReponse {
     private String cateImg;
     private List<KoiFish> koiFishList;
 
+
 }
