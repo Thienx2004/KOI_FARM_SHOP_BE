@@ -16,7 +16,7 @@ public class Consignment {
     @JoinColumn(name = "accountID")
     private Account account;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "koiID", referencedColumnName = "koiID")
     private KoiFish koiFish;
 
