@@ -183,6 +183,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+
             koiFishReponseList.add(koiFishReponse);
         }
         return koiFishReponseList;

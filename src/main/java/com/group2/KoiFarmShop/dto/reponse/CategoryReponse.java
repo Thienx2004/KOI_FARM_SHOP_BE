@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CategoryReponse {
 
+    private int id;
     private String categoryName;
     private String description;
     private String cateImg;
