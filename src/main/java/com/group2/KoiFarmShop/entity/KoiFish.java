@@ -23,7 +23,7 @@ public class KoiFish {
     private int age;
     private double size;
     private String personality;
-    private String situation;
+//    private String situation;
     private double price;
     private String koiImage;
     private int status;

@@ -28,6 +28,7 @@ public class Category {
     private Set<Batch> batches;
 
     private String description;
-    private boolean status=true;
+
+    private boolean status = true;
 
 }
