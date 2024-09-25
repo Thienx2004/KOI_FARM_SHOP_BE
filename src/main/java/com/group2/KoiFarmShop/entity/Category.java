@@ -35,7 +35,7 @@ public class Category {
   
   
   
-    private boolean status = true;
+
 
     private String categoryImage;
     @Column(columnDefinition =  "boolean default true")
