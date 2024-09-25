@@ -1,0 +1,159 @@
+package com.group2.KoiFarmShop.service;
+
+import com.group2.KoiFarmShop.dto.reponse.BatchPageReponse;
+import com.group2.KoiFarmShop.dto.reponse.BatchReponse;
+import com.group2.KoiFarmShop.entity.Batch;
+import com.group2.KoiFarmShop.entity.Category;
+import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.repository.BatchRepository;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class BatchService implements BatchServiceImp{
+
+    @Autowired
+    private BatchRepository batchRepository;
+
+    @Override
+    public BatchPageReponse getBatchListFilter(int pageNo, int pageSize, String categoryID, String avgSize, String age, String minPrice, String maxPrice, String sortField, String sortDirection) {
+        // Kiểm tra sortField và sortDirection, nếu không có thì mặc định theo "batchID" và "asc"/"desc"
+        if (sortField == null || sortField.isEmpty()) {
+            sortField = "batchID";
+        }
+        if (sortDirection == null || sortDirection.isEmpty()) {
+            sortDirection = "asc";
+        }
+
+        // Thiết lập phân trang và sắp xếp
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        // Sử dụng Specification để lọc dữ liệu
+        Specification<Batch> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if(categoryID != null && !categoryID.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("category").get("categoryID"), Integer.parseInt(categoryID)));
+            }
+
+            if (avgSize != null) {
+                predicates.add(criteriaBuilder.equal(root.get("avgSize"), avgSize));
+            }
+
+            if (age != null) {
+                predicates.add(criteriaBuilder.equal(root.get("age"), Integer.parseInt(age)));
+            }
+
+            // Lọc theo minPrice và maxPrice
+            if (minPrice != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), Double.parseDouble(minPrice)));
+            }
+            if (maxPrice != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), Double.parseDouble(maxPrice)));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<Batch> batchPage = batchRepository.findAll(spec, pageable);
+
+        List<BatchReponse> batchReponseList = new ArrayList<>();
+        for (Batch batch : batchPage.getContent()) {
+            BatchReponse batchReponse = new BatchReponse();
+            batchReponse.setBatchID(batch.getBatchID());
+            batchReponse.setOrigin(batch.getOrigin());
+            batchReponse.setAge(batch.getAge());
+            batchReponse.setAvgSize(batch.getAvgSize());
+            batchReponse.setQuantity(batch.getQuantity());
+            batchReponse.setPrice(batch.getPrice());
+            batchReponse.setCategoryID(batch.getCategory().getCategoryID());
+            batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+            batchReponse.setStatus(batch.getStatus());
+
+            batchReponseList.add(batchReponse);
+        }
+
+        BatchPageReponse batchPageReponse = new BatchPageReponse();
+        batchPageReponse.setBatchReponses(batchReponseList);
+        batchPageReponse.setPageNum(batchPage.getNumber());
+        batchPageReponse.setPageSize(batchPage.getSize());
+        batchPageReponse.setTotalElements(batchPage.getTotalElements());
+        batchPageReponse.setTotalPages(batchPage.getTotalPages());
+
+        return batchPageReponse;
+    }
+
+
+    @Override
+    public BatchReponse getBatchById(int id) {
+        Batch batch = batchRepository.findByBatchID(id)
+                .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
+        BatchReponse batchReponse = new BatchReponse();
+        batchReponse.setBatchID(batch.getBatchID());
+        batchReponse.setOrigin(batch.getOrigin());
+        batchReponse.setQuantity(batch.getQuantity());
+        batchReponse.setPrice(batch.getPrice());
+        batchReponse.setStatus(batch.getStatus());
+
+        return batchReponse;
+    }
+
+    @Override
+    public String addBatch(Batch batch) {
+        return "";
+    }
+
+    @Override
+    public String updateBatch(Batch batch) {
+        return "";
+    }
+
+    @Override
+    public String deleteBatch(int id) {
+        return "";
+    }
+
+    @Override
+    public BatchPageReponse getBatchByCategory(int categoryId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Category category = new Category();
+        category.setCategoryID(categoryId);
+        Page<Batch> batchPage = batchRepository.findByCategory(category, pageable);
+        List<Batch> batchList = batchPage.getContent();
+        List<BatchReponse> batchReponseList = new ArrayList<>();
+        BatchPageReponse batchPageReponse = new BatchPageReponse();
+        for(Batch batch : batchList) {
+            BatchReponse batchReponse = new BatchReponse();
+            batchReponse.setBatchID(batch.getBatchID());
+            batchReponse.setOrigin(batch.getOrigin());
+            batchReponse.setQuantity(batch.getQuantity());
+            batchReponse.setPrice(batch.getPrice());
+            batchReponse.setCategoryID(batch.getCategory().getCategoryID());
+            batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+            batchReponse.setStatus(batch.getStatus());
+
+            batchReponseList.add(batchReponse);
+        }
+
+        batchPageReponse.setBatchReponses(batchReponseList);
+        batchPageReponse.setPageNum(batchPage.getNumber());
+        batchPageReponse.setPageSize(batchPage.getSize());
+        batchPageReponse.setTotalElements(batchPage.getNumberOfElements());
+        batchPageReponse.setTotalPages(batchPage.getTotalPages());
+
+
+        return batchPageReponse;
+    }
+
+}

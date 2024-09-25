@@ -26,7 +26,7 @@ public class Category {
     private List<KoiFish> koiFish;
 
     @OneToMany(mappedBy = "category")
-    private Set<Batch> batches;
+    private List<Batch> batches;
     @Column(length = 500)
     private String description;
 
