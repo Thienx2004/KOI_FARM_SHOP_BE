@@ -3,8 +3,10 @@ package com.group2.KoiFarmShop.service;
 import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
+import com.group2.KoiFarmShop.entity.Certificate;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
+import com.group2.KoiFarmShop.repository.CertificateRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,12 +22,15 @@ public class KoiFishService implements KoiFishServiceImp{
     private KoiFishRepository koiFishRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private CertificateRepository certificateRepository;
     @Override
     public List<KoiFishReponse> getAllKoiFish() {
         List<KoiFish> koiFishList = koiFishRepository.findAll();
         List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiFishList) {
             KoiFishReponse koiFishReponse = new KoiFishReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
             koiFishReponse.setSize(koiFish.getSize());
@@ -44,6 +49,7 @@ public class KoiFishService implements KoiFishServiceImp{
         List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiFishList) {
             KoiFishReponse koiFishReponse = new KoiFishReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
             koiFishReponse.setSize(koiFish.getSize());
@@ -63,6 +69,7 @@ public class KoiFishService implements KoiFishServiceImp{
         List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiFishList) {
             KoiFishReponse koiFishReponse = new KoiFishReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
             koiFishReponse.setSize(koiFish.getSize());
@@ -80,6 +87,7 @@ public class KoiFishService implements KoiFishServiceImp{
     public KoiFishReponse getKoiFishById(int id) {
         KoiFish koiFish=koiFishRepository.findByKoiID(id);
         return KoiFishReponse.builder()
+                .id(koiFish.getKoiID())
                 .age(koiFish.getAge())
                 .gender(koiFish.getGender())
                 .price(koiFish.getPrice())
@@ -103,8 +111,18 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setKoiImage(koiRequest.getKoiImage());
         Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
+
+
         KoiFish savedKoiFish= koiFishRepository.save(koiFish);
+        Certificate newCertificate= certificateRepository.save(
+                Certificate.builder()
+                        .koiFish(savedKoiFish)
+                        .name(koiRequest.getCertificate().getName())
+                        .createdDate(koiRequest.getCertificate().getCreatedDate())
+                        .image(koiRequest.getCertificate().getImage())
+                        .build());
         return KoiFishReponse.builder()
+                .id(savedKoiFish.getKoiID())
                 .age(savedKoiFish.getAge())
                 .gender(savedKoiFish.getGender())
                 .price(savedKoiFish.getPrice())
@@ -131,6 +149,7 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setCategory(category);
         KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
         return KoiFishReponse.builder()
+                .id(updateddKoiFish.getKoiID())
                 .age(updateddKoiFish.getAge())
                 .gender(updateddKoiFish.getGender())
                 .price(updateddKoiFish.getPrice())
@@ -141,4 +160,23 @@ public class KoiFishService implements KoiFishServiceImp{
                 .category(updateddKoiFish.getCategory())
                 .build();
     }
+    public List<KoiFishReponse> filterKoiFish(String gender, Integer age, Double minPrice, Double maxPrice, String origin, Integer status) {
+        List<KoiFish> koiFishList= koiFishRepository.filterKoiFish(gender, age, minPrice, maxPrice, origin, status);
+        List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
+        for (KoiFish koiFish : koiFishList) {
+            KoiFishReponse koiFishReponse = new KoiFishReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
+            koiFishReponse.setOrigin(koiFish.getOrigin());
+            koiFishReponse.setAge(koiFish.getAge());
+            koiFishReponse.setSize(koiFish.getSize());
+            koiFishReponse.setGender(koiFish.getGender());
+            koiFishReponse.setPersonality(koiFish.getPersonality());
+            koiFishReponse.setPrice(koiFish.getPrice());
+            koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategory(koiFish.getCategory());
+            koiFishReponseList.add(koiFishReponse);
+        }
+        return koiFishReponseList;
+    }
+
 }

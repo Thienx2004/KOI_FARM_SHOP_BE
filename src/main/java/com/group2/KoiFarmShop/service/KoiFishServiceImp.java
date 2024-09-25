@@ -14,4 +14,5 @@ public interface KoiFishServiceImp {
     public KoiFishReponse getKoiFishById(int id);
     public KoiFishReponse addKoiFish(KoiRequest koiFish);
     public KoiFishReponse updateKoiFish(KoiRequest koiFish,int id);
+    public List<KoiFishReponse> filterKoiFish(String gender, Integer age, Double minPrice, Double maxPrice, String origin, Integer status);
 }
