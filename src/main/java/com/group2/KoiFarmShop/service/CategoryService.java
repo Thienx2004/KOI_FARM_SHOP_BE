@@ -71,6 +71,7 @@ public class CategoryService implements CategoryServiceImp{
 
         for(Category category : categoryHome){
             CategoryReponse categoryReponse = new CategoryReponse();
+            categoryReponse.setId(category.getCategoryID());
             categoryReponse.setCategoryName(category.getCategoryName());
             categoryReponse.setDescription(category.getDescription());
             categoryReponse.setCateImg(category.getCategoryImage());
@@ -86,6 +87,8 @@ public class CategoryService implements CategoryServiceImp{
                 koiFishReponse.setSize(category.getKoiFish().get(i).getSize());
                 koiFishReponse.setPersonality(category.getKoiFish().get(i).getPersonality());
                 koiFishReponse.setPrice(category.getKoiFish().get(i).getPrice());
+                koiFishReponse.setCategoryId(category.getCategoryID());
+                koiFishReponse.setCategory(category.getCategoryName());
                 koiFishReponse.setKoiImage(category.getKoiFish().get(i).getKoiImage());
                 koiFishReponse.setStatus(category.getKoiFish().get(i).getStatus());
 
