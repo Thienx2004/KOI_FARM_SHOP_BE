@@ -38,6 +38,8 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
             koiFishReponseList.add(koiFishReponse);
         }
         return koiFishReponseList;
@@ -57,7 +59,8 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
-            koiFishReponse.setCategory(koiFish.getCategory());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
             koiFishReponseList.add(koiFishReponse);
         }
         return koiFishReponseList;
@@ -77,7 +80,9 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
-            koiFishReponse.setCategory(koiFish.getCategory());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+
             koiFishReponseList.add(koiFishReponse);
         }
         return koiFishReponseList;// mỗi trang chứa 5 kết quả
@@ -95,7 +100,8 @@ public class KoiFishService implements KoiFishServiceImp{
                 .size(koiFish.getSize())
                 .personality(koiFish.getPersonality())
                 .origin(koiFish.getOrigin())
-                .category(koiFish.getCategory())
+                .categoryId(koiFish.getCategory().getCategoryID())
+                .category(koiFish.getCategory().getCategoryName())
                 .build();
     }
 
@@ -130,7 +136,8 @@ public class KoiFishService implements KoiFishServiceImp{
                 .size(savedKoiFish.getSize())
                 .personality(savedKoiFish.getPersonality())
                 .origin(savedKoiFish.getOrigin())
-                .category(savedKoiFish.getCategory())
+                .categoryId(savedKoiFish.getCategory().getCategoryID())
+                .category(savedKoiFish.getCategory().getCategoryName())
                 .build();
     }
 
@@ -157,7 +164,8 @@ public class KoiFishService implements KoiFishServiceImp{
                 .size(updateddKoiFish.getSize())
                 .personality(updateddKoiFish.getPersonality())
                 .origin(updateddKoiFish.getOrigin())
-                .category(updateddKoiFish.getCategory())
+                .categoryId(updateddKoiFish.getCategory().getCategoryID())
+                .category(updateddKoiFish.getCategory().getCategoryName())
                 .build();
     }
     public List<KoiFishReponse> filterKoiFish(String gender, Integer age, Double minPrice, Double maxPrice, String origin, Integer status) {
@@ -173,7 +181,8 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
-            koiFishReponse.setCategory(koiFish.getCategory());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
             koiFishReponseList.add(koiFishReponse);
         }
         return koiFishReponseList;

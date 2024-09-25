@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.dto.reponse;
 
+import com.group2.KoiFarmShop.dto.CertificateRequest;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class KoiFishReponse {
     private String personality;
     private double price;
     private String koiImage;
-    private Category category;
-    private Certificate certificate;
+    private int categoryId;
+    private String category;
+    private CertificateRequest certificate;
 }

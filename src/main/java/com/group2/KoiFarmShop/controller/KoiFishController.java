@@ -83,7 +83,10 @@ public class KoiFishController {
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String origin,
             @RequestParam(required = false) Integer status) {
-
+        if (gender == null && age == null && minPrice == null && maxPrice == null && origin == null && status == null) {
+            List<KoiFishReponse> koiFishReponses = koiFishService.getAllKoiFish();
+            return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();
+        }
         List<KoiFishReponse> koiFishReponses = koiFishService.filterKoiFish(gender, age, minPrice, maxPrice, origin, status);
         return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();
     }
