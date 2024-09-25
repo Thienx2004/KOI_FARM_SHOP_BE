@@ -20,7 +20,7 @@ public interface KoiFishRepository extends JpaRepository<KoiFish, Integer> {
             "(:age IS NULL OR k.age = :age) AND " +
             "(:minPrice IS NULL OR k.price >= :minPrice) AND " +
             "(:maxPrice IS NULL OR k.price <= :maxPrice) AND " +
-            "(:origin IS NULL OR k.origin = :origin) AND " +
+            "(:origin IS NULL OR LOWER(k.origin) LIKE LOWER(CONCAT('%', :origin, '%'))) AND " +
             "(:status IS NULL OR k.status = :status)")
     Page<KoiFish> filterKoiFish(@Param("gender") String gender,
                                 @Param("age") Integer age,
