@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,8 +22,8 @@ public class Category {
     @Column(nullable = false)
     private String categoryName;
 
-    @OneToMany(mappedBy = "category")
-    private Set<KoiFish> koiFish;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<KoiFish> koiFish;
 
     @OneToMany(mappedBy = "category")
     private Set<Batch> batches;

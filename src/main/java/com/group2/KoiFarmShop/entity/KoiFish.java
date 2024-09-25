@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -39,14 +40,14 @@ public class KoiFish {
     private Certificate certificate;
 
     @OneToMany(mappedBy = "koiFish")
-    private Set<Consignment> consignment;
+    private List<Consignment> consignment;
 
     @ManyToOne
-    @JoinColumn(name = "categoryID")
+    @JoinColumn(name = "categoryid")
     private Category category;
 
     @OneToMany(mappedBy = "koiFish")
-    private Set<OrderDetail> orderDetail;
+    private List<OrderDetail> orderDetail;
 
 
 }

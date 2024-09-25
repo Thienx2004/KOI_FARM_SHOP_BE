@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -31,7 +32,7 @@ public class Batch {
 //    private Set<Feedback> feedbacks;
 
     @OneToMany(mappedBy = "batch")
-    private Set<OrderDetail> orderDetails;
+    private List<OrderDetail> orderDetails;
 
     private int status = 1;
 
