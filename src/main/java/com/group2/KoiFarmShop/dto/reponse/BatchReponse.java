@@ -22,6 +22,7 @@ public class BatchReponse {
     private double price;
     private int categoryID;
     private String categoryName;
+
     private int status;
 
 }
