@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.reponse.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
@@ -26,25 +27,17 @@ public class KoiFishController {
     CategoryRepository categoryRepository;
     // Lấy toàn bộ danh sách cá Koi
     @GetMapping("/allkoi")
-    public ApiReponse<List<KoiFishReponse>> getAllKoiFish() {
-        List<KoiFishReponse> koiFishList = koiFishService.getAllKoiFish();
-        return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishList).statusCode(200).build();
-    }
-
-    // Lấy danh sách cá Koi theo Category
-    @GetMapping("/category/{categoryId}")
-    public ApiReponse<List<KoiFishReponse>> getAllKoiFishByCategory(@PathVariable("categoryId") int id) {
-        Category category=categoryRepository.findByCategoryID(id);
-        List<KoiFishReponse> koiFishList = koiFishService.getAllKoiFishByCategory(category);
-        return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishList).statusCode(200).build();
+    public ApiReponse<KoiFishPageResponse> getAllKoiFish(@RequestParam("page") int page,@RequestParam("pageSize") int pageSize) {
+        KoiFishPageResponse koiFishList = koiFishService.getAllKoiFish(page,pageSize);
+        return ApiReponse.<KoiFishPageResponse>builder().data(koiFishList).statusCode(200).build();
     }
 
     // Lấy 5 cá Koi theo Category và Trang
     @GetMapping("/category")
-    public ApiReponse<List<KoiFishReponse>> get5ByCategory(@RequestParam("categoryId") int id, @RequestParam("page") int page) {
+    public ApiReponse<KoiFishPageResponse> getKoiByCategory(@RequestParam("categoryId") int id, @RequestParam("page") int page,@RequestParam("pageSize") int pageSize) {
         Category category=categoryRepository.findByCategoryID(id);
-        List<KoiFishReponse> koiFishList = koiFishService.get5ByCategory(category, page);
-        return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishList).statusCode(200).build();
+        KoiFishPageResponse koiFishList = koiFishService.getKoiByCategory(category, page,pageSize);
+        return ApiReponse.<KoiFishPageResponse>builder().data(koiFishList).statusCode(200).build();
     }
 
     // Lấy cá Koi theo ID
@@ -76,19 +69,23 @@ public class KoiFishController {
     }
 
     @GetMapping("/filter")
-    public ApiReponse<List<KoiFishReponse>> filterKoiFish(
+    public ApiReponse<KoiFishPageResponse> filterKoiFish(
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) Integer age,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String origin,
-            @RequestParam(required = false) Integer status) {
+            @RequestParam(required = false) Integer status,
+            @RequestParam(defaultValue = "1") int page,      // Thêm tham số page với giá trị mặc định là 1
+            @RequestParam(defaultValue = "10") int pageSize  // Thêm tham số pageSize với giá trị mặc định là 10
+    ) {
         if (gender == null && age == null && minPrice == null && maxPrice == null && origin == null && status == null) {
-            List<KoiFishReponse> koiFishReponses = koiFishService.getAllKoiFish();
-            return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();
+            KoiFishPageResponse koiFishReponses = koiFishService.getAllKoiFish(page, pageSize);  // Truyền page và pageSize vào service
+            return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
         }
-        List<KoiFishReponse> koiFishReponses = koiFishService.filterKoiFish(gender, age, minPrice, maxPrice, origin, status);
-        return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();
+
+        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(gender, age, minPrice, maxPrice, origin, status, page, pageSize); // Truyền thêm page và pageSize vào filter
+        return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
     }
 
 
