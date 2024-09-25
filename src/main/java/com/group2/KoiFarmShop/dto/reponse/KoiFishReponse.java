@@ -1,10 +1,12 @@
 package com.group2.KoiFarmShop.dto.reponse;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class KoiFishReponse {
@@ -15,4 +17,5 @@ public class KoiFishReponse {
     private String personality;
     private double price;
     private String koiImage;
+
 }
