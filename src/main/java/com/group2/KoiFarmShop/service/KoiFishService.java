@@ -1,8 +1,10 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
+import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.KoiFish;
+import com.group2.KoiFarmShop.repository.CategoryRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +18,8 @@ public class KoiFishService implements KoiFishServiceImp{
 
     @Autowired
     private KoiFishRepository koiFishRepository;
-
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Override
     public List<KoiFishReponse> getAllKoiFish() {
         List<KoiFish> koiFishList = koiFishRepository.findAll();
@@ -48,6 +51,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategory(koiFish.getCategory());
             koiFishReponseList.add(koiFishReponse);
         }
         return koiFishReponseList;
@@ -66,6 +70,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategory(koiFish.getCategory());
             koiFishReponseList.add(koiFishReponse);
         }
         return koiFishReponseList;// mỗi trang chứa 5 kết quả
@@ -82,11 +87,22 @@ public class KoiFishService implements KoiFishServiceImp{
                 .size(koiFish.getSize())
                 .personality(koiFish.getPersonality())
                 .origin(koiFish.getOrigin())
+                .category(koiFish.getCategory())
                 .build();
     }
 
     @Override
-    public KoiFishReponse addKoiFish(KoiFish koiFish) {
+    public KoiFishReponse addKoiFish(KoiRequest koiRequest) {
+        KoiFish koiFish = new KoiFish();
+        koiFish.setOrigin(koiRequest.getOrigin());
+        koiFish.setGender(koiRequest.getGender());
+        koiFish.setAge(koiRequest.getAge());
+        koiFish.setSize(koiRequest.getSize());
+        koiFish.setPersonality(koiRequest.getPersonality());
+        koiFish.setPrice(koiRequest.getPrice());
+        koiFish.setKoiImage(koiRequest.getKoiImage());
+        Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
+        koiFish.setCategory(category);
         KoiFish savedKoiFish= koiFishRepository.save(koiFish);
         return KoiFishReponse.builder()
                 .age(savedKoiFish.getAge())
@@ -96,11 +112,23 @@ public class KoiFishService implements KoiFishServiceImp{
                 .size(savedKoiFish.getSize())
                 .personality(savedKoiFish.getPersonality())
                 .origin(savedKoiFish.getOrigin())
+                .category(savedKoiFish.getCategory())
                 .build();
     }
 
     @Override
-    public KoiFishReponse updateKoiFish(KoiFish koiFish) {
+    public KoiFishReponse updateKoiFish(KoiRequest koiRequest,int id) {
+        KoiFish koiFish = new KoiFish();
+        koiFish.setKoiID(id);
+        koiFish.setOrigin(koiRequest.getOrigin());
+        koiFish.setGender(koiRequest.getGender());
+        koiFish.setAge(koiRequest.getAge());
+        koiFish.setSize(koiRequest.getSize());
+        koiFish.setPersonality(koiRequest.getPersonality());
+        koiFish.setPrice(koiRequest.getPrice());
+        koiFish.setKoiImage(koiRequest.getKoiImage());
+        Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
+        koiFish.setCategory(category);
         KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
         return KoiFishReponse.builder()
                 .age(updateddKoiFish.getAge())
@@ -110,6 +138,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .size(updateddKoiFish.getSize())
                 .personality(updateddKoiFish.getPersonality())
                 .origin(updateddKoiFish.getOrigin())
+                .category(updateddKoiFish.getCategory())
                 .build();
     }
 }

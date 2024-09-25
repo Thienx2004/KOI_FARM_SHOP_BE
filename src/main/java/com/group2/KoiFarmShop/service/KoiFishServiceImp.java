@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
+import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.KoiFish;
 
@@ -11,6 +12,6 @@ public interface KoiFishServiceImp {
     public List<KoiFishReponse> getAllKoiFishByCategory(Category category);
     public List<KoiFishReponse> get5ByCategory(Category category, int page);
     public KoiFishReponse getKoiFishById(int id);
-    public KoiFishReponse addKoiFish(KoiFish koiFish);
-    public KoiFishReponse updateKoiFish(KoiFish koiFish);
+    public KoiFishReponse addKoiFish(KoiRequest koiFish);
+    public KoiFishReponse updateKoiFish(KoiRequest koiFish,int id);
 }
