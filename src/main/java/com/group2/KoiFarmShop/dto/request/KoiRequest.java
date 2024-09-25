@@ -1,16 +1,10 @@
-package com.group2.KoiFarmShop.dto.reponse;
+package com.group2.KoiFarmShop.dto.request;
 
 import com.group2.KoiFarmShop.entity.Category;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class KoiFishReponse {
+public class KoiRequest {
     private String origin;
     private String gender;
     private int age;
@@ -18,6 +12,5 @@ public class KoiFishReponse {
     private String personality;
     private double price;
     private String koiImage;
-    private Category category;
-
+    private int categoryId;
 }
