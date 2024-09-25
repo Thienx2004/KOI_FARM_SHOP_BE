@@ -35,6 +35,9 @@ public class BatchService implements BatchServiceImp{
             batchReponse.setOrigin(batch.getOrigin());
             batchReponse.setQuantity(batch.getQuantity());
             batchReponse.setPrice(batch.getPrice());
+            batchReponse.setCategoryID(batch.getCategory().getCategoryID());
+            batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+
             batchReponse.setStatus(batch.getStatus());
 
             batchReponseList.add(batchReponse);
@@ -95,6 +98,10 @@ public class BatchService implements BatchServiceImp{
             batchReponse.setOrigin(batch.getOrigin());
             batchReponse.setQuantity(batch.getQuantity());
             batchReponse.setPrice(batch.getPrice());
+
+            batchReponse.setCategoryID(batch.getCategory().getCategoryID());
+            batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+
             batchReponse.setStatus(batch.getStatus());
 
             batchReponseList.add(batchReponse);

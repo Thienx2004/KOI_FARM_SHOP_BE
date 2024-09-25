@@ -20,6 +20,9 @@ public class BatchReponse {
     private int quantity;
     private String origin;
     private double price;
+    private int categoryID;
+    private String categoryName;
+
     private int status;
 
 }
