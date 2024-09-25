@@ -26,9 +26,21 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     private Set<Batch> batches;
-
+    @Column(length = 500)
     private String description;
 
+
+  
+  
+  
+  
+  
     private boolean status = true;
+
+    private String categoryImage;
+    @Column(columnDefinition =  "boolean default true")
+    private boolean status;
+
+
 
 }

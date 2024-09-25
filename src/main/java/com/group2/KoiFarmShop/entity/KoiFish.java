@@ -27,13 +27,19 @@ public class KoiFish {
     private double price;
     private String koiImage;
     private int status;
+    /*
+    1_Còn Hàng
+    2_Đâ bán
+    3_Ký gửi
+    */
+
 
     @OneToOne(mappedBy = "koiFish",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Certificate certificate;
 
-    @OneToOne(mappedBy = "koiFish", cascade = CascadeType.ALL)
-    private Consignment consignment;
+    @OneToMany(mappedBy = "koiFish")
+    private Set<Consignment> consignment;
 
     @ManyToOne
     @JoinColumn(name = "categoryID")
