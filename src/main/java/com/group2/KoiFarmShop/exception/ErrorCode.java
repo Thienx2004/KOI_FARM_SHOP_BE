@@ -11,7 +11,8 @@ public enum ErrorCode {
     ACCOUNT_ALREADY_VERIFIED(5010, "Email đã xác thực"),
     PASSWORDINVALID(5011,"Nhập lại pass word"),
     NOTVERIFYACCOUNT(5006,"Tài khoản chưa xác thực"),
-    KOINOTFOUND(5005,"Không có kết quả")
+    KOINOTFOUND(5005,"Không có kết quả"),
+    BATCH_NOT_EXISTED(5006, "Không tìm thấy lô,")
     ;
 
 

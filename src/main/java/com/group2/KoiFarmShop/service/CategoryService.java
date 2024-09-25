@@ -28,21 +28,12 @@ public class CategoryService implements CategoryServiceImp{
         List<Category> categories = categoryRepository.findAll();
         List<CategoryReponse> categoryReponses = new ArrayList<>();
         for (Category c : categories) {
-            List<KoiFishReponse> koiFishList = new ArrayList<>();
+
             CategoryReponse categoryReponse = new CategoryReponse();
+            categoryReponse.setId(c.getCategoryID());
             categoryReponse.setCategoryName(c.getCategoryName());
-            categoryReponse.setDescription(c.getDescription());
-            categoryReponse.setCateImg(c.getCategoryImage());
-            System.out.println(c.getKoiFish().size());
-            for (KoiFish koiFish : c.getKoiFish()) {
-                KoiFishReponse reponse = new KoiFishReponse();
-                reponse.setAge(koiFish.getAge());
-                reponse.setGender(koiFish.getGender());
-                reponse.setPersonality(koiFish.getPersonality());
-                koiFishList.add(reponse);
-            }
-            System.out.println(koiFishList.size());
-            categoryReponse.setKoiFishList(koiFishList);
+
+
             categoryReponses.add(categoryReponse);
         }
         return categoryReponses;
@@ -80,6 +71,7 @@ public class CategoryService implements CategoryServiceImp{
 
         for(Category category : categoryHome){
             CategoryReponse categoryReponse = new CategoryReponse();
+            categoryReponse.setId(category.getCategoryID());
             categoryReponse.setCategoryName(category.getCategoryName());
             categoryReponse.setDescription(category.getDescription());
             categoryReponse.setCateImg(category.getCategoryImage());
@@ -88,14 +80,17 @@ public class CategoryService implements CategoryServiceImp{
             //for(KoiFish koiFish : category.getKoiFish()){
             for(int i = category.getKoiFish().size() - 3; i < category.getKoiFish().size(); i++){
                 KoiFishReponse koiFishReponse = new KoiFishReponse();
+                koiFishReponse.setId(category.getKoiFish().get(i).getKoiID());
                 koiFishReponse.setOrigin(category.getKoiFish().get(i).getOrigin());
                 koiFishReponse.setAge(category.getKoiFish().get(i).getAge());
                 koiFishReponse.setGender(category.getKoiFish().get(i).getGender());
                 koiFishReponse.setSize(category.getKoiFish().get(i).getSize());
                 koiFishReponse.setPersonality(category.getKoiFish().get(i).getPersonality());
-
                 koiFishReponse.setPrice(category.getKoiFish().get(i).getPrice());
+                koiFishReponse.setCategoryId(category.getCategoryID());
+                koiFishReponse.setCategory(category.getCategoryName());
                 koiFishReponse.setKoiImage(category.getKoiFish().get(i).getKoiImage());
+                koiFishReponse.setStatus(category.getKoiFish().get(i).getStatus());
 
                 koiFishList.add(koiFishReponse);
             }
