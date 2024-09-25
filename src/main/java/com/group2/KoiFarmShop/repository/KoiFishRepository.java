@@ -22,10 +22,12 @@ public interface KoiFishRepository extends JpaRepository<KoiFish, Integer> {
             "(:maxPrice IS NULL OR k.price <= :maxPrice) AND " +
             "(:origin IS NULL OR k.origin = :origin) AND " +
             "(:status IS NULL OR k.status = :status)")
-    List<KoiFish> filterKoiFish(@Param("gender") String gender,
+    Page<KoiFish> filterKoiFish(@Param("gender") String gender,
                                 @Param("age") Integer age,
                                 @Param("minPrice") Double minPrice,
                                 @Param("maxPrice") Double maxPrice,
                                 @Param("origin") String origin,
-                                @Param("status") Integer status);
+                                @Param("status") Integer status,
+                                Pageable pageable);  // Thêm Pageable để hỗ trợ phân trang
 }
+
