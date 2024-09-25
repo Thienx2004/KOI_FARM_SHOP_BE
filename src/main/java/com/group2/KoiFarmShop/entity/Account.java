@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -37,13 +38,13 @@ import java.util.Set;
         private Role role;
 
         @OneToMany(mappedBy = "account")
-        private Set<Orders> orders;
+        private List<Orders> orders;
 
         @OneToMany(mappedBy = "account")
-        private Set<Feedback> feedbacks;
+        private List<Feedback> feedbacks;
 
         @OneToMany(mappedBy = "account")
-        private Set<VerificationToken> verificationTokens;
+        private List<VerificationToken> verificationTokens;
 
         private String OTPcheck ;
 

@@ -6,6 +6,7 @@ import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,10 +28,21 @@ public class CategoryService implements CategoryServiceImp{
         List<Category> categories = categoryRepository.findAll();
         List<CategoryReponse> categoryReponses = new ArrayList<>();
         for (Category c : categories) {
+            List<KoiFishReponse> koiFishList = new ArrayList<>();
             CategoryReponse categoryReponse = new CategoryReponse();
             categoryReponse.setCategoryName(c.getCategoryName());
             categoryReponse.setDescription(c.getDescription());
             categoryReponse.setCateImg(c.getCategoryImage());
+            System.out.println(c.getKoiFish().size());
+            for (KoiFish koiFish : c.getKoiFish()) {
+                KoiFishReponse reponse = new KoiFishReponse();
+                reponse.setAge(koiFish.getAge());
+                reponse.setGender(koiFish.getGender());
+                reponse.setPersonality(koiFish.getPersonality());
+                koiFishList.add(reponse);
+            }
+            System.out.println(koiFishList.size());
+            categoryReponse.setKoiFishList(koiFishList);
             categoryReponses.add(categoryReponse);
         }
         return categoryReponses;
@@ -57,6 +69,7 @@ public class CategoryService implements CategoryServiceImp{
         return "";
     }
 
+    @Transactional
     @Override
     public CategoryHomeReponse getListHomeCategory(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
@@ -67,19 +80,22 @@ public class CategoryService implements CategoryServiceImp{
 
         for(Category category : categoryHome){
             CategoryReponse categoryReponse = new CategoryReponse();
-            List<KoiFishReponse> koiFishList = new ArrayList<>();
             categoryReponse.setCategoryName(category.getCategoryName());
             categoryReponse.setDescription(category.getDescription());
             categoryReponse.setCateImg(category.getCategoryImage());
 
-            for(KoiFish koiFish : category.getKoiFish()){
+            List<KoiFishReponse> koiFishList = new ArrayList<>();
+            //for(KoiFish koiFish : category.getKoiFish()){
+            for(int i = category.getKoiFish().size() - 3; i < category.getKoiFish().size(); i++){
                 KoiFishReponse koiFishReponse = new KoiFishReponse();
-                koiFishReponse.setOrigin(koiFish.getOrigin());
-                koiFishReponse.setAge(koiFish.getAge());
-                koiFishReponse.setGender(koiFish.getGender());
-                koiFishReponse.setSize(koiFish.getSize());
-                koiFishReponse.setPrice(koiFish.getPrice());
-                koiFishReponse.setKoiImage(koiFish.getKoiImage());
+                koiFishReponse.setOrigin(category.getKoiFish().get(i).getOrigin());
+                koiFishReponse.setAge(category.getKoiFish().get(i).getAge());
+                koiFishReponse.setGender(category.getKoiFish().get(i).getGender());
+                koiFishReponse.setSize(category.getKoiFish().get(i).getSize());
+                koiFishReponse.setPersonality(category.getKoiFish().get(i).getPersonality());
+
+                koiFishReponse.setPrice(category.getKoiFish().get(i).getPrice());
+                koiFishReponse.setKoiImage(category.getKoiFish().get(i).getKoiImage());
 
                 koiFishList.add(koiFishReponse);
             }

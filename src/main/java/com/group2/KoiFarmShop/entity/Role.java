@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,7 +23,7 @@ public class Role {
     private String roleName;
 
     @OneToMany(mappedBy = "role")
-    private Set<Account> accounts;
+    private List<Account> accounts;
 
     // Getters and Setters
 }
