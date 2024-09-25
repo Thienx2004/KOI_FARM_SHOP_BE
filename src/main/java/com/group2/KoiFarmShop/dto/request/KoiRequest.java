@@ -1,6 +1,6 @@
 package com.group2.KoiFarmShop.dto.request;
 
-import com.group2.KoiFarmShop.entity.Category;
+import com.group2.KoiFarmShop.dto.CertificateRequest;
 import lombok.Data;
 
 @Data
@@ -13,4 +13,5 @@ public class KoiRequest {
     private double price;
     private String koiImage;
     private int categoryId;
+    private CertificateRequest certificate;
 }

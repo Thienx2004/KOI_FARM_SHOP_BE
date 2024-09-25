@@ -75,4 +75,21 @@ public class KoiFishController {
         return ApiReponse.<KoiFishReponse>builder().data(koiFishReponse).message("Cập nhật thành công").statusCode(200).build();
     }
 
+    @GetMapping("/filter")
+    public ApiReponse<List<KoiFishReponse>> filterKoiFish(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String origin,
+            @RequestParam(required = false) Integer status) {
+        if (gender == null && age == null && minPrice == null && maxPrice == null && origin == null && status == null) {
+            List<KoiFishReponse> koiFishReponses = koiFishService.getAllKoiFish();
+            return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();
+        }
+        List<KoiFishReponse> koiFishReponses = koiFishService.filterKoiFish(gender, age, minPrice, maxPrice, origin, status);
+        return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();
+    }
+
+
 }

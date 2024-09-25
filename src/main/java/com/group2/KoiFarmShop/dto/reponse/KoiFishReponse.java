@@ -1,6 +1,8 @@
 package com.group2.KoiFarmShop.dto.reponse;
 
+import com.group2.KoiFarmShop.dto.CertificateRequest;
 import com.group2.KoiFarmShop.entity.Category;
+import com.group2.KoiFarmShop.entity.Certificate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KoiFishReponse {
+    private int id;
     private String origin;
     private String gender;
     private int age;
@@ -18,6 +21,8 @@ public class KoiFishReponse {
     private String personality;
     private double price;
     private String koiImage;
-    private Category category;
-
+    private int categoryId;
+    private String category;
+    private CertificateRequest certificate;
+    private int status;
 }
