@@ -19,6 +19,8 @@ public class BatchReponse {
     private int batchID;
     private int quantity;
     private String origin;
+    private int age;
+    private String avgSize;
     private double price;
     private int categoryID;
     private String categoryName;

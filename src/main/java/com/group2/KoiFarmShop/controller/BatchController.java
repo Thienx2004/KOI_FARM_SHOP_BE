@@ -15,9 +15,14 @@ public class BatchController {
     BatchServiceImp batchService;
 
     @GetMapping("")
-    public ApiReponse<BatchPageReponse> getAllBatches(@RequestParam int pageNo, @RequestParam int pageSize) {
+
+    public ApiReponse<BatchPageReponse> getAllBatchesByFilter(@RequestParam int pageNo, @RequestParam int pageSize,
+        @RequestParam(required = false) String categoryID,
+        @RequestParam(required = false) String avgSize, @RequestParam(required = false) String age, @RequestParam(required = false) String minPrice, @RequestParam(required = false) String maxPrice,
+                                                              @RequestParam(required = false) String sortField, @RequestParam(required = false) String sortDirection) {
         ApiReponse apiReponse = new ApiReponse();
-        BatchPageReponse batchPageReponse = batchService.getBatchList(pageNo, pageSize);
+        BatchPageReponse batchPageReponse = batchService.getBatchListFilter(pageNo, pageSize, categoryID, avgSize, age, minPrice, maxPrice, sortField, sortDirection);
+
         apiReponse.setData(batchPageReponse);
         return apiReponse;
     }
