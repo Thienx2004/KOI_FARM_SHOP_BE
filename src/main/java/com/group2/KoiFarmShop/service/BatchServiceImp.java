@@ -4,7 +4,6 @@ import com.group2.KoiFarmShop.dto.reponse.BatchPageReponse;
 import com.group2.KoiFarmShop.dto.reponse.BatchReponse;
 import com.group2.KoiFarmShop.entity.Batch;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.List;
 
 public interface BatchServiceImp {

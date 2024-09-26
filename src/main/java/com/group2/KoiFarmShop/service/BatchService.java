@@ -7,13 +7,17 @@ import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.BatchRepository;
+
 import jakarta.persistence.criteria.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -90,7 +94,6 @@ public class BatchService implements BatchServiceImp{
         batchPageReponse.setPageSize(batchPage.getSize());
         batchPageReponse.setTotalElements(batchPage.getTotalElements());
         batchPageReponse.setTotalPages(batchPage.getTotalPages());
-
         return batchPageReponse;
     }
 
@@ -141,6 +144,7 @@ public class BatchService implements BatchServiceImp{
             batchReponse.setPrice(batch.getPrice());
             batchReponse.setCategoryID(batch.getCategory().getCategoryID());
             batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+
             batchReponse.setStatus(batch.getStatus());
 
             batchReponseList.add(batchReponse);

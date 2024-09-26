@@ -15,6 +15,7 @@ public class BatchPageReponse {
     private int pageNum;
     private int pageSize;
     private long totalElements;
+
     private int totalPages;
 
 }
