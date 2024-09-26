@@ -6,6 +6,8 @@ import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;
 import com.group2.KoiFarmShop.entity.KoiFish;
+import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
 import com.group2.KoiFarmShop.repository.CertificateRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
@@ -88,6 +90,9 @@ public class KoiFishService implements KoiFishServiceImp{
     @Override
     public KoiFishReponse getKoiFishById(int id) {
         KoiFish koiFish=koiFishRepository.findByKoiID(id);
+        if(koiFish==null) {
+            throw new AppException(ErrorCode.KOINOTFOUND);
+        }
         return KoiFishReponse.builder()
                 .id(koiFish.getKoiID())
                 .age(koiFish.getAge())
@@ -191,6 +196,16 @@ public class KoiFishService implements KoiFishServiceImp{
                 .pageSize(koiFishPage.getSize())
                 .koiFishReponseList(koiFishReponseList)
                 .build();
+    }
+
+    @Override
+    public List<KoiFishReponse> compareKoiFish(int koiFishId1, int koiFishId2) {
+        KoiFishReponse koiFish1 = getKoiFishById(koiFishId1);
+        KoiFishReponse koiFish2 = getKoiFishById(koiFishId2);
+        List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
+        koiFishReponseList.add(koiFish1);
+        koiFishReponseList.add(koiFish2);
+        return koiFishReponseList;
     }
 
 }
