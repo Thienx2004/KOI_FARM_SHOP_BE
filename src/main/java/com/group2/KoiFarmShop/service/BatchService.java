@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.BatchPageReponse;
 import com.group2.KoiFarmShop.dto.reponse.BatchReponse;
+import com.group2.KoiFarmShop.dto.request.BatchCreateDTO;
 import com.group2.KoiFarmShop.entity.Batch;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.exception.AppException;
@@ -113,18 +114,51 @@ public class BatchService implements BatchServiceImp{
     }
 
     @Override
-    public String addBatch(Batch batch) {
-        return "";
+    public String addBatch(BatchCreateDTO batch) {
+        try {
+            Batch newBatch = new Batch();
+            newBatch.setOrigin(batch.getOrigin());
+            newBatch.setAge(batch.getAge());
+            newBatch.setAvgSize(batch.getAvgSize());
+            newBatch.setQuantity(batch.getQuantity());
+            newBatch.setPrice(batch.getPrice());
+            newBatch.setStatus(batch.getStatus());
+            batchRepository.save(newBatch);
+            return "Lưu lô koi ID: " + newBatch.getBatchID() + " thành công";
+        } catch (Exception e) {
+            // Xử lý ngoại lệ, có thể log và trả về thông báo lỗi
+            return "Không lưu được lô koi" + e.getMessage();
+        }
     }
 
     @Override
-    public String updateBatch(Batch batch) {
-        return "";
+    public String updateBatch(String batchId, BatchCreateDTO batchCreateDTO) {
+        try {
+            Batch existedBatch = batchRepository.findByBatchID(Integer.parseInt(batchId))
+                        .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
+            existedBatch.setOrigin(batchCreateDTO.getOrigin());
+            existedBatch.setAge(batchCreateDTO.getAge());
+            existedBatch.setAvgSize(batchCreateDTO.getAvgSize());
+            existedBatch.setQuantity(batchCreateDTO.getQuantity());
+            existedBatch.setPrice(batchCreateDTO.getPrice());
+            existedBatch.setStatus(batchCreateDTO.getStatus());
+            batchRepository.save(existedBatch);
+            return "Update lô koi ID: " + batchId + " thành công";
+        } catch (Exception e) {
+            return "Lỗi khi update lô koi " + e.getMessage();
+        }
     }
 
     @Override
-    public String deleteBatch(int id) {
-        return "";
+    public String deleteBatch(String batchId) {
+        try {
+            if(batchRepository.existsById(Integer.parseInt(batchId))) {
+                batchRepository.deleteById(Integer.parseInt(batchId));
+                return "Xoá lô koi ID: " + batchId + " thành công";
+            } else throw new AppException(ErrorCode.BATCH_NOT_EXISTED);
+        } catch (Exception e) {
+            return "Lỗi khi xoá lô koi " + e.getMessage();
+        }
     }
 
     @Override
