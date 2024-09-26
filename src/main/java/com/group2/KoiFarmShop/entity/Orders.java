@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,9 +25,12 @@ public class Orders {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
-
     private double totalPrice;
-    private boolean status;
+
+    @OneToMany(mappedBy = "orders")
+    private List<OrderDetail> orderDetails;
+
+    private boolean status = true;
 
     // Getters and Setters
 }
