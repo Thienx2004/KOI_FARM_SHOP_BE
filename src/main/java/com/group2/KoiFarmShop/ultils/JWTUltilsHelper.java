@@ -21,7 +21,12 @@ public class JWTUltilsHelper {
 
     public String generateToken(Account data){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-        String jws = Jwts.builder().subject(data.getEmail()).issuedAt(new Date()).claim("scope",data.getRole().getRoleName()).signWith(key).compact();
+        String jws = Jwts.builder()
+                .subject(data.getEmail())
+                .issuedAt(new Date())
+                .claim("accountId", data.getAccountID()) // Account ID ở đây là int hoặc Integer
+                .claim("scope",data.getRole().getRoleName()).signWith(key)
+                .compact();
 
         return jws;
     }

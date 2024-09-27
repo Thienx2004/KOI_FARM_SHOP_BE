@@ -14,7 +14,11 @@ import com.group2.KoiFarmShop.service.FileServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,6 +72,20 @@ public class AccountController {
                 .body(resource);
     }
 
+
+//     @GetMapping("profile/{id}")
+//     ApiReponse<ProfileRespone> getProfile(@PathVariable int id) {
+//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//         Jwt jwt = (Jwt) authentication.getPrincipal();
+//         Long currentAccountId = jwt.getClaim("accountId");
+
+//         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
+//         if (!currentAccountId.equals(id)) {
+//              throw new AppException(ErrorCode.KOINOTFOUND);
+//         }
+
+//         ProfileRespone profileRespone = accountService.getProfile(id);
+
     @GetMapping("profile/{email}")
     ApiReponse<ProfileRespone> getProfile(@PathVariable String email) {
         ProfileRespone profileRespone = accountService.getProfile(email);
@@ -80,6 +98,17 @@ public class AccountController {
     }
     @PutMapping("/profile/update/{email}")
     public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
+
+//                                                     @PathVariable int id) {
+//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//         Jwt jwt = (Jwt) authentication.getPrincipal();
+//         Long currentAccountId = jwt.getClaim("accountId");
+
+//         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
+//         if (!currentAccountId.equals(id)) {
+//             throw new AppException(ErrorCode.KOINOTFOUND);
+//         }
+//         ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
                                                     @PathVariable String email) {
         ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
         return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
