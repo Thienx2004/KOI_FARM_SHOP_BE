@@ -24,7 +24,7 @@ public class EmailService {
 
     public void sendVerificationEmail(String email, String otp) {
         String subject = "Mã xác nhận OTP";
-        String message = "Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 10 phút.";
+        String message = "Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 2 phút.";
 
         // Gửi email với OTP
 
