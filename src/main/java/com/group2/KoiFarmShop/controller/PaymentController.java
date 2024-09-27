@@ -19,14 +19,14 @@ public class PaymentController {
     private final PaymentService paymentService;
     @GetMapping("/vn-pay")
     public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request) {
-        return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("thanh toans thanh cong").data(paymentService.createVnPayPayment(request)).build();
+        return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh cong").data(paymentService.createVnPayPayment(request)).build();
 
     }
     @GetMapping("/vn-pay-callback")
     public ApiReponse<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {
         String status = request.getParameter("vnp_ResponseCode");
         if (status.equals("00")) {
-            return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh cong").data(PaymentDTO.VNPayResponse.builder().code("00").message("Thanh cong").paymentUrl("").build()).build();
+            return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh toán thành công").data(PaymentDTO.VNPayResponse.builder().code("00").message("Thanh cong").paymentUrl("").build()).build();
         } else {
             throw new AppException(ErrorCode.KOINOTFOUND);
         }

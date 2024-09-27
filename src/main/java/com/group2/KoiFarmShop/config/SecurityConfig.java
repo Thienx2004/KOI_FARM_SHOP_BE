@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.web.cors.CorsConfiguration;
@@ -48,7 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/changePassword/**").hasAuthority("SCOPE_true").
                         anyRequest().permitAll()  // All other requests require authentication
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()).decoder(jwtDecoder())))
                 .oauth2Login(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable); // Disable CSRF protection if not needed
@@ -87,5 +89,18 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Sử dụng prefix cho role
+
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+        authenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+
+        // Thêm custom claims như accountId
+        authenticationConverter.setPrincipalClaimName("accountId"); // Thêm accountID vào Principal
+        return authenticationConverter;
     }
 }
