@@ -64,6 +64,7 @@ public class AccountService implements AccountServiceImp{
                 if(account.isVerified()){
                     String Token=jwtUltilsHelper.generateToken(account);
                     Content content = new Content();
+                    content.setId(account.getAccountID());
                     content.setEmail(account.getEmail());
                     content.setPhone(account.getPhone());
                     content.setFullName(account.getFullName());
@@ -117,6 +118,7 @@ public class AccountService implements AccountServiceImp{
 
             // Cấu hình nội dung
             Content content = new Content();
+            content.setId(account.getAccountID());
             content.setEmail(account.getEmail());
             content.setPhone(account.getPhone());
             content.setFullName(account.getFullName());

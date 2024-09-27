@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Content {
+    private int id;
     private String email;
     private String fullName;
     private String role;
