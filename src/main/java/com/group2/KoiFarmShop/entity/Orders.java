@@ -24,7 +24,7 @@ public class Orders {
     private Account account;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate;
+    private Date order_date;
     private double totalPrice;
 
     @OneToMany(mappedBy = "orders")

@@ -165,7 +165,7 @@ public class AccountService implements AccountServiceImp{
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(otp); // Lưu OTP trong trường token
         verificationToken.setAccount(account);
-        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(10)); // OTP hết hạn sau 10 phút
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2)); // OTP hết hạn sau 2 phút
 
         verificationTokenRepository.save(verificationToken);
 

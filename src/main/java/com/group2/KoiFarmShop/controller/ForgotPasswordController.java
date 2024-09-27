@@ -51,12 +51,12 @@ public class ForgotPasswordController {
 
         MailBody mailBody=MailBody.builder()
                 .to(email)
-                .text("Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 10 phút.")
+                .text("Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 2 phút.")
                 .subject("Mã xác nhận OTP")
                 .build();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(String.valueOf(otp));
-        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(10)); // Hết hạn sau 10 phút
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2)); // Hết hạn sau 10 phút
         verificationToken.setAccount(account);
         emailService.sendSimpleMess(mailBody);
         verificationTokenRepository.save(verificationToken);
