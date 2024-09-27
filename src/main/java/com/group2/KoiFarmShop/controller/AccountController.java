@@ -2,8 +2,12 @@ package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.reponse.AccountReponse;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.reponse.ProfileRespone;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
+import com.group2.KoiFarmShop.dto.request.ProfileRequest;
 import com.group2.KoiFarmShop.entity.Account;
+import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.service.AccountService;
 import com.group2.KoiFarmShop.service.AccountServiceImp;
 import com.group2.KoiFarmShop.service.FileServiceImp;
@@ -23,6 +27,8 @@ public class AccountController {
     private AccountServiceImp accountServiceImp;
     @Autowired
     private FileServiceImp fileServiceImp;
+    @Autowired
+    private AccountService accountService;
 
     @PostMapping("/register")
     public ApiReponse<AccountReponse> createAccount(@RequestBody AccountCreationDTO accountCreationDTO) {
@@ -61,4 +67,22 @@ public class AccountController {
                         "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
+    @GetMapping("profile/{id}")
+    ApiReponse<ProfileRespone> getProfile(@PathVariable int id) {
+        ProfileRespone profileRespone = accountService.getProfile(id);
+        if (profileRespone != null) {
+            return ApiReponse.<ProfileRespone>builder().data(profileRespone).build();
+        }else {
+            throw new AppException(ErrorCode.INVALIDACCOUNT);
+        }
+
+    }
+    @PutMapping("/profile/update/{id}")
+    public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
+                                                    @PathVariable int id) {
+        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
+        return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
+    }
+
 }

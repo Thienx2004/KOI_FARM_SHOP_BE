@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -23,4 +22,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Modifying
     @Query("update Account acc set acc.isVerified=?2 where acc.email=?1")
     void updateVerify(String email, boolean verify);
+
+
 }

@@ -2,11 +2,12 @@ package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.Content;
+import com.group2.KoiFarmShop.dto.reponse.ProfileRespone;
 import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
+import com.group2.KoiFarmShop.dto.request.ProfileRequest;
 import com.group2.KoiFarmShop.entity.Account;
-import com.group2.KoiFarmShop.entity.ForgotPassword;
 import com.group2.KoiFarmShop.entity.Role;
 import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.exception.AppException;
@@ -16,27 +17,19 @@ import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.*;
 
-import java.util.*;
+import static java.lang.System.out;
 
 
 @Service
@@ -185,6 +178,11 @@ public class AccountService implements AccountServiceImp{
         return null;
     }
 
+//    @Override
+//    public Account getAccount(int id) {
+//        return null;
+//    }
+
     @Override
     public String generateOTP() {
         Random random = new Random();
@@ -266,8 +264,8 @@ public class AccountService implements AccountServiceImp{
             // Tìm mã OTP trong bảng VerificationToken
             VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
                     .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
-            System.out.println(verificationToken.getId());
-            System.out.println(verificationToken.getToken());
+            out.println(verificationToken.getId());
+            out.println(verificationToken.getToken());
 
             if (!verificationToken.getToken().equals(otp))
                 throw new AppException(ErrorCode.INVALIDOTP);
@@ -286,6 +284,41 @@ public class AccountService implements AccountServiceImp{
             apiReponse.setMessage("Xác thực tài khoản thành công!");
         }
         return apiReponse;
+    }
+
+   public ProfileRespone getProfile (int id) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+        return ProfileRespone.builder()
+                .id(account.getAccountID())
+                .password((account.getPassword()))
+                .fullname(account.getFullName())
+                .email(account.getEmail())
+                .phone(account.getPhone())
+                .address(account.getAddress())
+                .build();
+   }
+
+    public ProfileRespone updateProfile (ProfileRequest profileRequest,int id) {
+        Account account = new Account();
+        account.setAccountID(id);
+        account.setFullName(profileRequest.getFullName());
+        account.setPassword(passwordEncoder.encode(profileRequest.getPassword()));
+        account.setAddress(profileRequest.getAddress());
+        account.setPhone(profileRequest.getPhone());
+        account.setVerified(true);
+        if (profileRequest.getEmail() != null) {
+            account.setEmail(profileRequest.getEmail());
+        }
+        Account accSave = accountRepository.save(account);
+        return ProfileRespone.builder()
+                .id(accSave.getAccountID())
+                .password(passwordEncoder.encode(accSave.getPassword()))
+                .fullname(accSave.getFullName())
+                .email(accSave.getEmail())
+                .phone(accSave.getPhone())
+                .address(accSave.getAddress())
+                .isVerified(accSave.isVerified())
+                .build();
     }
 
 
