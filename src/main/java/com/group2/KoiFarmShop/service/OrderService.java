@@ -85,7 +85,7 @@ public class OrderService implements OrderServiceImp{
                 } else{
                     Batch batch = batchRepository.findByBatchID(orderDetails.get(i).getBatch().getBatchID())
                             .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
-                    batch.setQuantity(order.getQuantity()[i] - batch.getQuantity());
+                    batch.setQuantity(batch.getQuantity() - order.getQuantity()[i]);
                     batchRepository.save(batch);
                 }
                 orderDetails.get(i).setQuantity(order.getQuantity()[i]);
