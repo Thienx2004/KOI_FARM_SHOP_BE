@@ -68,9 +68,9 @@ public class AccountController {
                 .body(resource);
     }
 
-    @GetMapping("profile/{id}")
-    ApiReponse<ProfileRespone> getProfile(@PathVariable int id) {
-        ProfileRespone profileRespone = accountService.getProfile(id);
+    @GetMapping("profile/{email}")
+    ApiReponse<ProfileRespone> getProfile(@PathVariable String email) {
+        ProfileRespone profileRespone = accountService.getProfile(email);
         if (profileRespone != null) {
             return ApiReponse.<ProfileRespone>builder().data(profileRespone).build();
         }else {
@@ -78,10 +78,10 @@ public class AccountController {
         }
 
     }
-    @PutMapping("/profile/update/{id}")
+    @PutMapping("/profile/update/{email}")
     public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
-                                                    @PathVariable int id) {
-        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
+                                                    @PathVariable String email) {
+        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
         return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
     }
 

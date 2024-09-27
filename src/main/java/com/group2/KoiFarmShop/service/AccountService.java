@@ -286,29 +286,31 @@ public class AccountService implements AccountServiceImp{
         return apiReponse;
     }
 
-   public ProfileRespone getProfile (int id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+   public ProfileRespone getProfile (String email) {
+        Optional<Account> account = accountRepository.findByEmail(email);
         return ProfileRespone.builder()
-                .id(account.getAccountID())
-                .password((account.getPassword()))
-                .fullname(account.getFullName())
-                .email(account.getEmail())
-                .phone(account.getPhone())
-                .address(account.getAddress())
+                .id(account.get().getAccountID())
+                .password((account.get().getPassword()))
+                .fullname(account.get().getFullName())
+                .email(account.get().getEmail())
+                .phone(account.get().getPhone())
+                .address(account.get().getAddress())
+                .isVerified(account.get().isVerified())
                 .build();
    }
 
-    public ProfileRespone updateProfile (ProfileRequest profileRequest,int id) {
+    public ProfileRespone updateProfile (ProfileRequest profileRequest,String email) {
         Account account = new Account();
-        account.setAccountID(id);
+//        account.setAccountID(id);
+        account.setEmail(email);
         account.setFullName(profileRequest.getFullName());
-        account.setPassword(passwordEncoder.encode(profileRequest.getPassword()));
+        account.setPassword(profileRequest.getPassword());
         account.setAddress(profileRequest.getAddress());
         account.setPhone(profileRequest.getPhone());
         account.setVerified(true);
-        if (profileRequest.getEmail() != null) {
-            account.setEmail(profileRequest.getEmail());
-        }
+//        if (profileRequest.getEmail() != null) {
+//            account.setEmail(profileRequest.getEmail());
+//        }
         Account accSave = accountRepository.save(account);
         return ProfileRespone.builder()
                 .id(accSave.getAccountID())
