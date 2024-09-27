@@ -72,18 +72,23 @@ public class AccountController {
                 .body(resource);
     }
 
-    @GetMapping("profile/{id}")
-    ApiReponse<ProfileRespone> getProfile(@PathVariable int id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long currentAccountId = jwt.getClaim("accountId");
 
-        // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
-        if (!currentAccountId.equals(id)) {
-             throw new AppException(ErrorCode.KOINOTFOUND);
-        }
+//     @GetMapping("profile/{id}")
+//     ApiReponse<ProfileRespone> getProfile(@PathVariable int id) {
+//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//         Jwt jwt = (Jwt) authentication.getPrincipal();
+//         Long currentAccountId = jwt.getClaim("accountId");
 
-        ProfileRespone profileRespone = accountService.getProfile(id);
+//         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
+//         if (!currentAccountId.equals(id)) {
+//              throw new AppException(ErrorCode.KOINOTFOUND);
+//         }
+
+//         ProfileRespone profileRespone = accountService.getProfile(id);
+
+    @GetMapping("profile/{email}")
+    ApiReponse<ProfileRespone> getProfile(@PathVariable String email) {
+        ProfileRespone profileRespone = accountService.getProfile(email);
         if (profileRespone != null) {
             return ApiReponse.<ProfileRespone>builder().data(profileRespone).build();
         }else {
@@ -91,18 +96,21 @@ public class AccountController {
         }
 
     }
-    @PutMapping("/profile/update/{id}")
+    @PutMapping("/profile/update/{email}")
     public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
-                                                    @PathVariable int id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long currentAccountId = jwt.getClaim("accountId");
 
-        // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
-        if (!currentAccountId.equals(id)) {
-            throw new AppException(ErrorCode.KOINOTFOUND);
-        }
-        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
+//                                                     @PathVariable int id) {
+//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//         Jwt jwt = (Jwt) authentication.getPrincipal();
+//         Long currentAccountId = jwt.getClaim("accountId");
+
+//         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
+//         if (!currentAccountId.equals(id)) {
+//             throw new AppException(ErrorCode.KOINOTFOUND);
+//         }
+//         ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
+                                                    @PathVariable String email) {
+        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
         return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
     }
 
