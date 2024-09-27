@@ -4,5 +4,40 @@
       "name": "jwt.secret",
       "type": "java.lang.String",
       "description": "Description for jwt.secret."
-  }
-] }
+    },
+    {
+      "name": "PAY_URL",
+      "type": "java.lang.String",
+      "description": "Description for PAY_URL."
+    },
+    {
+      "name": "TMN_CODE",
+      "type": "java.lang.String",
+      "description": "Description for TMN_CODE."
+    },
+    {
+      "name": "SECRET_KEY",
+      "type": "java.lang.String",
+      "description": "Description for SECRET_KEY."
+    },
+    {
+      "name": "RETURN_URL",
+      "type": "java.lang.String",
+      "description": "Description for RETURN_URL."
+    },
+    {
+      "name": "VERSION",
+      "type": "java.lang.String",
+      "description": "Description for VERSION."
+    },
+    {
+      "name": "COMMAND",
+      "type": "java.lang.String",
+      "description": "Description for COMMAND."
+    },
+    {
+      "name": "ORDER_TYPE",
+      "type": "java.lang.String",
+      "description": "Description for ORDER_TYPE."
+    }
+  ] }
