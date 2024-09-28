@@ -28,7 +28,6 @@ public class AuthenticationService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        System.out.println(claims.getSubject());
         return claims.getSubject();
     }
 }
