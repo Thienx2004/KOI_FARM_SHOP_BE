@@ -73,12 +73,12 @@ public class KoiFishController {
     public ApiReponse<KoiFishPageResponse> filterKoiFish(
             @RequestParam(required = false) String categoryID,
             @RequestParam(required = false) String gender,
-            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String minSize,
+            @RequestParam(required = false) String maxSize,
             @RequestParam(required = false) String age,
             @RequestParam(required = false) String minPrice,
             @RequestParam(required = false) String maxPrice,
             @RequestParam(required = false) String origin,
-            @RequestParam(required = false) String status,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) String sortDirection,
             @RequestParam(defaultValue = "1") int page,      // Thêm tham số page với giá trị mặc định là 1
@@ -86,7 +86,7 @@ public class KoiFishController {
             // Thêm tham số pageSize với giá trị mặc định là 6
     ) {
 
-        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID,size,gender, age, minPrice, maxPrice, origin, status, page, pageSize,sortField,sortDirection); // Truyền thêm page và pageSize vào filter
+        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID,maxSize,minSize,gender, age, minPrice, maxPrice, origin, page, pageSize,sortField,sortDirection); // Truyền thêm page và pageSize vào filter
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
     }
 
