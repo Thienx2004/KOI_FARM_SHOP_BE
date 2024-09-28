@@ -28,7 +28,7 @@ public class PaymentController {
         if (status.equals("00")) {
             return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh toán thành công").data(PaymentDTO.VNPayResponse.builder().code("00").message("Thanh cong").paymentUrl("").build()).build();
         } else {
-            throw new AppException(ErrorCode.KOINOTFOUND);
+            throw new AppException(ErrorCode.PAYMENT_FAILED);
         }
     }
 }

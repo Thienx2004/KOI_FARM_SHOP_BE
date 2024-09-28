@@ -35,7 +35,8 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] ADMIN_URLS = {"/introspect",};
+    private final String[] ADMIN_URLS = {};
+    private final String[] USER_URLS = {"/account/profile/**",};
     @Autowired
     CustomUserDetailsService userDetailsService;
     @Value("${jwt.secret}")
@@ -47,10 +48,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(ADMIN_URLS).hasAuthority("SCOPE_admin")
-                        .requestMatchers("/changePassword/**").hasAuthority("SCOPE_true").
+                        .requestMatchers(USER_URLS).hasAuthority("SCOPE_user")
+                        .requestMatchers("/login/changePassword/**").hasAuthority("SCOPE_true").
                         anyRequest().permitAll()  // All other requests require authentication
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()).decoder(jwtDecoder())))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
                 .oauth2Login(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable); // Disable CSRF protection if not needed
@@ -91,16 +93,4 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Sử dụng prefix cho role
-
-        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-        authenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-
-        // Thêm custom claims như accountId
-        authenticationConverter.setPrincipalClaimName("accountId"); // Thêm accountID vào Principal
-        return authenticationConverter;
-    }
 }

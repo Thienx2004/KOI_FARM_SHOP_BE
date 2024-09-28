@@ -48,12 +48,5 @@ public class VerificationController {
 
         return apiReponse;
     }
-    @PostMapping("/introspect")
-    public ApiReponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) {
-        IntrospectResponse introspect= authenticationService.introspect(request);
-        ApiReponse<IntrospectResponse> response= new ApiReponse<>();
-        response.setData(introspect);
-        return response;
-    }
 
 }

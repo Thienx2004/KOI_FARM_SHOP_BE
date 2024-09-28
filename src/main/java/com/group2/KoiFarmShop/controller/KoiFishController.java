@@ -71,21 +71,22 @@ public class KoiFishController {
 
     @GetMapping("/filter")
     public ApiReponse<KoiFishPageResponse> filterKoiFish(
+            @RequestParam(required = false) String categoryID,
             @RequestParam(required = false) String gender,
-            @RequestParam(required = false) Integer age,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String age,
+            @RequestParam(required = false) String minPrice,
+            @RequestParam(required = false) String maxPrice,
             @RequestParam(required = false) String origin,
-            @RequestParam(required = false) Integer status,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String sortField,
+            @RequestParam(required = false) String sortDirection,
             @RequestParam(defaultValue = "1") int page,      // Thêm tham số page với giá trị mặc định là 1
-            @RequestParam(defaultValue = "10") int pageSize  // Thêm tham số pageSize với giá trị mặc định là 10
+            @RequestParam(defaultValue = "6") int pageSize
+            // Thêm tham số pageSize với giá trị mặc định là 6
     ) {
-        if (gender == null && age == null && minPrice == null && maxPrice == null && origin == null && status == null) {
-            KoiFishPageResponse koiFishReponses = koiFishService.getAllKoiFish(page, pageSize);  // Truyền page và pageSize vào service
-            return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
-        }
 
-        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(gender, age, minPrice, maxPrice, origin, status, page, pageSize); // Truyền thêm page và pageSize vào filter
+        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID,size,gender, age, minPrice, maxPrice, origin, status, page, pageSize,sortField,sortDirection); // Truyền thêm page và pageSize vào filter
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
     }
 

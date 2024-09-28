@@ -25,7 +25,8 @@ public class JWTUltilsHelper {
                 .subject(data.getEmail())
                 .issuedAt(new Date())
                 .claim("accountId", data.getAccountID()) // Account ID ở đây là int hoặc Integer
-                .claim("scope",data.getRole().getRoleName()).signWith(key)
+                .claim("scope",data.getRole().getRoleName())
+                .signWith(key)
                 .compact();
 
         return jws;
@@ -33,7 +34,7 @@ public class JWTUltilsHelper {
 
     public String generateTokenForOTP(Account data){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-        String jws = Jwts.builder().subject(data.getEmail()).issuedAt(new Date()).claim("scope",data.getOTPcheck()).signWith(key).compact();
+        String jws = Jwts.builder().subject(data.getEmail()).issuedAt(new Date()).claim("scope","true").signWith(key).compact();
 
         return jws;
     }
