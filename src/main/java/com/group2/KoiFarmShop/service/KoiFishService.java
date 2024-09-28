@@ -52,7 +52,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
-                .pageNum(koiFishPage.getNumber())
+                .pageNum(koiFishPage.getNumber()+1)
                 .totalPages(koiFishPage.getTotalPages())
                 .totalElements(koiFishPage.getNumberOfElements())
                 .pageSize(koiFishPage.getSize())
@@ -83,7 +83,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
-                .pageNum(koiFishList.getNumber())
+                .pageNum(koiFishList.getNumber()+1)
                 .totalPages(koiFishList.getTotalPages())
                 .totalElements(koiFishList.getNumberOfElements())
                 .pageSize(koiFishList.getSize())
@@ -231,7 +231,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
-                .pageNum(koiFishPage.getNumber())
+                .pageNum(koiFishPage.getNumber()+1)
                 .totalPages(koiFishPage.getTotalPages())
                 .totalElements(koiFishPage.getNumberOfElements())
                 .pageSize(koiFishPage.getSize())
