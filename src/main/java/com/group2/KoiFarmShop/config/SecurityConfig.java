@@ -36,7 +36,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
     private final String[] ADMIN_URLS = {};
-    private final String[] USER_URLS = {"/account/profile/**",};
+    private final String[] USER_URLS = {};
     @Autowired
     CustomUserDetailsService userDetailsService;
     @Value("${jwt.secret}")
