@@ -172,7 +172,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .category(updateddKoiFish.getCategory().getCategoryName())
                 .build();
     }
-    public KoiFishPageResponse filterKoiFish(String categoryID,String size, String gender, String age, String minPrice, String maxPrice, String origin, String status, int page, int pageSize,String sortField, String sortDirection) {
+    public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection) {
         if (sortField == null || sortField.isEmpty()) {
             sortField = "koiID";
         }
@@ -190,8 +190,11 @@ public class KoiFishService implements KoiFishServiceImp{
             if(gender != null && !gender.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("gender"), gender));
             }
-            if (size != null && !size.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("size"), Double.parseDouble(size)));
+            if (minSize != null && !minSize.isEmpty()) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("size"), Double.parseDouble(minSize)));
+            }
+            if (maxSize != null && !maxSize.isEmpty()) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("size"), Double.parseDouble(maxSize)));
             }
             if (age != null && !age.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("age"), Integer.parseInt(age)));
@@ -206,9 +209,7 @@ public class KoiFishService implements KoiFishServiceImp{
             if(origin != null && !origin.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("origin"), origin));
             }
-            if (status != null && !status.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("status"), Integer.parseInt(status)));
-            }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };

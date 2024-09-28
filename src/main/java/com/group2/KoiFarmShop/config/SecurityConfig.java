@@ -37,6 +37,7 @@ import java.util.Arrays;
 public class SecurityConfig {
     private final String[] ADMIN_URLS = {};
     private final String[] USER_URLS = {};
+    private final String[] OTP_CHECK = {};
     @Autowired
     CustomUserDetailsService userDetailsService;
     @Value("${jwt.secret}")
@@ -49,8 +50,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(ADMIN_URLS).hasAuthority("SCOPE_admin")
                         .requestMatchers(USER_URLS).hasAuthority("SCOPE_user")
-                        .requestMatchers("/login/changePassword/**").hasAuthority("SCOPE_true").
-                        anyRequest().permitAll()  // All other requests require authentication
+                        .requestMatchers(OTP_CHECK).hasAuthority("SCOPE_true")
+                        .anyRequest().permitAll()  // All other requests require authentication
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
                 .oauth2Login(Customizer.withDefaults())
