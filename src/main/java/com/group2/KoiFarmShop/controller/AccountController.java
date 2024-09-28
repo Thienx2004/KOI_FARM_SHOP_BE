@@ -93,14 +93,19 @@ public class AccountController {
         }
 
     }
-    @PutMapping("/profile/update/{email}/{token}")
+    
+    @PutMapping("/profile/update/{id}")
     public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
-                                                    @PathVariable String email,
-                                                    @PathVariable String token) {
-        if(!email.equals(authenticationService.validateTokenByEmail(token))){
-            throw new AppException(ErrorCode.POWERLESS);
-        }
-        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
+
+                                                     @PathVariable int id,
+                                                     @PathVariable String token) {
+         
+//         if(!email.equals(authenticationService.validateTokenByEmail(token))){
+//             throw new AppException(ErrorCode.POWERLESS);
+//         }
+         ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
+//                                                    @PathVariable String email) {
+//        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
         return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
     }
 
