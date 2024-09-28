@@ -175,10 +175,7 @@ public class AccountService implements AccountServiceImp{
         return account;
     }
 
-    @Override
-    public Account getAccount(int id) {
-        return null;
-    }
+
 
 //    @Override
 //    public Account getAccount(int id) {
