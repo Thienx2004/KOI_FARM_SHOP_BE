@@ -245,10 +245,6 @@ public class AccountService implements AccountServiceImp{
                     if(verificationToken.getToken().equals(otp)) {
                         tmp = verificationToken;
                         apiReponse.setMessage("OTP hợp lệ");
-
-                        account.setOTPcheck("true");
-                        accountRepository.save(account);
-
                         String tokenOTP = jwtUltilsHelper.generateTokenForOTP(account);
                         apiReponse.setData(tokenOTP);
 
@@ -302,9 +298,10 @@ public class AccountService implements AccountServiceImp{
    }
 
     public ProfileRespone updateProfile (ProfileRequest profileRequest,String email) {
+        Optional<Account> acc=accountRepository.findByEmail(email);
         Account account = new Account();
-//        account.setAccountID(id);
-        account.setEmail(email);
+        account.setAccountID(acc.get().getAccountID());
+        account.setEmail(acc.get().getEmail());
         account.setFullName(profileRequest.getFullName());
         account.setPassword(profileRequest.getPassword());
         account.setAddress(profileRequest.getAddress());

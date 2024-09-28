@@ -10,6 +10,7 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.service.AccountService;
 import com.group2.KoiFarmShop.service.AccountServiceImp;
+import com.group2.KoiFarmShop.service.AuthenticationService;
 import com.group2.KoiFarmShop.service.FileServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -24,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin
-//@RequestMapping("/account")
+@RequestMapping("/account")
 public class AccountController {
 
     @Autowired
@@ -33,7 +34,8 @@ public class AccountController {
     private FileServiceImp fileServiceImp;
     @Autowired
     private AccountService accountService;
-
+    @Autowired
+    AuthenticationService authenticationService;
     @PostMapping("/register")
     public ApiReponse<AccountReponse> createAccount(@RequestBody AccountCreationDTO accountCreationDTO) {
 
@@ -73,22 +75,17 @@ public class AccountController {
     }
 
 
-//     @GetMapping("profile/{id}")
-//     ApiReponse<ProfileRespone> getProfile(@PathVariable int id) {
-//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//         Jwt jwt = (Jwt) authentication.getPrincipal();
-//         Long currentAccountId = jwt.getClaim("accountId");
-
-//         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
-//         if (!currentAccountId.equals(id)) {
-//              throw new AppException(ErrorCode.KOINOTFOUND);
-//         }
-
-//         ProfileRespone profileRespone = accountService.getProfile(id);
-
     @GetMapping("profile/{email}")
     ApiReponse<ProfileRespone> getProfile(@PathVariable String email) {
         ProfileRespone profileRespone = accountService.getProfile(email);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         Jwt jwt = (Jwt) authentication.getPrincipal();
+         Long currentAccountId = jwt.getClaim("accountId");
+
+         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
+        if (!currentAccountId.equals(profileRespone.getId())) {
+              throw new AppException(ErrorCode.POWERLESS);
+        }
         if (profileRespone != null) {
             return ApiReponse.<ProfileRespone>builder().data(profileRespone).build();
         }else {
@@ -96,20 +93,13 @@ public class AccountController {
         }
 
     }
-    @PutMapping("/profile/update/{email}")
+    @PutMapping("/profile/update/{email}/{token}")
     public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
-
-//                                                     @PathVariable int id) {
-//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//         Jwt jwt = (Jwt) authentication.getPrincipal();
-//         Long currentAccountId = jwt.getClaim("accountId");
-
-//         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
-//         if (!currentAccountId.equals(id)) {
-//             throw new AppException(ErrorCode.KOINOTFOUND);
-//         }
-//         ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
-                                                    @PathVariable String email) {
+                                                    @PathVariable String email,
+                                                    @PathVariable String token) {
+        if(!email.equals(authenticationService.validateTokenByEmail(token))){
+            throw new AppException(ErrorCode.POWERLESS);
+        }
         ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
         return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
     }

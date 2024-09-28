@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-//@RequestMapping("/koi")
+@RequestMapping("/login")
 public class LoginController {
 
     @Autowired

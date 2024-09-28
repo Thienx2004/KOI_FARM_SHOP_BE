@@ -12,7 +12,9 @@ public enum ErrorCode {
     PASSWORDINVALID(5011,"Nhập lại pass word"),
     NOTVERIFYACCOUNT(5006,"Tài khoản chưa xác thực"),
     KOINOTFOUND(5005,"Không có kết quả"),
-    BATCH_NOT_EXISTED(5006, "Không tìm thấy lô,")
+    BATCH_NOT_EXISTED(5007, "Không tìm thấy lô,"),
+    POWERLESS(5008,"Không có quyền hạn"),
+    PAYMENT_FAILED(5009,"Thanh toán thất bại")
     ;
 
 

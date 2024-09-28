@@ -3,6 +3,7 @@ package com.group2.KoiFarmShop.service;
 import com.group2.KoiFarmShop.dto.reponse.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
+import com.group2.KoiFarmShop.entity.Batch;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;
 import com.group2.KoiFarmShop.entity.KoiFish;
@@ -11,10 +12,13 @@ import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
 import com.group2.KoiFarmShop.repository.CertificateRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -168,13 +172,50 @@ public class KoiFishService implements KoiFishServiceImp{
                 .category(updateddKoiFish.getCategory().getCategoryName())
                 .build();
     }
-    public KoiFishPageResponse filterKoiFish(String gender, Integer age, Double minPrice, Double maxPrice, String origin, Integer status, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);  // Tạo đối tượng Pageable cho phân trang
-        Page<KoiFish> koiFishPage = koiFishRepository.filterKoiFish(gender, age, minPrice, maxPrice, origin, status, pageable);  // Gọi repository với phân trang
-        List<KoiFish> koiFishList = koiFishPage.getContent();  // Lấy danh sách koi từ trang hiện tại
+    public KoiFishPageResponse filterKoiFish(String categoryID,String size, String gender, String age, String minPrice, String maxPrice, String origin, String status, int page, int pageSize,String sortField, String sortDirection) {
+        if (sortField == null || sortField.isEmpty()) {
+            sortField = "koiID";
+        }
+        if (sortDirection == null || sortDirection.isEmpty()) {
+            sortDirection = "asc";
+        }
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
+        Pageable pageable = PageRequest.of(page - 1, pageSize,sort);  // Tạo đối tượng Pageable cho phân trang
+        Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if(categoryID != null && !categoryID.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("category").get("categoryID"), Integer.parseInt(categoryID)));
+            }
+            if(gender != null && !gender.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("gender"), gender));
+            }
+            if (size != null && !size.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("size"), Double.parseDouble(size)));
+            }
+            if (age != null && !age.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("age"), Integer.parseInt(age)));
+            }
+            // Lọc theo minPrice và maxPrice
+            if (minPrice != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), Double.parseDouble(minPrice)));
+            }
+            if (maxPrice != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), Double.parseDouble(maxPrice)));
+            }
+            if(origin != null && !origin.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("origin"), origin));
+            }
+            if (status != null && !status.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), Integer.parseInt(status)));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+
+        };
+        Page<KoiFish> koiFishPage = koiFishRepository.findAll(spec,pageable);  // Gọi repository với phân trang
 
         List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
-        for (KoiFish koiFish : koiFishList) {
+        for (KoiFish koiFish : koiFishPage.getContent()) {
             KoiFishReponse koiFishReponse = new KoiFishReponse();
             koiFishReponse.setId(koiFish.getKoiID());
             koiFishReponse.setOrigin(koiFish.getOrigin());
