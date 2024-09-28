@@ -301,18 +301,18 @@ public class AccountService implements AccountServiceImp{
                 .build();
    }
 
-    public ProfileRespone updateProfile (ProfileRequest profileRequest,String email) {
+    public ProfileRespone updateProfile (ProfileRequest profileRequest,int id) {
         Account account = new Account();
-//        account.setAccountID(id);
-        account.setEmail(email);
+        Optional<Account>account1 = accountRepository.findById(id);
+        account.setAccountID(id);
+        account.setEmail(account1.get().getEmail());
         account.setFullName(profileRequest.getFullName());
         account.setPassword(profileRequest.getPassword());
         account.setAddress(profileRequest.getAddress());
         account.setPhone(profileRequest.getPhone());
-        account.setVerified(true);
-//        if (profileRequest.getEmail() != null) {
-//            account.setEmail(profileRequest.getEmail());
-//        }
+        account.setVerified(account1.get().isVerified());
+        account.setRole(account1.get().getRole());
+
         Account accSave = accountRepository.save(account);
         return ProfileRespone.builder()
                 .id(accSave.getAccountID())
