@@ -301,7 +301,7 @@ public class AccountService implements AccountServiceImp{
         account.setAccountID(id);
         account.setEmail(account1.get().getEmail());
         account.setFullName(profileRequest.getFullName());
-        account.setPassword(profileRequest.getPassword());
+//        account.setPassword(profileRequest.getPassword());
         account.setAddress(profileRequest.getAddress());
         account.setPhone(profileRequest.getPhone());
         account.setVerified(account1.get().isVerified());
@@ -310,7 +310,7 @@ public class AccountService implements AccountServiceImp{
         Account accSave = accountRepository.save(account);
         return ProfileRespone.builder()
                 .id(accSave.getAccountID())
-                .password(passwordEncoder.encode(accSave.getPassword()))
+//                .password(passwordEncoder.encode(accSave.getPassword()))
                 .fullname(accSave.getFullName())
                 .email(accSave.getEmail())
                 .phone(accSave.getPhone())
@@ -319,5 +319,22 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
+    public ProfileRespone updatePassword (ProfileRequest profileRequest,int id) {
+        Account account = new Account();
+        Optional<Account>account1 = accountRepository.findById(id);
+        account.setAccountID(id);
+        account.setEmail(account1.get().getEmail());
+        if(passwordEncoder.matches(profileRequest.getPassword(), account1.get().getPassword()){
+            throw new AppException(ErrorCode.DUPLICATEPASSWORD);
+        }
+        account.setPassword(passwordEncoder.encode(profileRequest.getPassword()));
+        Account accSave = accountRepository.save(account);
+
+        return ProfileRespone.builder()
+                .id(accSave.getAccountID())
+                .email(accSave.getEmail())
+                .password(accSave.getPassword())
+                .build();
+    }
 
 }
