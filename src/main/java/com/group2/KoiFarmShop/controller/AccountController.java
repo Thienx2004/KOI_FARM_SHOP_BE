@@ -4,6 +4,7 @@ import com.group2.KoiFarmShop.dto.reponse.AccountReponse;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.reponse.ProfileRespone;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
+import com.group2.KoiFarmShop.dto.request.PasswordRequest;
 import com.group2.KoiFarmShop.dto.request.ProfileRequest;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.exception.AppException;
@@ -112,6 +113,17 @@ public class AccountController {
          ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
 //                                                    @PathVariable String email) {
 //        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
+        return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
+    }
+    @PutMapping("/profile/updatePassword/{id}/{token}")
+    public ApiReponse<ProfileRespone> updatePassword(@RequestBody PasswordRequest passwordRequest,
+                                                     @PathVariable int id,
+                                                     @PathVariable String token) {
+        Optional<Account> account = accountRepository.findById(id);
+        if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
+            throw new AppException(ErrorCode.POWERLESS);
+        }
+        ProfileRespone profileRespone=accountService.updatePassword(passwordRequest,id);
         return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
     }
 
