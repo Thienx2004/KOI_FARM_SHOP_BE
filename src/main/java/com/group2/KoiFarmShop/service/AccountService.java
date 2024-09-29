@@ -3,10 +3,7 @@ package com.group2.KoiFarmShop.service;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.Content;
 import com.group2.KoiFarmShop.dto.reponse.ProfileRespone;
-import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
-import com.group2.KoiFarmShop.dto.request.LoginRequest;
-import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
-import com.group2.KoiFarmShop.dto.request.ProfileRequest;
+import com.group2.KoiFarmShop.dto.request.*;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Role;
 import com.group2.KoiFarmShop.entity.VerificationToken;
@@ -319,15 +316,15 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
-    public ProfileRespone updatePassword (ProfileRequest profileRequest,int id) {
+    public ProfileRespone updatePassword (PasswordRequest passwordRequest, int id) {
         Account account = new Account();
         Optional<Account>account1 = accountRepository.findById(id);
         account.setAccountID(id);
         account.setEmail(account1.get().getEmail());
-        if(passwordEncoder.matches(profileRequest.getPassword(), account1.get().getPassword()){
-            throw new AppException(ErrorCode.DUPLICATEPASSWORD);
+        if(passwordEncoder.matches(passwordRequest.getPassword(), account1.get().getPassword())){
+            throw new AppException(ErrorCode.PASSWORDINVALID);
         }
-        account.setPassword(passwordEncoder.encode(profileRequest.getPassword()));
+        account.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
         Account accSave = accountRepository.save(account);
 
         return ProfileRespone.builder()
