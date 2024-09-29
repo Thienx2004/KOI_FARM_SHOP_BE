@@ -13,7 +13,7 @@ import java.util.List;
 public class KoiFishPageResponse {
     private int pageNum;
     private int pageSize;
-    private int totalElements;
+    private long totalElements;
     private int totalPages;
     List<KoiFishReponse> koiFishReponseList;
 }
