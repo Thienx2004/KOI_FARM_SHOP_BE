@@ -221,9 +221,18 @@ public class KoiFishService implements KoiFishServiceImp{
                 predicates.add(criteriaBuilder.equal(root.get("category").get("categoryID"), Integer.parseInt(categoryID)));
             }
 
-            if(gender != null&& !gender.isEmpty()) {
-                Boolean genderValue = Boolean.valueOf(gender);
-                predicates.add(criteriaBuilder.equal(root.get("gender"), genderValue));
+            if (gender != null && !gender.isEmpty()) {
+                Boolean genderValue = null;
+
+                if (gender.equals("0")) {
+                    genderValue = false;
+                } else if (gender.equals("1")) {
+                    genderValue = true;
+                }
+
+                if (genderValue != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("gender"), genderValue));
+                }
             }
             if (minSize != null && !minSize.isEmpty()) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("size"), Double.parseDouble(minSize)));
