@@ -3,10 +3,7 @@ package com.group2.KoiFarmShop.service;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.dto.Content;
 import com.group2.KoiFarmShop.dto.reponse.ProfileRespone;
-import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
-import com.group2.KoiFarmShop.dto.request.LoginRequest;
-import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
-import com.group2.KoiFarmShop.dto.request.ProfileRequest;
+import com.group2.KoiFarmShop.dto.request.*;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Role;
 import com.group2.KoiFarmShop.entity.VerificationToken;
@@ -301,7 +298,7 @@ public class AccountService implements AccountServiceImp{
         account.setAccountID(id);
         account.setEmail(account1.get().getEmail());
         account.setFullName(profileRequest.getFullName());
-        account.setPassword(profileRequest.getPassword());
+//        account.setPassword(profileRequest.getPassword());
         account.setAddress(profileRequest.getAddress());
         account.setPhone(profileRequest.getPhone());
         account.setVerified(account1.get().isVerified());
@@ -310,7 +307,7 @@ public class AccountService implements AccountServiceImp{
         Account accSave = accountRepository.save(account);
         return ProfileRespone.builder()
                 .id(accSave.getAccountID())
-                .password(passwordEncoder.encode(accSave.getPassword()))
+//                .password(passwordEncoder.encode(accSave.getPassword()))
                 .fullname(accSave.getFullName())
                 .email(accSave.getEmail())
                 .phone(accSave.getPhone())
@@ -319,5 +316,22 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
+    public ProfileRespone updatePassword (PasswordRequest passwordRequest, int id) {
+        Account account = new Account();
+        Optional<Account>account1 = accountRepository.findById(id);
+        account.setAccountID(id);
+        account.setEmail(account1.get().getEmail());
+        if(passwordEncoder.matches(passwordRequest.getPassword(), account1.get().getPassword())){
+            throw new AppException(ErrorCode.PASSWORDINVALID);
+        }
+        account.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
+        Account accSave = accountRepository.save(account);
+
+        return ProfileRespone.builder()
+                .id(accSave.getAccountID())
+                .email(accSave.getEmail())
+                .password(accSave.getPassword())
+                .build();
+    }
 
 }

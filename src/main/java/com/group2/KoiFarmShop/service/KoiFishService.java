@@ -43,12 +43,13 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
             koiFishReponse.setSize(koiFish.getSize());
-            koiFishReponse.setGender(koiFish.getGender());
+            koiFishReponse.setGender(koiFish.isGender());
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setStatus(koiFish.getStatus());
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -73,12 +74,13 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
             koiFishReponse.setSize(koiFish.getSize());
-            koiFishReponse.setGender(koiFish.getGender());
+            koiFishReponse.setGender(koiFish.isGender());
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setStatus(koiFish.getStatus());
 
             koiFishReponseList.add(koiFishReponse);
         }
@@ -100,7 +102,7 @@ public class KoiFishService implements KoiFishServiceImp{
         return KoiFishReponse.builder()
                 .id(koiFish.getKoiID())
                 .age(koiFish.getAge())
-                .gender(koiFish.getGender())
+                .gender(koiFish.isGender())
                 .price(koiFish.getPrice())
                 .koiImage(koiFish.getKoiImage())
                 .size(koiFish.getSize())
@@ -108,6 +110,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .origin(koiFish.getOrigin())
                 .categoryId(koiFish.getCategory().getCategoryID())
                 .category(koiFish.getCategory().getCategoryName())
+                .status(koiFish.getStatus())
                 .build();
     }
 
@@ -115,7 +118,7 @@ public class KoiFishService implements KoiFishServiceImp{
     public KoiFishReponse addKoiFish(KoiRequest koiRequest) {
         KoiFish koiFish = new KoiFish();
         koiFish.setOrigin(koiRequest.getOrigin());
-        koiFish.setGender(koiRequest.getGender());
+        koiFish.setGender(koiRequest.isGender());
         koiFish.setAge(koiRequest.getAge());
         koiFish.setSize(koiRequest.getSize());
         koiFish.setPersonality(koiRequest.getPersonality());
@@ -134,7 +137,7 @@ public class KoiFishService implements KoiFishServiceImp{
         return KoiFishReponse.builder()
                 .id(savedKoiFish.getKoiID())
                 .age(savedKoiFish.getAge())
-                .gender(savedKoiFish.getGender())
+                .gender(savedKoiFish.isGender())
                 .price(savedKoiFish.getPrice())
                 .koiImage(savedKoiFish.getKoiImage())
                 .size(savedKoiFish.getSize())
@@ -150,7 +153,7 @@ public class KoiFishService implements KoiFishServiceImp{
         KoiFish koiFish = new KoiFish();
         koiFish.setKoiID(id);
         koiFish.setOrigin(koiRequest.getOrigin());
-        koiFish.setGender(koiRequest.getGender());
+        koiFish.setGender(koiRequest.isGender());
         koiFish.setAge(koiRequest.getAge());
         koiFish.setSize(koiRequest.getSize());
         koiFish.setPersonality(koiRequest.getPersonality());
@@ -162,7 +165,7 @@ public class KoiFishService implements KoiFishServiceImp{
         return KoiFishReponse.builder()
                 .id(updateddKoiFish.getKoiID())
                 .age(updateddKoiFish.getAge())
-                .gender(updateddKoiFish.getGender())
+                .gender(updateddKoiFish.isGender())
                 .price(updateddKoiFish.getPrice())
                 .koiImage(updateddKoiFish.getKoiImage())
                 .size(updateddKoiFish.getSize())
@@ -178,6 +181,12 @@ public class KoiFishService implements KoiFishServiceImp{
         }
         if (sortDirection == null || sortDirection.isEmpty()) {
             sortDirection = "asc";
+        }
+        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 1) {
+            sortDirection = "asc";
+        }
+        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 2) {
+            sortDirection = "desc";
         }
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
         Pageable pageable = PageRequest.of(page - 1, pageSize,sort);  // Tạo đối tượng Pageable cho phân trang
@@ -222,12 +231,13 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
             koiFishReponse.setSize(koiFish.getSize());
-            koiFishReponse.setGender(koiFish.getGender());
+            koiFishReponse.setGender(koiFish.isGender());
             koiFishReponse.setPersonality(koiFish.getPersonality());
             koiFishReponse.setPrice(koiFish.getPrice());
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setStatus(koiFish.getStatus());
 
             koiFishReponseList.add(koiFishReponse);
         }

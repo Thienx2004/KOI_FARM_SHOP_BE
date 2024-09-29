@@ -16,7 +16,7 @@ public class OrderDetailReponse {
     private String categoryName;
     private int koiFishId;
     private int koiAge;
-    private String gender;
+    private boolean gender;
     private double koiSize;
     private int batchId;
     private String avgSize;

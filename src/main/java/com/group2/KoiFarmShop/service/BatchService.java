@@ -39,6 +39,12 @@ public class BatchService implements BatchServiceImp{
         if (sortDirection == null || sortDirection.isEmpty()) {
             sortDirection = "asc";
         }
+        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 1) {
+            sortDirection = "asc";
+        }
+        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 2) {
+            sortDirection = "desc";
+        }
 
         // Thiết lập phân trang và sắp xếp
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
@@ -84,6 +90,7 @@ public class BatchService implements BatchServiceImp{
             batchReponse.setPrice(batch.getPrice());
             batchReponse.setCategoryID(batch.getCategory().getCategoryID());
             batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+            batchReponse.setBatchImg(batch.getBatchImg());
             batchReponse.setStatus(batch.getStatus());
 
             batchReponseList.add(batchReponse);
@@ -108,6 +115,9 @@ public class BatchService implements BatchServiceImp{
         batchReponse.setOrigin(batch.getOrigin());
         batchReponse.setQuantity(batch.getQuantity());
         batchReponse.setPrice(batch.getPrice());
+        batchReponse.setCategoryID(batch.getCategory().getCategoryID());
+        batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+        batchReponse.setBatchImg(batch.getBatchImg());
         batchReponse.setStatus(batch.getStatus());
 
         return batchReponse;
@@ -116,12 +126,15 @@ public class BatchService implements BatchServiceImp{
     @Override
     public String addBatch(BatchCreateDTO batch) {
         try {
+            Category category = new Category();
+            category.setCategoryID(batch.getCategoryID());
             Batch newBatch = new Batch();
             newBatch.setOrigin(batch.getOrigin());
             newBatch.setAge(batch.getAge());
             newBatch.setAvgSize(batch.getAvgSize());
             newBatch.setQuantity(batch.getQuantity());
             newBatch.setPrice(batch.getPrice());
+            newBatch.setCategory(category);
             newBatch.setStatus(batch.getStatus());
             batchRepository.save(newBatch);
             return "Lưu lô koi ID: " + newBatch.getBatchID() + " thành công";
@@ -134,6 +147,8 @@ public class BatchService implements BatchServiceImp{
     @Override
     public String updateBatch(String batchId, BatchCreateDTO batchCreateDTO) {
         try {
+            Category category = new Category();
+            category.setCategoryID(batchCreateDTO.getCategoryID());
             Batch existedBatch = batchRepository.findByBatchID(Integer.parseInt(batchId))
                         .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
             existedBatch.setOrigin(batchCreateDTO.getOrigin());
@@ -141,6 +156,7 @@ public class BatchService implements BatchServiceImp{
             existedBatch.setAvgSize(batchCreateDTO.getAvgSize());
             existedBatch.setQuantity(batchCreateDTO.getQuantity());
             existedBatch.setPrice(batchCreateDTO.getPrice());
+            existedBatch.setCategory(category);
             existedBatch.setStatus(batchCreateDTO.getStatus());
             batchRepository.save(existedBatch);
             return "Update lô koi ID: " + batchId + " thành công";
@@ -178,6 +194,7 @@ public class BatchService implements BatchServiceImp{
             batchReponse.setPrice(batch.getPrice());
             batchReponse.setCategoryID(batch.getCategory().getCategoryID());
             batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+            batchReponse.setBatchImg(batch.getBatchImg());
 
             batchReponse.setStatus(batch.getStatus());
 
