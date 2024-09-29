@@ -29,7 +29,7 @@ public class CategoryController {
         return apiReponse;
     }
 
-    @GetMapping("/homepage1")
+    @GetMapping("/getListCategory")
     public ApiReponse<List<CategoryReponse>> getListAllCate() {
 
         List<CategoryReponse> categoryReponseList = categoryServiceImp.getAllCategories();
