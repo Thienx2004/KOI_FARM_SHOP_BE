@@ -83,7 +83,7 @@ public class CategoryService implements CategoryServiceImp{
                 koiFishReponse.setId(category.getKoiFish().get(i).getKoiID());
                 koiFishReponse.setOrigin(category.getKoiFish().get(i).getOrigin());
                 koiFishReponse.setAge(category.getKoiFish().get(i).getAge());
-                koiFishReponse.setGender(category.getKoiFish().get(i).getGender());
+                koiFishReponse.setGender(category.getKoiFish().get(i).isGender());
                 koiFishReponse.setSize(category.getKoiFish().get(i).getSize());
                 koiFishReponse.setPersonality(category.getKoiFish().get(i).getPersonality());
                 koiFishReponse.setPrice(category.getKoiFish().get(i).getPrice());

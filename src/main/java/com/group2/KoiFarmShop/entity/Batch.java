@@ -37,6 +37,8 @@ public class Batch {
     @OneToMany(mappedBy = "batch")
     private List<OrderDetail> orderDetails;
 
+    private String batchImg;
+
     private int status = 1;
 
     // Getters and Setters

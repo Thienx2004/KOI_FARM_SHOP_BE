@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class KoiFishReponse {
     private int id;
     private String origin;
-    private String gender;
+    private boolean gender;
     private int age;
     private double size;
     private String personality;

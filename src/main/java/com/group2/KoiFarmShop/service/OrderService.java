@@ -126,7 +126,7 @@ public class OrderService implements OrderServiceImp{
                 if(orderDetail.getKoiFish() != null) {
                     orderDetailReponse.setCategoryName(orderDetail.getKoiFish().getCategory().getCategoryName());
                     orderDetailReponse.setKoiFishId(orderDetail.getKoiFish().getKoiID());
-                    orderDetailReponse.setGender(orderDetail.getKoiFish().getGender());
+                    orderDetailReponse.setGender(orderDetail.getKoiFish().isGender());
                     orderDetailReponse.setKoiAge(orderDetail.getKoiFish().getAge());
                     orderDetailReponse.setKoiSize(orderDetail.getKoiFish().getSize());
                 } else {
