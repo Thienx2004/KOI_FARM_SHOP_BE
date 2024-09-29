@@ -85,14 +85,9 @@ public class AccountController {
     @GetMapping("profile/{email}")
     ApiReponse<ProfileRespone> getProfile(@PathVariable String email) {
         ProfileRespone profileRespone = accountService.getProfile(email);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-         Jwt jwt = (Jwt) authentication.getPrincipal();
-         Long currentAccountId = jwt.getClaim("accountId");
 
-         // Kiểm tra xem accountID trong JWT có trùng với accountID được yêu cầu cập nhật không
-        if (!currentAccountId.equals(profileRespone.getId())) {
-              throw new AppException(ErrorCode.POWERLESS);
-        }
+
+
         if (profileRespone != null) {
             return ApiReponse.<ProfileRespone>builder().data(profileRespone).build();
         }else {

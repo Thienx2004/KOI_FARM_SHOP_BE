@@ -280,6 +280,10 @@ public class AccountService implements AccountServiceImp{
 
    public ProfileRespone getProfile (String email) {
         Optional<Account> account = accountRepository.findByEmail(email);
+       out.println(email);
+        if (account.isEmpty()) {
+            throw new AppException(ErrorCode.INVALIDACCOUNT);
+        }
         return ProfileRespone.builder()
                 .id(account.get().getAccountID())
                 .password((account.get().getPassword()))
