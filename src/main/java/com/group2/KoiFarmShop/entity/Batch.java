@@ -27,6 +27,7 @@ public class Batch {
     private int quantity;
     private String origin;
     private String avgSize;
+
     private int age;
 
     private double price;
