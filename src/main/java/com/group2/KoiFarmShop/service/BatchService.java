@@ -39,6 +39,12 @@ public class BatchService implements BatchServiceImp{
         if (sortDirection == null || sortDirection.isEmpty()) {
             sortDirection = "asc";
         }
+        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 1) {
+            sortDirection = "asc";
+        }
+        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 2) {
+            sortDirection = "desc";
+        }
 
         // Thiết lập phân trang và sắp xếp
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
