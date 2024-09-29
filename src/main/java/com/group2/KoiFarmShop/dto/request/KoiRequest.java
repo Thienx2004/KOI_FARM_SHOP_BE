@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class KoiRequest {
     private String origin;
-    private String gender;
+    private boolean gender;
     private int age;
     private double size;
     private String personality;
