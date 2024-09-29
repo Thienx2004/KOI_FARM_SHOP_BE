@@ -24,6 +24,7 @@ public class BatchReponse {
     private double price;
     private int categoryID;
     private String categoryName;
+    private String batchImg;
 
     private int status;
 

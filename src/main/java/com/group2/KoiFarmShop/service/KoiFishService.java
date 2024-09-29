@@ -49,6 +49,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setStatus(koiFish.getStatus());
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -79,6 +80,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setStatus(koiFish.getStatus());
 
             koiFishReponseList.add(koiFishReponse);
         }
@@ -108,6 +110,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .origin(koiFish.getOrigin())
                 .categoryId(koiFish.getCategory().getCategoryID())
                 .category(koiFish.getCategory().getCategoryName())
+                .status(koiFish.getStatus())
                 .build();
     }
 
@@ -228,6 +231,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setStatus(koiFish.getStatus());
 
             koiFishReponseList.add(koiFishReponse);
         }
