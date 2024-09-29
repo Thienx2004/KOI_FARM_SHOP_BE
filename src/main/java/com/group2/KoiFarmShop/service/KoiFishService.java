@@ -55,7 +55,7 @@ public class KoiFishService implements KoiFishServiceImp{
         return KoiFishPageResponse.builder()
                 .pageNum(koiFishPage.getNumber()+1)
                 .totalPages(koiFishPage.getTotalPages())
-                .totalElements(koiFishPage.getNumberOfElements())
+                .totalElements(koiFishPage.getTotalElements())
                 .pageSize(koiFishPage.getSize())
                 .koiFishReponseList(koiFishReponseList)
                 .build();
@@ -87,7 +87,7 @@ public class KoiFishService implements KoiFishServiceImp{
         return KoiFishPageResponse.builder()
                 .pageNum(koiFishList.getNumber()+1)
                 .totalPages(koiFishList.getTotalPages())
-                .totalElements(koiFishList.getNumberOfElements())
+                .totalElements(koiFishList.getTotalElements())
                 .pageSize(koiFishList.getSize())
                 .koiFishReponseList(koiFishReponseList)
                 .build();
@@ -175,28 +175,45 @@ public class KoiFishService implements KoiFishServiceImp{
                 .category(updateddKoiFish.getCategory().getCategoryName())
                 .build();
     }
-    public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection) {
+    public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection,String sortField2,String sortDirection2) {
+        // Xử lý sortField1 và sortDirection1
         if (sortField == null || sortField.isEmpty()) {
             sortField = "koiID";
         }
         if (sortDirection == null || sortDirection.isEmpty()) {
             sortDirection = "asc";
         }
-
-        if (sortDirection != null && !sortDirection.isEmpty()) {
-            if (sortDirection.equals("1")) {
-                sortDirection = "asc";
-            } else if (sortDirection.equals("2")) {
-                sortDirection = "desc";
-            } else {
-                sortDirection = "asc";
-            }
+        if (sortDirection.equals("1")) {
+            sortDirection = "asc";
+        } else if (sortDirection.equals("2")) {
+            sortDirection = "desc";
         } else {
             sortDirection = "asc";
         }
 
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
-        Pageable pageable = PageRequest.of(page - 1, pageSize,sort);  // Tạo đối tượng Pageable cho phân trang
+        // Tạo danh sách các điều kiện sắp xếp
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.fromString(sortDirection), sortField)); // Điều kiện sort chính
+
+        // Xử lý sortField2 và sortDirection2 (nếu có)
+        if (sortField2 != null && !sortField2.isEmpty()) {
+            if (sortDirection2 == null || sortDirection2.isEmpty()) {
+                sortDirection2 = "asc";
+            }
+            if (sortDirection2.equals("1")) {
+                sortDirection2 = "asc";
+            } else if (sortDirection2.equals("2")) {
+                sortDirection2 = "desc";
+            } else {
+                sortDirection2 = "asc";
+            }
+            // Thêm điều kiện sort thứ hai
+            orders.add(new Sort.Order(Sort.Direction.fromString(sortDirection2), sortField2));
+        }
+
+        // Áp dụng danh sách sắp xếp vào Sort
+        Sort sort = Sort.by(orders);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
         Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -253,7 +270,7 @@ public class KoiFishService implements KoiFishServiceImp{
         return KoiFishPageResponse.builder()
                 .pageNum(koiFishPage.getNumber()+1)
                 .totalPages(koiFishPage.getTotalPages())
-                .totalElements(koiFishPage.getNumberOfElements())
+                .totalElements(koiFishPage.getTotalElements())
                 .pageSize(koiFishPage.getSize())
                 .koiFishReponseList(koiFishReponseList)
                 .build();
