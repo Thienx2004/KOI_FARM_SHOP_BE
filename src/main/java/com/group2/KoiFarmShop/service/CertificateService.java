@@ -1,0 +1,88 @@
+package com.group2.KoiFarmShop.service;
+
+import com.group2.KoiFarmShop.dto.reponse.*;
+import com.group2.KoiFarmShop.entity.Certificate;
+import com.group2.KoiFarmShop.entity.KoiFish;
+import com.group2.KoiFarmShop.entity.OrderDetail;
+import com.group2.KoiFarmShop.entity.Orders;
+import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.repository.CertificateRepository;
+import com.group2.KoiFarmShop.repository.KoiFishRepository;
+import com.group2.KoiFarmShop.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class CertificateService implements CertificateServiceImp {
+
+    @Autowired
+    private CertificateRepository certificateRepository;
+    @Autowired
+    private KoiFishRepository koiFishRepository;
+
+    @Override
+    public PaginReponse<KoiFishReponse> getAllKoiFishReponse(int pageNo, int pageSize, String accountId) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("order_date").descending());
+        Integer accountIdInt = (accountId != null && !accountId.isEmpty()) ? Integer.parseInt(accountId) : null;
+
+        Page<KoiFish> customerKoi = koiFishRepository.findCustomerKoi(accountIdInt, pageable);
+        List<KoiFishReponse> customerKoiReponses = new ArrayList<>();
+
+        for (KoiFish koiFish : customerKoi) {
+//            CertificationReponse certificationReponse = new CertificationReponse();
+//            certificationReponse.setId(koiFish.getCertificate().getId());
+//            certificationReponse.setName(koiFish.getCertificate().getName());
+//            certificationReponse.setImage(koiFish.getCertificate().getImage());
+//            certificationReponse.setCreatedDate(koiFish.getCertificate().getCreatedDate());
+
+            KoiFishReponse koiFishReponse = new KoiFishReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
+            koiFishReponse.setOrigin(koiFish.getOrigin());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setGender(koiFish.isGender());
+            koiFishReponse.setAge(koiFish.getAge());
+            koiFishReponse.setSize(koiFish.getSize());
+            koiFishReponse.setPersonality(koiFish.getPersonality());
+            koiFishReponse.setPrice(koiFish.getPrice());
+            koiFishReponse.setStatus(koiFish.getStatus());
+            customerKoiReponses.add(koiFishReponse);
+
+        }
+
+        PaginReponse<KoiFishReponse> paginReponse = new PaginReponse<>();
+        paginReponse.setContent(customerKoiReponses);
+        paginReponse.setPageNum(pageNo);
+        paginReponse.setPageSize(pageSize);
+        paginReponse.setTotalElements(customerKoi.getNumberOfElements());
+        paginReponse.setTotalPages(customerKoi.getTotalPages());
+
+        return paginReponse;
+    }
+
+    @Override
+    public CertificationReponse getCertificationReponse(int koiId) {
+        KoiFish koiFish = koiFishRepository.findByKoiID(koiId);
+        CertificationReponse certificationReponse = new CertificationReponse();
+        if(koiFish != null) {
+            certificationReponse.setId(koiFish.getCertificate().getId());
+            certificationReponse.setName(koiFish.getCertificate().getName());
+            certificationReponse.setImage(koiFish.getCertificate().getImage());
+            certificationReponse.setCreatedDate(koiFish.getCertificate().getCreatedDate());
+        } else {
+            throw new AppException(ErrorCode.KOINOTFOUND);
+        }
+        return certificationReponse;
+    }
+
+
+}
