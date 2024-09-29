@@ -182,12 +182,19 @@ public class KoiFishService implements KoiFishServiceImp{
         if (sortDirection == null || sortDirection.isEmpty()) {
             sortDirection = "asc";
         }
-        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 1) {
+
+        if (sortDirection != null && !sortDirection.isEmpty()) {
+            if (sortDirection.equals("1")) {
+                sortDirection = "asc";
+            } else if (sortDirection.equals("2")) {
+                sortDirection = "desc";
+            } else {
+                sortDirection = "asc";
+            }
+        } else {
             sortDirection = "asc";
         }
-        if ((sortDirection != null || !sortDirection.isEmpty()) && Integer.parseInt(sortDirection) == 2) {
-            sortDirection = "desc";
-        }
+
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
         Pageable pageable = PageRequest.of(page - 1, pageSize,sort);  // Tạo đối tượng Pageable cho phân trang
         Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
