@@ -20,7 +20,7 @@ public class KoiFish {
     private int koiID;
 
     private String origin;
-    private String gender;
+    private boolean gender;
     private int age;
     private double size;
     private String personality;
