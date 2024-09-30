@@ -23,22 +23,21 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
+
     @GetMapping("/vn-pay")
     @Operation(summary = "Thanh toán", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount,@RequestParam String bankCode) {
+    public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount, @RequestParam String bankCode) {
         return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh cong").data(paymentService.createVnPayPayment(request)).build();
 
     }
-    @GetMapping("/vn-pay-callback")
-    public void vnPayCallback(@RequestParam Map<String, String> params, HttpServletResponse response) throws IOException {
-        String responseCode = params.get("vnp_ResponseCode");
 
-        if ("00".equals(responseCode)) {
-            // Giao dịch thành công
-            response.sendRedirect("http://localhost:3000/thank-you"); // Đường dẫn đến trang "Cảm ơn"
+    @Operation(summary = "Trả về kết quả Thanh toán", description = "-Nguyễn Hoàng Thiên")
+    public ApiReponse<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {
+        String status = request.getParameter("vnp_ResponseCode");
+        if (status.equals("00")) {
+            return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh toán thành công").data(PaymentDTO.VNPayResponse.builder().code("00").message("Thanh cong").paymentUrl("").build()).build();
         } else {
-            // Giao dịch không thành công
-            response.sendRedirect("http://localhost:3000/payment-failed"); // Đường dẫn đến trang "Thanh toán thất bại"
+            throw new AppException(ErrorCode.PAYMENT_FAILED);
         }
     }
 }
