@@ -5,6 +5,7 @@ import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.service.PaymentService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
     private final PaymentService paymentService;
     @GetMapping("/vn-pay")
+    @Operation(summary = "Thanh toán", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount,@RequestParam String bankCode) {
         return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh cong").data(paymentService.createVnPayPayment(request)).build();
 
     }
     @GetMapping("/vn-pay-callback")
+    @Operation(summary = "Trả về kết quả Thanh toán", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {
         String status = request.getParameter("vnp_ResponseCode");
         if (status.equals("00")) {
