@@ -6,9 +6,13 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.cloud.StorageClient;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FirebaseService {
@@ -26,7 +30,7 @@ public class FirebaseService {
         }
 
 
-        return blob.signUrl(30, java.util.concurrent.TimeUnit.DAYS).toString(); // URL tồn tại trong 30 ngày
+        return blob.signUrl(365, java.util.concurrent.TimeUnit.DAYS).toString(); // URL tồn tại trong ? ngày
     }
 
     private final String bucketName = "koi-farm-shop-5212e.appspot.com";
@@ -48,7 +52,20 @@ public class FirebaseService {
         return imageUrls;
     }
 
+    public String uploadFile(MultipartFile file) throws IOException {
+        // Lấy bucket của Firebase
+        Bucket bucket = StorageOptions.getDefaultInstance().getService().get("koi-farm-shop-5212e.appspot.com");
+
+        // Tạo tên file unique để tránh trùng lặp
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+
+        // Upload file lên Firebase Storage
+        Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType());
+
+        // Trả về URL để truy cập file đã upload
+        return String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), fileName);
+
+    }
+
 
 }
-
-
