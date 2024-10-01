@@ -256,8 +256,8 @@ public class AccountService implements AccountServiceImp{
             // Tìm mã OTP trong bảng VerificationToken
             VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
                     .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
-            out.println(verificationToken.getId());
-            out.println(verificationToken.getToken());
+//            out.println(verificationToken.getId());
+//            out.println(verificationToken.getToken());
 
             if (!verificationToken.getToken().equals(otp))
                 throw new AppException(ErrorCode.INVALIDOTP);
@@ -319,11 +319,10 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
+
     public ProfileRespone updatePassword (PasswordRequest passwordRequest, int id) {
-        Account account = new Account();
         Optional<Account>account1 = accountRepository.findById(id);
-        account.setAccountID(id);
-        account.setEmail(account1.get().getEmail());
+        Account account=(Account) account1.get();
         if(passwordEncoder.matches(passwordRequest.getPassword(), account1.get().getPassword())){
             throw new AppException(ErrorCode.PASSWORDINVALID);
         }

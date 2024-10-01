@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,8 @@ import java.util.Optional;
 @CrossOrigin
 @RequestMapping("/account")
 public class AccountController {
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private AccountServiceImp accountServiceImp;
     @Autowired
@@ -104,11 +106,11 @@ public class AccountController {
                                                      @PathVariable int id,
                                                     HttpServletRequest request) {
         // Lấy và kiểm tra JWT token
-        String token = authenticationService.extractTokenFromRequest(request);
-        Optional<Account> account = accountRepository.findById(id);
-         if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
-             throw new AppException(ErrorCode.POWERLESS);
-         }
+//        String token = authenticationService.extractTokenFromRequest(request);
+//        Optional<Account> account = accountRepository.findById(id);
+//         if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
+//             throw new AppException(ErrorCode.POWERLESS);
+//         }
          ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
 //                                                    @PathVariable String email) {
 //        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
@@ -140,5 +142,16 @@ public class AccountController {
                 .build();
     }
 
+    @PostMapping("/checkPassword/{id}")
+    public ApiReponse<Boolean> checkPassword(@RequestBody PasswordRequest passwordRequest,@PathVariable int id) {
+        Optional<Account> account = accountRepository.findById(id);
+        if(!passwordEncoder.matches(passwordRequest.getPassword(), account.get().getPassword())){
+            throw new AppException(ErrorCode.PASSWORDINVALID);
+        }
+        return ApiReponse.<Boolean>builder()
+                .data(true).message("Mật khẩu hợp lệ")
+                .statusCode(200)
+                .build();
+    }
 
 }
