@@ -14,7 +14,8 @@ public enum ErrorCode {
     KOINOTFOUND(5005,"Không có kết quả"),
     BATCH_NOT_EXISTED(5007, "Không tìm thấy lô,"),
     POWERLESS(5008,"Không có quyền hạn"),
-    PAYMENT_FAILED(5009,"Thanh toán thất bại")
+    PAYMENT_FAILED(5009,"Thanh toán thất bại"),
+    TRANSACTION_INVALID(5010, "Mã thanh toán này không hợp lệ")
     ;
 
 

@@ -28,6 +28,14 @@ public class BatchController {
         return apiReponse;
     }
 
+    @GetMapping("/getAllBatch")
+    public ApiReponse<BatchPageReponse> getAllBatch(@RequestParam int pageNo, @RequestParam int pageSize) {
+        ApiReponse apiReponse = new ApiReponse();
+        apiReponse.setData(batchService.getAllBatch(pageNo, pageSize));
+
+        return apiReponse;
+    }
+
     @GetMapping("/{batchId}")
     public ApiReponse<BatchReponse> getBatch(@PathVariable int batchId) {
         ApiReponse apiReponse = new ApiReponse();

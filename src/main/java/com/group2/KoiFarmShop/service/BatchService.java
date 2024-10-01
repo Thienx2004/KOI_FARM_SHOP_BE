@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.BatchPageReponse;
 import com.group2.KoiFarmShop.dto.reponse.BatchReponse;
+import com.group2.KoiFarmShop.dto.reponse.PaginReponse;
 import com.group2.KoiFarmShop.dto.request.BatchCreateDTO;
 import com.group2.KoiFarmShop.entity.Batch;
 import com.group2.KoiFarmShop.entity.Category;
@@ -190,6 +191,38 @@ public class BatchService implements BatchServiceImp{
         Category category = new Category();
         category.setCategoryID(categoryId);
         Page<Batch> batchPage = batchRepository.findByCategory(category, pageable);
+        List<Batch> batchList = batchPage.getContent();
+        List<BatchReponse> batchReponseList = new ArrayList<>();
+        BatchPageReponse batchPageReponse = new BatchPageReponse();
+        for(Batch batch : batchList) {
+            BatchReponse batchReponse = new BatchReponse();
+            batchReponse.setBatchID(batch.getBatchID());
+            batchReponse.setOrigin(batch.getOrigin());
+            batchReponse.setQuantity(batch.getQuantity());
+            batchReponse.setPrice(batch.getPrice());
+            batchReponse.setCategoryID(batch.getCategory().getCategoryID());
+            batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+            batchReponse.setBatchImg(batch.getBatchImg());
+
+            batchReponse.setStatus(batch.getStatus());
+
+            batchReponseList.add(batchReponse);
+        }
+
+        batchPageReponse.setBatchReponses(batchReponseList);
+        batchPageReponse.setPageNum(batchPage.getNumber());
+        batchPageReponse.setPageSize(batchPage.getSize());
+        batchPageReponse.setTotalElements(batchPage.getNumberOfElements());
+        batchPageReponse.setTotalPages(batchPage.getTotalPages());
+
+
+        return batchPageReponse;
+    }
+
+    @Override
+    public BatchPageReponse getAllBatch(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("batchID").descending());
+        Page<Batch> batchPage = batchRepository.findAll(pageable);
         List<Batch> batchList = batchPage.getContent();
         List<BatchReponse> batchReponseList = new ArrayList<>();
         BatchPageReponse batchPageReponse = new BatchPageReponse();
