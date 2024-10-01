@@ -14,6 +14,7 @@ import com.group2.KoiFarmShop.service.AccountService;
 import com.group2.KoiFarmShop.service.AccountServiceImp;
 import com.group2.KoiFarmShop.service.AuthenticationService;
 import com.group2.KoiFarmShop.service.FileServiceImp;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -42,6 +43,7 @@ public class AccountController {
     AuthenticationService authenticationService;
     @Autowired
     private AccountRepository accountRepository;
+
 
     @PostMapping("/register")
     public ApiReponse<AccountReponse> createAccount(@RequestBody AccountCreationDTO accountCreationDTO) {
@@ -96,11 +98,13 @@ public class AccountController {
 
     }
     
-    @PutMapping("/profile/update/{id}/{token}")
+    @PutMapping("/profile/update/{id}")
     public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
 
                                                      @PathVariable int id,
-                                                     @PathVariable String token) {
+                                                    HttpServletRequest request) {
+        // Lấy và kiểm tra JWT token
+        String token = authenticationService.extractTokenFromRequest(request);
         Optional<Account> account = accountRepository.findById(id);
          if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
              throw new AppException(ErrorCode.POWERLESS);
@@ -110,16 +114,31 @@ public class AccountController {
 //        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
         return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
     }
-    @PutMapping("/profile/updatePassword/{id}/{token}")
+    @PutMapping("/profile/updatePassword/{id}")
     public ApiReponse<ProfileRespone> updatePassword(@RequestBody PasswordRequest passwordRequest,
                                                      @PathVariable int id,
-                                                     @PathVariable String token) {
-        Optional<Account> account = accountRepository.findById(id);
-        if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
+                                                     HttpServletRequest request) {
+
+        // Lấy và kiểm tra JWT token
+        String token = authenticationService.extractTokenFromRequest(request);
+
+        // Kiểm tra tài khoản tồn tại
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+
+        // Xác thực email từ token có khớp với email của tài khoản không
+        String emailFromToken = authenticationService.validateTokenByEmail(token);
+        if (!account.getEmail().equals(emailFromToken)) {
             throw new AppException(ErrorCode.POWERLESS);
         }
-        ProfileRespone profileRespone=accountService.updatePassword(passwordRequest,id);
-        return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
+
+        // Cập nhật mật khẩu và trả về kết quả
+        ProfileRespone profileRespone = accountService.updatePassword(passwordRequest, id);
+        return ApiReponse.<ProfileRespone>builder()
+                .data(profileRespone)
+                .statusCode(200)
+                .build();
     }
+
 
 }

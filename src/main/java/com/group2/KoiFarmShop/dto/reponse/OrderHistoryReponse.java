@@ -22,5 +22,6 @@ public class OrderHistoryReponse {
     private Date createdDate;
     private double totalPrice;
     private boolean status;
+    private int paymentId;
     //private List<OrderDetailReponse> orderDetails;
 }
