@@ -33,6 +33,8 @@ public class Orders {
     @OneToOne(mappedBy = "order")
     private Payment payment;
 
+    //true: đang giao
+    //false: hoàn tất đơn hàng
     private boolean status = true;
 
     // Getters and Setters
