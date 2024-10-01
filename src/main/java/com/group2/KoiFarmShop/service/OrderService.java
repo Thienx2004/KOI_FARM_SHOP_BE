@@ -212,12 +212,14 @@ public class OrderService implements OrderServiceImp{
                 orderDetailReponse.setKoiAge(orderDetail.getKoiFish().getAge());
                 orderDetailReponse.setKoiSize(orderDetail.getKoiFish().getSize());
                 orderDetailReponse.setKoiPrice(orderDetail.getKoiFish().getPrice());
+                orderDetailReponse.setKoiImg(orderDetail.getKoiFish().getKoiImage());
             } else {
                 orderDetailReponse.setCategoryName(orderDetail.getBatch().getCategory().getCategoryName());
                 orderDetailReponse.setBatchId(orderDetail.getBatch().getBatchID());
                 orderDetailReponse.setAvgSize(orderDetail.getBatch().getAvgSize());
                 orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
                 orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
+                orderDetailReponse.setBatchImg(orderDetail.getBatch().getBatchImg());
             }
             orderDetailReponse.setQuantity(orderDetail.getQuantity());
             orderDetailReponse.setType(orderDetail.isType());
