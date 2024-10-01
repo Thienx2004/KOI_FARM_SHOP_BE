@@ -39,10 +39,7 @@ public class OrderController {
             return resp;
         }
         else {
-            resp.setStatusCode(601);
-            resp.setData("Lưu hoá đơn thất bại");
-            resp.setMessage("Xử lí thất bại!");
-            return resp;
+            throw new AppException(ErrorCode.TRANSACTION_INVALID);
         }
     }
 

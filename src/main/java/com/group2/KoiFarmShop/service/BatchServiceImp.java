@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.reponse.BatchPageReponse;
 import com.group2.KoiFarmShop.dto.reponse.BatchReponse;
+import com.group2.KoiFarmShop.dto.reponse.PaginReponse;
 import com.group2.KoiFarmShop.dto.request.BatchCreateDTO;
 import com.group2.KoiFarmShop.entity.Batch;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,5 +16,7 @@ public interface BatchServiceImp {
     public String updateBatch(String batchID, BatchCreateDTO batch);
     public String deleteBatch(String id);
     public BatchPageReponse getBatchByCategory(int categoryId, int pageNo, int pageSize);
+
+    public BatchPageReponse getAllBatch(int pageNo, int pageSize);
 
 }
