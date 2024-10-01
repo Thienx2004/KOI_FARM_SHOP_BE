@@ -56,7 +56,7 @@ public class BatchService implements BatchServiceImp{
 
         // Thiết lập phân trang và sắp xếp
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
 
         // Sử dụng Specification để lọc dữ liệu
         Specification<Batch> spec = (root, query, criteriaBuilder) -> {
@@ -106,7 +106,7 @@ public class BatchService implements BatchServiceImp{
 
         BatchPageReponse batchPageReponse = new BatchPageReponse();
         batchPageReponse.setBatchReponses(batchReponseList);
-        batchPageReponse.setPageNum(batchPage.getNumber());
+        batchPageReponse.setPageNum(batchPage.getNumber()+1);
         batchPageReponse.setPageSize(batchPage.getSize());
         batchPageReponse.setTotalElements(batchPage.getTotalElements());
         batchPageReponse.setTotalPages(batchPage.getTotalPages());
@@ -187,7 +187,7 @@ public class BatchService implements BatchServiceImp{
 
     @Override
     public BatchPageReponse getBatchByCategory(int categoryId, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
         Category category = new Category();
         category.setCategoryID(categoryId);
         Page<Batch> batchPage = batchRepository.findByCategory(category, pageable);
@@ -210,7 +210,7 @@ public class BatchService implements BatchServiceImp{
         }
 
         batchPageReponse.setBatchReponses(batchReponseList);
-        batchPageReponse.setPageNum(batchPage.getNumber());
+        batchPageReponse.setPageNum(batchPage.getNumber()+1);
         batchPageReponse.setPageSize(batchPage.getSize());
         batchPageReponse.setTotalElements(batchPage.getNumberOfElements());
         batchPageReponse.setTotalPages(batchPage.getTotalPages());
@@ -221,7 +221,7 @@ public class BatchService implements BatchServiceImp{
 
     @Override
     public BatchPageReponse getAllBatch(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("batchID").descending());
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize, Sort.by("batchID").descending());
         Page<Batch> batchPage = batchRepository.findAll(pageable);
         List<Batch> batchList = batchPage.getContent();
         List<BatchReponse> batchReponseList = new ArrayList<>();
@@ -242,7 +242,7 @@ public class BatchService implements BatchServiceImp{
         }
 
         batchPageReponse.setBatchReponses(batchReponseList);
-        batchPageReponse.setPageNum(batchPage.getNumber());
+        batchPageReponse.setPageNum(batchPage.getNumber()+1);
         batchPageReponse.setPageSize(batchPage.getSize());
         batchPageReponse.setTotalElements(batchPage.getNumberOfElements());
         batchPageReponse.setTotalPages(batchPage.getTotalPages());

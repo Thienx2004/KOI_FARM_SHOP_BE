@@ -165,7 +165,7 @@ public class OrderService implements OrderServiceImp{
 
     @Override
     public PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("order_date").descending());
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize, Sort.by("order_date").descending());
         // Kiểm tra null hoặc chuỗi rỗng trước khi chuyển đổi
         Integer accountIdInt = (accountId != null && !accountId.isEmpty()) ? Integer.parseInt(accountId) : null;
 
