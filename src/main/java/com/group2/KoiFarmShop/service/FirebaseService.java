@@ -60,5 +60,19 @@ public class FirebaseService {
        return blob.getMediaLink();
    }
 
+    public String uploadFile(MultipartFile file) throws IOException {
+        // Lấy bucket của Firebase
+        Bucket bucket = StorageOptions.getDefaultInstance().getService().get("koi-farm-shop-5212e.appspot.com");
 
+
+        // Tạo tên file unique để tránh trùng lặp
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+
+        // Upload file lên Firebase Storage
+        Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType());
+
+        // Trả về URL để truy cập file đã upload
+        return String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), fileName);
+
+    }
 }
