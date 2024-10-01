@@ -8,7 +8,7 @@ public class ProfileRequest  {
 
     private String fullName;
 //    private String email;
-    private String password;
+//    private String password;
     private String address;
     private String phone;
 

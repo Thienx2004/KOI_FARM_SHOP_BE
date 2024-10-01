@@ -15,6 +15,7 @@ import java.io.InputStream;
 @Configuration
 public class FirebaseConfig {
 
+
     @Value("${credentialsFilePath}")
     private String credentialsFilePath;
 
@@ -33,6 +34,8 @@ public class FirebaseConfig {
             return FirebaseApp.initializeApp(options);
         } else {
             return FirebaseApp.getInstance();
+
         }
     }
 }
+
