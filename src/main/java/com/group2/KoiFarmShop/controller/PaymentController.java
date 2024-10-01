@@ -32,12 +32,17 @@ public class PaymentController {
     }
 
     @Operation(summary = "Trả về kết quả Thanh toán", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {
-        String status = request.getParameter("vnp_ResponseCode");
-        if (status.equals("00")) {
-            return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh toán thành công").data(PaymentDTO.VNPayResponse.builder().code("00").message("Thanh cong").paymentUrl("").build()).build();
+    @GetMapping("/vn-pay-callback")
+    public void vnPayCallback(@RequestParam Map<String, String> params, HttpServletResponse response) throws IOException {
+        String responseCode = params.get("vnp_ResponseCode");
+
+        if ("00".equals(responseCode)) {
+            // Giao dịch thành công
+            response.sendRedirect("http://localhost:5173/thank-you?paymentStatus=1"); // Đường dẫn đến trang "Cảm ơn"
         } else {
-            throw new AppException(ErrorCode.PAYMENT_FAILED);
+            // Giao dịch không thành công
+            response.sendRedirect("http://localhost:5173/payment-fail?paymentStatus=0"); // Đường dẫn đến trang "Thanh toán thất bại"
         }
+    }
     }
 }
