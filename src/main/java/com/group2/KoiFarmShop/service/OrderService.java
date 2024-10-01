@@ -182,6 +182,7 @@ public class OrderService implements OrderServiceImp{
             orderHistoryReponse.setCreatedDate(order.getOrder_date());
             orderHistoryReponse.setTotalPrice(order.getTotalPrice());
             orderHistoryReponse.setStatus(order.isStatus());
+            orderHistoryReponse.setPaymentId(order.getPayment().getPaymentID());
 
 
             orderHistoryReponses.add(orderHistoryReponse);
