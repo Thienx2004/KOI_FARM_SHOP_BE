@@ -38,20 +38,20 @@ public class OrderService implements OrderServiceImp{
 
     @Transactional
     @Override
-    public String addOrder(OrderRequest order) {
-
+    public Orders addOrder(OrderRequest order) {
         try {
             Account account = new Account();
             account.setAccountID(order.getAccountID());
+
             Orders orders = new Orders();
             orders.setAccount(account);
             orders.setTotalPrice(order.getTotalPrice());
             orders.setOrder_date(new Date());
-
-            orderRepository.save(orders);
+            orderRepository.save(orders);  // Lưu trước khi sử dụng ở OrderDetail
 
             List<OrderDetail> orderDetails = new ArrayList<>();
-            if (order.getKoiFishs().length != 0) {
+
+            if (order.getKoiFishs() != null && order.getKoiFishs().length != 0) {
                 for (int i = 0; i < order.getKoiFishs().length; i++) {
                     KoiFish koiFish = new KoiFish();
                     koiFish.setKoiID(order.getKoiFishs()[i]);
@@ -64,7 +64,8 @@ public class OrderService implements OrderServiceImp{
                     orderDetails.add(orderDetail);
                 }
             }
-            if (order.getBatchs().length != 0) {
+
+            if (order.getBatchs() != null && order.getBatchs().length != 0) {
                 for (int i = 0; i < order.getBatchs().length; i++) {
                     Batch batch = new Batch();
                     batch.setBatchID(order.getBatchs()[i]);
@@ -77,31 +78,34 @@ public class OrderService implements OrderServiceImp{
                     orderDetails.add(orderDetail);
                 }
             }
+
             for (int i = 0; i < order.getQuantity().length; i++) {
-                if(orderDetails.get(i).isType()){
+                if(orderDetails.get(i).isType()) {
                     KoiFish koiFish = koiFishRepository.findByKoiID(orderDetails.get(i).getKoiFish().getKoiID());
-                    koiFish.setStatus(2);
+                    koiFish.setStatus(2);  // Giả định "2" là trạng thái "bán"
                     koiFishRepository.save(koiFish);
-                } else{
+                } else {
                     Batch batch = batchRepository.findByBatchID(orderDetails.get(i).getBatch().getBatchID())
                             .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
-                    batch.setQuantity(batch.getQuantity() - order.getQuantity()[i]);
-                    if(batch.getQuantity() - order.getQuantity()[i] == 0){
-                        batch.setStatus(2);
+
+                    int remainingQuantity = batch.getQuantity() - order.getQuantity()[i];
+                    batch.setQuantity(remainingQuantity);
+                    if(remainingQuantity == 0){
+                        batch.setStatus(2);  // Giả định "2" là trạng thái "hết hàng"
                     }
                     batchRepository.save(batch);
                 }
-                orderDetails.get(i).setQuantity(order.getQuantity()[i]);
             }
 
             orderDetailRepository.saveAll(orderDetails);
 
-
+            return orders;
         } catch (Exception e) {
             System.out.println("Error insert order: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());  // Ném lại ngoại lệ
         }
-        return "Thanh toán thành công!";
     }
+
 
     @Override
     public PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId, String type) {
