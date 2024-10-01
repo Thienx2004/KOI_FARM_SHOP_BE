@@ -24,7 +24,7 @@ public class Payment {
     @JoinColumn(name = "orderID")
     private Orders order;
 
-    private String status;
+    private boolean status;
     private Date paymentDate;
 
 }
