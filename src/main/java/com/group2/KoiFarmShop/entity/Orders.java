@@ -30,6 +30,9 @@ public class Orders {
     @OneToMany(mappedBy = "orders")
     private List<OrderDetail> orderDetails;
 
+    @OneToOne(mappedBy = "order")
+    private Payment payment;
+
     private boolean status = true;
 
     // Getters and Setters
