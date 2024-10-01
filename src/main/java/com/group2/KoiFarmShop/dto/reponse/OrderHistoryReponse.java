@@ -17,7 +17,9 @@ public class OrderHistoryReponse {
 
     private int orderId;
     private int accountId;
+    private String fullName;
+    private String transactionCode;
     private Date createdDate;
     private double totalPrice;
-    private List<OrderDetailReponse> orderDetails;
+    //private List<OrderDetailReponse> orderDetails;
 }

@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.controller;
 
 
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.reponse.OrderDetailReponse;
 import com.group2.KoiFarmShop.dto.reponse.OrderHistoryReponse;
 import com.group2.KoiFarmShop.dto.reponse.PaginReponse;
 import com.group2.KoiFarmShop.dto.request.OrderRequest;
@@ -13,6 +14,8 @@ import com.group2.KoiFarmShop.repository.PaymentRepository;
 import com.group2.KoiFarmShop.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -46,15 +49,24 @@ public class OrderController {
     @GetMapping("/getOrderHistory")
     public ApiReponse<PaginReponse<OrderHistoryReponse>> getAllOrdersWithDetails(
             @RequestParam(required = false) String accountID,
-            @RequestParam(required = false) String type,
+            //@RequestParam(required = false) String type,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "3") int pageSize) {
 
-        PaginReponse<OrderHistoryReponse> historyReponsePaginReponse = orderService.getOrdersHistory(pageNo, pageSize, accountID, type);
+        PaginReponse<OrderHistoryReponse> historyReponsePaginReponse = orderService.getOrdersHistory(pageNo, pageSize, accountID);
         ApiReponse<PaginReponse<OrderHistoryReponse>> historyReponse = new ApiReponse<>();
         historyReponse.setData(historyReponsePaginReponse);
 
         return historyReponse;
+    }
+
+    @GetMapping("/getOrderDetail")
+    public ApiReponse<List<OrderDetailReponse>> getOrderDetail(@RequestParam int orderID) {
+
+        ApiReponse<List<OrderDetailReponse>> resp = new ApiReponse<>();
+        resp.setData(orderService.getOrderDetail(orderID));
+
+        return resp;
     }
 
 }
