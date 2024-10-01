@@ -2,13 +2,16 @@ package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.PaymentDTO;
 import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.entity.Payment;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.repository.PaymentRepository;
 import com.group2.KoiFarmShop.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -23,7 +27,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
-
+    @Autowired
+    private final PaymentRepository paymentRepository;
     @GetMapping("/vn-pay")
     @Operation(summary = "Thanh toán", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount, @RequestParam String bankCode) {
@@ -38,11 +43,17 @@ public class PaymentController {
 
         if ("00".equals(responseCode)) {
             // Giao dịch thành công
-            response.sendRedirect("http://localhost:5173/thank-you?paymentStatus=1"); // Đường dẫn đến trang "Cảm ơn"
+            String paymentCode = params.get("vnp_TransactionNo");
+            Payment payment=new Payment();
+            payment.setPaymentDate(new Date());
+            payment.setAmount(Double.parseDouble(params.get("vnp_Amount")));
+            payment.setStatus(false);
+            payment.setTransactionCode(paymentCode);
+            paymentRepository.save(payment);
+            response.sendRedirect("http://localhost:5173/thank-you?paymentStatus=1&paymentCode="+paymentCode); // Đường dẫn đến trang "Cảm ơn"
         } else {
             // Giao dịch không thành công
             response.sendRedirect("http://localhost:5173/payment-fail?paymentStatus=0"); // Đường dẫn đến trang "Thanh toán thất bại"
         }
-    }
     }
 }
