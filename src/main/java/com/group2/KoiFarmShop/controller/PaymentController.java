@@ -5,7 +5,9 @@ import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.service.PaymentService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,23 +15,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/payment")
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
+
     @GetMapping("/vn-pay")
-    public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount,@RequestParam String bankCode) {
+    @Operation(summary = "Thanh toán", description = "-Nguyễn Hoàng Thiên")
+    public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount, @RequestParam String bankCode) {
         return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh cong").data(paymentService.createVnPayPayment(request)).build();
 
     }
+
+    @Operation(summary = "Trả về kết quả Thanh toán", description = "-Nguyễn Hoàng Thiên")
     @GetMapping("/vn-pay-callback")
-    public ApiReponse<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {
-        String status = request.getParameter("vnp_ResponseCode");
-        if (status.equals("00")) {
-            return ApiReponse.<PaymentDTO.VNPayResponse>builder().statusCode(200).message("Thanh toán thành công").data(PaymentDTO.VNPayResponse.builder().code("00").message("Thanh cong").paymentUrl("").build()).build();
+    public void vnPayCallback(@RequestParam Map<String, String> params, HttpServletResponse response) throws IOException {
+        String responseCode = params.get("vnp_ResponseCode");
+
+        if ("00".equals(responseCode)) {
+            // Giao dịch thành công
+            response.sendRedirect("http://localhost:5173/thank-you?paymentStatus=1"); // Đường dẫn đến trang "Cảm ơn"
         } else {
-            throw new AppException(ErrorCode.PAYMENT_FAILED);
+            // Giao dịch không thành công
+            response.sendRedirect("http://localhost:5173/payment-fail?paymentStatus=0"); // Đường dẫn đến trang "Thanh toán thất bại"
         }
+    }
     }
 }

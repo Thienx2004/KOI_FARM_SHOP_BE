@@ -52,12 +52,13 @@ public class FirebaseService {
         return imageUrls;
     }
 
-//    public String uploadImage(MultipartFile file) throws IOException {
-//        Bucket bucket = StorageClient.getInstance().bucket();
-//        String blobName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-//        Blob blob = bucket.create(blobName, file.getInputStream(),file.getContentType());
-//        return blob.getMediaLink();
-//    }
+
+   public String uploadImage(MultipartFile file) throws IOException {
+       Bucket bucket = StorageClient.getInstance().bucket();
+       String blobName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+       Blob blob = bucket.create(blobName, file.getInputStream(),file.getContentType());
+       return blob.getMediaLink();
+   }
 
 
 }

@@ -10,6 +10,7 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
 import com.group2.KoiFarmShop.service.KoiFishServiceImp;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class KoiFishController {
     CategoryRepository categoryRepository;
     // Lấy toàn bộ danh sách cá Koi
     @GetMapping("/allkoi")
+    @Operation(summary = "Lấy danh sách Koi", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishPageResponse> getAllKoiFish(@RequestParam("page") int page,@RequestParam("pageSize") int pageSize) {
         KoiFishPageResponse koiFishList = koiFishService.getAllKoiFish(page,pageSize);
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishList).statusCode(200).build();
@@ -34,6 +36,7 @@ public class KoiFishController {
 
     // Lấy cá Koi theo Category và Trang
     @GetMapping("/category")
+    @Operation(summary = "Lấy danh sách Koi theo Category", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishPageResponse> getKoiByCategory(@RequestParam("categoryId") int id, @RequestParam("page") int page,@RequestParam("pageSize") int pageSize) {
         Category category=categoryRepository.findByCategoryID(id);
         KoiFishPageResponse koiFishList = koiFishService.getKoiByCategory(category, page,pageSize);
@@ -42,6 +45,7 @@ public class KoiFishController {
 
     // Lấy cá Koi theo ID
     @GetMapping("/{id}")
+    @Operation(summary = "Lấy Koi theo id", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishReponse> getKoiFishById(@PathVariable int id) {
         KoiFishReponse koiFish = koiFishService.getKoiFishById(id);
 
@@ -50,6 +54,7 @@ public class KoiFishController {
 
     // Thêm mới cá Koi
     @PostMapping("/add")
+    @Operation(summary = "Thêm cá Koi", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishReponse> addKoiFish(@RequestBody KoiRequest koiFish) {
         if(koiFish.getCategoryId()==0){
             throw new AppException(ErrorCode.KOINOTFOUND);
@@ -61,6 +66,7 @@ public class KoiFishController {
 
     // Cập nhật cá Koi
     @PutMapping("/update/{id}")
+    @Operation(summary = "Cập nhật Koi theo id", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishReponse> updateKoiFish(@PathVariable int id, @RequestBody KoiRequest koiFish) {
         if(koiFish.getCategoryId()==0){
             throw new AppException(ErrorCode.KOINOTFOUND);
@@ -70,6 +76,7 @@ public class KoiFishController {
     }
 
     @GetMapping("/filter")
+    @Operation(summary = "Lọc cá Koi", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishPageResponse> filterKoiFish(
             @RequestParam(required = false) String categoryID,
             @RequestParam(required = false) String gender,
@@ -93,6 +100,7 @@ public class KoiFishController {
     }
 
     @GetMapping("/compare")
+    @Operation(summary = "So sánh Koi", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<List<KoiFishReponse>> compareKoiFish(@RequestParam("koiFishId1") int id1, @RequestParam("koiFishId2") int id2) {
         List<KoiFishReponse> koiFishReponses = koiFishService.compareKoiFish(id1, id2);
         return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();

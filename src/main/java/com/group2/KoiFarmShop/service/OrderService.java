@@ -86,6 +86,9 @@ public class OrderService implements OrderServiceImp{
                     Batch batch = batchRepository.findByBatchID(orderDetails.get(i).getBatch().getBatchID())
                             .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
                     batch.setQuantity(batch.getQuantity() - order.getQuantity()[i]);
+                    if(batch.getQuantity() - order.getQuantity()[i] == 0){
+                        batch.setStatus(2);
+                    }
                     batchRepository.save(batch);
                 }
                 orderDetails.get(i).setQuantity(order.getQuantity()[i]);
@@ -97,7 +100,7 @@ public class OrderService implements OrderServiceImp{
         } catch (Exception e) {
             System.out.println("Error insert order: " + e.getMessage());
         }
-        return "Order added successfully!";
+        return "Thanh toán thành công!";
     }
 
     @Override

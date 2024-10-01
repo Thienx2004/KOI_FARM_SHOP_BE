@@ -9,11 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
 import java.util.List;
 @RequestMapping
+
 @RestController
 public class FirebaseController {
     @Autowired
@@ -21,17 +23,28 @@ public class FirebaseController {
 
 
 
-    @GetMapping("/image/{fileName}")
-    public String getImageUrl(@PathVariable String fileName) {
-        return firebaseService.getImageUrl(fileName);
+//    @GetMapping("/image/{fileName}")
+//    public String getImageUrl(@PathVariable String fileName) {
+//        return firebaseService.getImageUrl(fileName);
+//    }
+//
+//    @GetMapping("/image-gallery")
+//    public String getImageGallery(Model model) {
+//        List<String> imageUrls = firebaseService.getImageUrls("KoiAsagi/");
+//        model.addAttribute("imageUrls", imageUrls);
+//        return "images";
+//    }
+
+    @PostMapping
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileUrl = firebaseService.uploadFile(file);
+            return ResponseEntity.ok(fileUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Upload failed: " + e.getMessage());
+        }
     }
 
-    @GetMapping("/image-gallery")
-    public String getImageGallery(Model model) {
-        List<String> imageUrls = firebaseService.getImageUrls("KoiAsagi/");
-        model.addAttribute("imageUrls", imageUrls);
-        return "images";
-    }
 
 //    @PostMapping
 //    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -72,4 +85,6 @@ public class FirebaseController {
         return "File uploaded successfully: " + fileUrl;
     }
 }
+
+
 

@@ -16,26 +16,26 @@ import java.io.InputStream;
 public class FirebaseConfig {
 
 
+    @Value("${credentialsFilePath}")
+    private String credentialsFilePath;
 
-        @Value("${credentialsFilePath}")
-        private String credentialsFilePath;
+    @Bean
+    public FirebaseApp firebaseApp() throws IOException {
+        // Sử dụng ClassPathResource để nạp tệp từ classpath
+        ClassPathResource resource = new ClassPathResource(credentialsFilePath);
+        InputStream serviceAccount = resource.getInputStream();
 
-        @Bean
-        public FirebaseApp firebaseApp() throws IOException {
-            // Sử dụng ClassPathResource để nạp tệp từ classpath
-            ClassPathResource resource = new ClassPathResource(credentialsFilePath);
-            InputStream serviceAccount = resource.getInputStream();
+        FirebaseOptions options = FirebaseOptions.builder()
+                .setStorageBucket("koi-farm-shop-5212e.appspot.com")
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build();
 
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setStorageBucket("koi-farm-shop-5212e.appspot.com")
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
+        if (FirebaseApp.getApps().isEmpty()) {
+            return FirebaseApp.initializeApp(options);
+        } else {
+            return FirebaseApp.getInstance();
 
-            if (FirebaseApp.getApps().isEmpty()) {
-                return FirebaseApp.initializeApp(options);
-            } else {
-                return FirebaseApp.getInstance();
-            }
         }
     }
+}
 
