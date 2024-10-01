@@ -21,5 +21,6 @@ public class OrderHistoryReponse {
     private String transactionCode;
     private Date createdDate;
     private double totalPrice;
+    private boolean status;
     //private List<OrderDetailReponse> orderDetails;
 }
