@@ -107,49 +107,82 @@ public class OrderService implements OrderServiceImp{
     }
 
 
+//    @Override
+//    public PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId, String type) {
+//        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("order_date").descending());
+//        // Kiểm tra null hoặc chuỗi rỗng trước khi chuyển đổi
+//        Integer accountIdInt = (accountId != null && !accountId.isEmpty()) ? Integer.parseInt(accountId) : null;
+//        Boolean typeBool = (type != null && !type.isEmpty()) ? Boolean.parseBoolean(type) : null;
+//
+//        // Gọi đến repository với các tham số đã kiểm tra
+//        Page<Orders> orders = orderRepository.findOrdersWithFilters(accountIdInt, typeBool, pageable);
+//        List<OrderHistoryReponse> orderHistoryReponses = new ArrayList<>();
+//
+//        for (Orders order : orders.getContent()) {
+//            OrderHistoryReponse orderHistoryReponse = new OrderHistoryReponse();
+//            orderHistoryReponse.setOrderId(order.getOrderID());
+//            orderHistoryReponse.setAccountId(order.getAccount().getAccountID());
+//            orderHistoryReponse.setCreatedDate(order.getOrder_date());
+//            orderHistoryReponse.setTotalPrice(order.getTotalPrice());
+//
+//            List<OrderDetailReponse> orderDetails = new ArrayList<>();
+//            for(OrderDetail orderDetail : order.getOrderDetails()){
+//                OrderDetailReponse orderDetailReponse = new OrderDetailReponse();
+//
+//                orderDetailReponse.setOrderDetailId(orderDetail.getOrderDetailID());
+//                if(orderDetail.getKoiFish() != null) {
+//                    orderDetailReponse.setCategoryName(orderDetail.getKoiFish().getCategory().getCategoryName());
+//                    orderDetailReponse.setKoiFishId(orderDetail.getKoiFish().getKoiID());
+//                    orderDetailReponse.setGender(orderDetail.getKoiFish().isGender());
+//                    orderDetailReponse.setKoiAge(orderDetail.getKoiFish().getAge());
+//                    orderDetailReponse.setKoiSize(orderDetail.getKoiFish().getSize());
+//                } else {
+//                    orderDetailReponse.setCategoryName(orderDetail.getBatch().getCategory().getCategoryName());
+//                    orderDetailReponse.setBatchId(orderDetail.getBatch().getBatchID());
+//                    orderDetailReponse.setAvgSize(orderDetail.getBatch().getAvgSize());
+//                    orderDetailReponse.setKoiPrice(orderDetail.getBatch().getPrice());
+//                    orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
+//                }
+//                orderDetailReponse.setQuantity(orderDetail.getQuantity());
+//                orderDetailReponse.setType(orderDetail.isType());
+//                orderDetailReponse.setQuantity(orderDetail.getQuantity());
+//
+//                orderDetails.add(orderDetailReponse);
+//            }
+//            orderHistoryReponse.setOrderDetails(orderDetails);
+//            orderHistoryReponses.add(orderHistoryReponse);
+//        }
+//
+//        PaginReponse<OrderHistoryReponse> paginReponse = new PaginReponse<>();
+//        paginReponse.setContent(orderHistoryReponses);
+//        paginReponse.setPageNum(pageNo);
+//        paginReponse.setPageSize(pageSize);
+//        paginReponse.setTotalElements(orders.getNumberOfElements());
+//        paginReponse.setTotalPages(orders.getTotalPages());
+//
+//        return paginReponse;
+//    }
+
     @Override
-    public PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId, String type) {
+    public PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("order_date").descending());
         // Kiểm tra null hoặc chuỗi rỗng trước khi chuyển đổi
         Integer accountIdInt = (accountId != null && !accountId.isEmpty()) ? Integer.parseInt(accountId) : null;
-        Boolean typeBool = (type != null && !type.isEmpty()) ? Boolean.parseBoolean(type) : null;
 
-        // Gọi đến repository với các tham số đã kiểm tra
-        Page<Orders> orders = orderRepository.findOrdersWithFilters(accountIdInt, typeBool, pageable);
+
+        Page<Orders> orders = orderRepository.findOrdersWithFilters(accountIdInt, pageable);
         List<OrderHistoryReponse> orderHistoryReponses = new ArrayList<>();
 
         for (Orders order : orders.getContent()) {
             OrderHistoryReponse orderHistoryReponse = new OrderHistoryReponse();
             orderHistoryReponse.setOrderId(order.getOrderID());
             orderHistoryReponse.setAccountId(order.getAccount().getAccountID());
+            orderHistoryReponse.setFullName(order.getAccount().getFullName());
+            orderHistoryReponse.setTransactionCode(order.getPayment().getTransactionCode());
             orderHistoryReponse.setCreatedDate(order.getOrder_date());
             orderHistoryReponse.setTotalPrice(order.getTotalPrice());
 
-            List<OrderDetailReponse> orderDetails = new ArrayList<>();
-            for(OrderDetail orderDetail : order.getOrderDetails()){
-                OrderDetailReponse orderDetailReponse = new OrderDetailReponse();
 
-                orderDetailReponse.setOrderDetailId(orderDetail.getOrderDetailID());
-                if(orderDetail.getKoiFish() != null) {
-                    orderDetailReponse.setCategoryName(orderDetail.getKoiFish().getCategory().getCategoryName());
-                    orderDetailReponse.setKoiFishId(orderDetail.getKoiFish().getKoiID());
-                    orderDetailReponse.setGender(orderDetail.getKoiFish().isGender());
-                    orderDetailReponse.setKoiAge(orderDetail.getKoiFish().getAge());
-                    orderDetailReponse.setKoiSize(orderDetail.getKoiFish().getSize());
-                } else {
-                    orderDetailReponse.setCategoryName(orderDetail.getBatch().getCategory().getCategoryName());
-                    orderDetailReponse.setBatchId(orderDetail.getBatch().getBatchID());
-                    orderDetailReponse.setAvgSize(orderDetail.getBatch().getAvgSize());
-                    orderDetailReponse.setKoiPrice(orderDetail.getBatch().getPrice());
-                    orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
-                }
-                orderDetailReponse.setQuantity(orderDetail.getQuantity());
-                orderDetailReponse.setType(orderDetail.isType());
-                orderDetailReponse.setQuantity(orderDetail.getQuantity());
-
-                orderDetails.add(orderDetailReponse);
-            }
-            orderHistoryReponse.setOrderDetails(orderDetails);
             orderHistoryReponses.add(orderHistoryReponse);
         }
 
@@ -161,6 +194,39 @@ public class OrderService implements OrderServiceImp{
         paginReponse.setTotalPages(orders.getTotalPages());
 
         return paginReponse;
+    }
+
+    @Override
+    public List<OrderDetailReponse> getOrderDetail(int orderId) {
+        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders_OrderID(orderId);
+        List<OrderDetailReponse> orderDetailReponseList = new ArrayList<>();
+
+        for(OrderDetail orderDetail : orderDetails){
+            OrderDetailReponse orderDetailReponse = new OrderDetailReponse();
+
+            orderDetailReponse.setOrderDetailId(orderDetail.getOrderDetailID());
+            if(orderDetail.getKoiFish() != null) {
+                orderDetailReponse.setCategoryName(orderDetail.getKoiFish().getCategory().getCategoryName());
+                orderDetailReponse.setKoiFishId(orderDetail.getKoiFish().getKoiID());
+                orderDetailReponse.setGender(orderDetail.getKoiFish().isGender());
+                orderDetailReponse.setKoiAge(orderDetail.getKoiFish().getAge());
+                orderDetailReponse.setKoiSize(orderDetail.getKoiFish().getSize());
+                orderDetailReponse.setKoiPrice(orderDetail.getKoiFish().getPrice());
+            } else {
+                orderDetailReponse.setCategoryName(orderDetail.getBatch().getCategory().getCategoryName());
+                orderDetailReponse.setBatchId(orderDetail.getBatch().getBatchID());
+                orderDetailReponse.setAvgSize(orderDetail.getBatch().getAvgSize());
+                orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
+                orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
+            }
+            orderDetailReponse.setQuantity(orderDetail.getQuantity());
+            orderDetailReponse.setType(orderDetail.isType());
+            orderDetailReponse.setQuantity(orderDetail.getQuantity());
+
+            orderDetailReponseList.add(orderDetailReponse);
+
+            }
+        return orderDetailReponseList;
     }
 
 
