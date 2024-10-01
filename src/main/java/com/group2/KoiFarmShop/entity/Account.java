@@ -46,7 +46,5 @@ import java.util.Set;
         @OneToMany(mappedBy = "account")
         private List<VerificationToken> verificationTokens;
 
-        private String OTPcheck ;
-
         private boolean status = true;
 }
