@@ -18,10 +18,12 @@ public class OrderDetailReponse {
     private int koiAge;
     private boolean gender;
     private double koiSize;
+    private String koiImg;
     private int batchId;
     private String avgSize;
     private double koiPrice;
     private double batchPrice;
+    private String batchImg;
     private int quantity;
     private boolean type;
 }
