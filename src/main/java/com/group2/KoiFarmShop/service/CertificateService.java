@@ -31,7 +31,7 @@ public class CertificateService implements CertificateServiceImp {
 
     @Override
     public PaginReponse<KoiFishReponse> getAllKoiFishReponse(int pageNo, int pageSize, String accountId) {
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize, Sort.by("order_date").descending());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("order_date").descending());
         Integer accountIdInt = (accountId != null && !accountId.isEmpty()) ? Integer.parseInt(accountId) : null;
 
         Page<KoiFish> customerKoi = koiFishRepository.findCustomerKoi(accountIdInt, pageable);
