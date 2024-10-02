@@ -1,9 +1,9 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.CertificateRequest;
 import com.group2.KoiFarmShop.dto.reponse.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
-import com.group2.KoiFarmShop.entity.Batch;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;
 import com.group2.KoiFarmShop.entity.KoiFish;
@@ -20,12 +20,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Service
 public class KoiFishService implements KoiFishServiceImp{
-
+    @Autowired
+    private FirebaseService firebaseService;
     @Autowired
     private KoiFishRepository koiFishRepository;
     @Autowired
@@ -115,25 +119,39 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
     @Override
-    public KoiFishReponse addKoiFish(KoiRequest koiRequest) {
+    public KoiFishReponse addKoiFish(String origin,
+                                     boolean gender,
+                                     int age,
+                                     double size,
+                                     String personality,
+                                     double price,
+                                     int categoryId,
+                                     MultipartFile file,
+                                     String name,
+                                     MultipartFile certImg
+                                     ) throws IOException {
         KoiFish koiFish = new KoiFish();
-        koiFish.setOrigin(koiRequest.getOrigin());
-        koiFish.setGender(koiRequest.isGender());
-        koiFish.setAge(koiRequest.getAge());
-        koiFish.setSize(koiRequest.getSize());
-        koiFish.setPersonality(koiRequest.getPersonality());
-        koiFish.setPrice(koiRequest.getPrice());
-        koiFish.setKoiImage(koiRequest.getKoiImage());
-        Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
+        koiFish.setOrigin(origin);
+        koiFish.setGender(gender);
+        koiFish.setAge(age);
+        koiFish.setSize(size);
+        koiFish.setPersonality(personality);
+        koiFish.setPrice(price);
+        koiFish.setKoiImage(firebaseService.uploadImage(file));
+        Category category = categoryRepository.findByCategoryID(categoryId);
         koiFish.setCategory(category);
         KoiFish savedKoiFish= koiFishRepository.save(koiFish);
         Certificate newCertificate= certificateRepository.save(
                 Certificate.builder()
                         .koiFish(savedKoiFish)
-                        .name(koiRequest.getCertificate().getName())
-                        .createdDate(koiRequest.getCertificate().getCreatedDate())
-                        .image(koiRequest.getCertificate().getImage())
+                        .name(name)
+                        .createdDate(new Date())
+                        .image(firebaseService.uploadImage(certImg))
                         .build());
+        CertificateRequest certificateRequest = new CertificateRequest();
+        certificateRequest.setName(newCertificate.getName());
+        certificateRequest.setImage(newCertificate.getImage());
+        certificateRequest.setCreatedDate(new Date());
         return KoiFishReponse.builder()
                 .id(savedKoiFish.getKoiID())
                 .age(savedKoiFish.getAge())
@@ -145,6 +163,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .origin(savedKoiFish.getOrigin())
                 .categoryId(newCertificate.getId())
                 .category(newCertificate.getName())
+                .certificate(certificateRequest)
                 .build();
     }
 

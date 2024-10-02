@@ -23,10 +23,10 @@ public class FirebaseController {
 
 
 
-//    @GetMapping("/image/{fileName}")
-//    public String getImageUrl(@PathVariable String fileName) {
-//        return firebaseService.getImageUrl(fileName);
-//    }
+    @GetMapping("/image/{fileName}")
+    public String getImageUrl(@PathVariable String fileName) {
+        return firebaseService.getImageUrl(fileName);
+    }
 //
 //    @GetMapping("/image-gallery")
 //    public String getImageGallery(Model model) {
@@ -35,15 +35,15 @@ public class FirebaseController {
 //        return "images";
 //    }
 
-    @PostMapping
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            String fileUrl = firebaseService.uploadFile(file);
-            return ResponseEntity.ok(fileUrl);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Upload failed: " + e.getMessage());
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+//        try {
+//            String fileUrl = firebaseService.uploadFile(file);
+//            return ResponseEntity.ok(fileUrl);
+//        } catch (IOException e) {
+//            return ResponseEntity.status(500).body("Upload failed: " + e.getMessage());
+//        }
+//    }
 
 
 //    @PostMapping
@@ -56,34 +56,34 @@ public class FirebaseController {
 //        }
 //    }
 
-//    @PostMapping("/upload")
-//    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-//        try {
-//            String imageUrl = firebaseService.uploadImage(file);
-//            return ResponseEntity.ok(imageUrl);
-//        } catch (IOException e) {
-//            return ResponseEntity.status(500).body("Failed to upload image");
-//        }
-//    }
-
     @PostMapping("/upload")
-    public String uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file) throws IOException {
-        // Tạo tham chiếu tới Firebase Storage
-        if (!(request instanceof MultipartHttpServletRequest)) {
-            throw new IllegalArgumentException("Request is not a multipart request");
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = firebaseService.uploadImage(file);
+            return ResponseEntity.ok(imageUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to upload image");
         }
-        String bucketName = "koi-farm-shop-5212e.appspot.com";
-        String fileName = file.getOriginalFilename();
 
-        // Upload file lên Firebase Storage
-        Blob blob = StorageClient.getInstance().bucket(bucketName)
-                .create(fileName, file.getInputStream(), file.getContentType());
-
-        // Trả về URL của file đã upload
-        String fileUrl = String.format("https://storage.googleapis.com/%s/%s", bucketName, fileName);
-
-        return "File uploaded successfully: " + fileUrl;
     }
+//    @PostMapping("/upload")
+//    public String uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file) throws IOException {
+//        // Tạo tham chiếu tới Firebase Storage
+//        if (!(request instanceof MultipartHttpServletRequest)) {
+//            throw new IllegalArgumentException("Request is not a multipart request");
+//        }
+//        String bucketName = "koi-farm-shop-5212e.appspot.com";
+//        String fileName = file.getOriginalFilename();
+//
+//        // Upload file lên Firebase Storage
+//        Blob blob = StorageClient.getInstance().bucket(bucketName)
+//                .create(fileName, file.getInputStream(), file.getContentType());
+//
+//        // Trả về URL của file đã upload
+//        String fileUrl = String.format("https://storage.googleapis.com/%s/%s", bucketName, fileName);
+//
+//        return "File uploaded successfully: " + fileUrl;
+//    }
 }
 
 

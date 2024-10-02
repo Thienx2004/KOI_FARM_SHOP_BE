@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProfileRespone {
     private int id;
-    private String fullname;
+    private String fullName;
     private String password;
     private String email;
     private String phone;

@@ -30,49 +30,37 @@ public class FirebaseService {
         }
 
 
-        return blob.signUrl(365, java.util.concurrent.TimeUnit.DAYS).toString(); // URL tồn tại trong ? ngày
+        return blob.signUrl(7, java.util.concurrent.TimeUnit.DAYS).toString(); // URL tồn tại trong ? ngày
     }
 
-    private final String bucketName = "koi-farm-shop-5212e.appspot.com";
+//    private final String bucketName = "koi-farm-shop-5212e.appspot.com";
 
-    public List<String> getImageUrls(String folderName) {
-        List<String> imageUrls = new ArrayList<>();
-
-        Storage storage = StorageOptions.getDefaultInstance().getService();
-        Bucket bucket = storage.get(bucketName);
-
-        for (Blob blob : bucket.list(Storage.BlobListOption.prefix(folderName)).iterateAll()) {
-            if (!blob.isDirectory()) {
-                // Tạo URL truy cập công khai
-                String imageUrl = String.format("https://storage.googleapis.com/%s/%s", bucketName, blob.getName());
-                imageUrls.add(imageUrl);
-            }
-        }
-
-        return imageUrls;
-    }
+//    public List<String> getImageUrls(String folderName) {
+//        List<String> imageUrls = new ArrayList<>();
+//
+//        Storage storage = StorageOptions.getDefaultInstance().getService();
+//        Bucket bucket = storage.get(bucketName);
+//
+//        for (Blob blob : bucket.list(Storage.BlobListOption.prefix(folderName)).iterateAll()) {
+//            if (!blob.isDirectory()) {
+//                // Tạo URL truy cập công khai
+//                String imageUrl = String.format("https://storage.googleapis.com/%s/%s", bucketName, blob.getName());
+//                imageUrls.add(imageUrl);
+//            }
+//        }
+//
+//        return imageUrls;
+//    }
 
 
    public String uploadImage(MultipartFile file) throws IOException {
        Bucket bucket = StorageClient.getInstance().bucket();
-       String blobName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+       String timestamp = String.valueOf(System.currentTimeMillis());
+       String blobName = timestamp + "_" + file.getOriginalFilename();
        Blob blob = bucket.create(blobName, file.getInputStream(),file.getContentType());
-       return blob.getMediaLink();
+       return String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), blob.getName());
    }
 
-    public String uploadFile(MultipartFile file) throws IOException {
-        // Lấy bucket của Firebase
-        Bucket bucket = StorageOptions.getDefaultInstance().getService().get("koi-farm-shop-5212e.appspot.com");
 
 
-        // Tạo tên file unique để tránh trùng lặp
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-
-        // Upload file lên Firebase Storage
-        Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType());
-
-        // Trả về URL để truy cập file đã upload
-        return String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), fileName);
-
-    }
 }
