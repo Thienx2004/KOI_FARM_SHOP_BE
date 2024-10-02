@@ -286,7 +286,7 @@ public class AccountService implements AccountServiceImp{
         return ProfileRespone.builder()
                 .id(account.get().getAccountID())
                 .password((account.get().getPassword()))
-                .fullname(account.get().getFullName())
+                .fullName(account.get().getFullName())
                 .email(account.get().getEmail())
                 .phone(account.get().getPhone())
                 .address(account.get().getAddress())
@@ -311,7 +311,7 @@ public class AccountService implements AccountServiceImp{
         return ProfileRespone.builder()
                 .id(accSave.getAccountID())
 //                .password(passwordEncoder.encode(accSave.getPassword()))
-                .fullname(accSave.getFullName())
+                .fullName(accSave.getFullName())
                 .email(accSave.getEmail())
                 .phone(accSave.getPhone())
                 .address(accSave.getAddress())
@@ -330,8 +330,7 @@ public class AccountService implements AccountServiceImp{
         Account accSave = accountRepository.save(account);
 
         return ProfileRespone.builder()
-                .id(accSave.getAccountID())
-                .email(accSave.getEmail())
+
                 .password(accSave.getPassword())
                 .build();
     }

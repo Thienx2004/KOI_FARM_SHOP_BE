@@ -26,16 +26,15 @@ public class FirebaseConfig {
         InputStream serviceAccount = resource.getInputStream();
 
         FirebaseOptions options = FirebaseOptions.builder()
-                .setStorageBucket("koi-farm-shop-5212e.appspot.com")
+                .setStorageBucket("koi-shop-3290e.appspot.com")
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .build();
 
-        if (FirebaseApp.getApps().isEmpty()) {
+
             return FirebaseApp.initializeApp(options);
-        } else {
-            return FirebaseApp.getInstance();
+
 
         }
     }
-}
+
 
