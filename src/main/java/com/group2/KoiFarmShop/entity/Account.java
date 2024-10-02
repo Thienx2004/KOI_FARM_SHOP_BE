@@ -45,6 +45,6 @@ import java.util.Set;
 
         @OneToMany(mappedBy = "account")
         private List<VerificationToken> verificationTokens;
-        private String batchImg;
+
         private boolean status = true;
 }
