@@ -1,3 +1,5 @@
+import {type} from "node:os";
+
 Feature('APItest');
 
 Scenario('Đăng nhập với tài khoản không tồn tại', async ({ I }) => {
@@ -24,11 +26,13 @@ Scenario('Đăng nhập với tài khoản google', async ({ I }) => {
 
     const response = await I.sendPostRequest('/login/signingoogle', loginRequest);
 
-    // Kiểm tra mã trạng thái
     // Kiểm tra nội dung phản hồi
     I.seeResponseContainsJson({
         statusCode: 200,
-        message: "Đăng nhập thành công"
+        message: "Đăng nhập thành công",
+    });
+    I.seeResponseContainsJson({
+        data: {}
     });
 
 });
