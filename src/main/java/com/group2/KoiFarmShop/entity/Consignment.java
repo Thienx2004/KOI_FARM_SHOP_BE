@@ -27,7 +27,7 @@ public class Consignment {
     private Date consignmentDate;
 
     private String notes;
-    private String status;
+    private int status;     //1 = Pending, 2 = Confirm, 3 = Sold
     private boolean online;
 
 }
