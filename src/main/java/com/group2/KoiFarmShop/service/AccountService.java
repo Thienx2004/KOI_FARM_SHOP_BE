@@ -301,7 +301,7 @@ public class AccountService implements AccountServiceImp{
         account.setAccountID(id);
         account.setEmail(account1.get().getEmail());
         account.setFullName(profileRequest.getFullName());
-//        account.setPassword(profileRequest.getPassword());
+        account.setPassword(account1.get().getPassword());
         account.setAddress(profileRequest.getAddress());
         account.setPhone(profileRequest.getPhone());
         account.setVerified(account1.get().isVerified());
