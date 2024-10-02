@@ -1,6 +1,12 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -10,7 +16,7 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
+          MYSQL_DATABASE: KoiFarmShop
         ports:
           - 3306:3306
         options: >-
@@ -19,18 +25,45 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
 
       - name: Install dependencies
         run: npm install
 
       - name: Run database migrations
         run: npm run migrate
+      # Cấp quyền thực thi cho CodeceptJS
+      - name: Grant permission to CodeceptJS
+        run: chmod +x ./node_modules/.bin/codeceptjs
+      # 4. Thiết lập môi trường Java (JDK) cho Spring Boot
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Sử dụng JDK từ Eclipse Temurin
+          java-version: '17'  # Phiên bản Java 17 (hoặc phiên bản phù hợp với dự án của bạn)
+      # 5. Khởi động server Spring Boot ở chế độ nền
+      - name: Start API server
+        run: mvn spring-boot:run &  # Chạy server ở chế độ nền để các bước tiếp theo có thể tiếp tục
 
-      - name: Run tests
-        run: npm test
+      # 6. Chờ vài giây để server khởi động hoàn tất
+      - name: Wait for server to start
+        run: |
+          n=0
+          until [ $n -ge 30 ]
+          do
+            curl -s http://localhost:8080 && break  # Kiểm tra nếu server đã sẵn sàng
+            n=$((n+1))
+            echo "Waiting for server to start..."
+            sleep 5
+          done
+
+
+      # 7. Chạy test với CodeceptJS
+      - name: Run CodeceptJS tests
+        run: npx codeceptjs run --steps
+
