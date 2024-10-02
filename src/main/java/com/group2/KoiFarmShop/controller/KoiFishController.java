@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -55,11 +58,32 @@ public class KoiFishController {
     // Thêm mới cá Koi
     @PostMapping("/add")
     @Operation(summary = "Thêm cá Koi", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishReponse> addKoiFish(@RequestBody KoiRequest koiFish) {
-        if(koiFish.getCategoryId()==0){
-            throw new AppException(ErrorCode.KOINOTFOUND);
-        }
-        KoiFishReponse koiFishReponse=koiFishService.addKoiFish(koiFish);
+    public ApiReponse<KoiFishReponse> addKoiFish(@RequestParam ("file") MultipartFile file,
+                                                 @RequestParam String origin,
+                                                 @RequestParam boolean gender, @RequestParam int age,
+                                                 @RequestParam double size,
+                                                 @RequestParam String personality,
+                                                 @RequestParam double price,
+
+                                                 @RequestParam int categoryId,
+                                                 @RequestParam String name,
+                                                 @RequestParam MultipartFile certImg
+                                                ) throws IOException {
+//        if(koiFish.getCategoryId()==0){
+//            throw new AppException(ErrorCode.KOINOTFOUND);
+//        }
+        KoiFishReponse koiFishReponse=koiFishService.addKoiFish(origin,
+                                                                gender,
+                                                                age,
+                                                                size,
+                                                                personality,
+                                                                price,
+
+                                                                categoryId,
+                                                                file,
+                                                                name,
+                                                                certImg
+                                                               );
         return ApiReponse.<KoiFishReponse>builder().data(koiFishReponse).message("Thêm Koi thành công").statusCode(200).build();
     }
 

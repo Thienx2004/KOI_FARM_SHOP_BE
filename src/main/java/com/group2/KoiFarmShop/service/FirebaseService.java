@@ -55,7 +55,8 @@ public class FirebaseService {
 
    public String uploadImage(MultipartFile file) throws IOException {
        Bucket bucket = StorageClient.getInstance().bucket();
-       String blobName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+       String timestamp = String.valueOf(System.currentTimeMillis());
+       String blobName = timestamp + "_" + file.getOriginalFilename();
        Blob blob = bucket.create(blobName, file.getInputStream(),file.getContentType());
        return String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), blob.getName());
    }
