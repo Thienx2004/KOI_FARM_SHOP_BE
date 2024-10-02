@@ -1,16 +1,7 @@
 {
   "devDependencies": {
     "@types/node": "^22.7.4",
-    "codeceptjs": "^3.6.7",
-    "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
-  },
-  "scripts": {
-    "migrate": "sequelize db:migrate"
-  },
-  "dependencies": {
-    "mysql2": "^3.11.3",
-    "sequelize": "^6.37.3"
   }
 }
