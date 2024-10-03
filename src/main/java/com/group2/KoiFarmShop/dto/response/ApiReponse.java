@@ -1,7 +1,6 @@
-package com.group2.KoiFarmShop.dto.reponse;
+package com.group2.KoiFarmShop.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.group2.KoiFarmShop.dto.Content;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

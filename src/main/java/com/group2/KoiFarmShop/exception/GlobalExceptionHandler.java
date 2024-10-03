@@ -1,6 +1,6 @@
 package com.group2.KoiFarmShop.exception;
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

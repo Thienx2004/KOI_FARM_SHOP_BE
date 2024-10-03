@@ -1,8 +1,8 @@
 package com.group2.KoiFarmShop.controller;
 
-import com.group2.KoiFarmShop.dto.reponse.AccountReponse;
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.dto.reponse.ProfileRespone;
+import com.group2.KoiFarmShop.dto.response.AccountReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.ProfileRespone;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.dto.request.PasswordRequest;
 import com.group2.KoiFarmShop.dto.request.ProfileRequest;
@@ -18,12 +18,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

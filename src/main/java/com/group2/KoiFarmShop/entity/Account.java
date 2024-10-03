@@ -46,5 +46,6 @@ import java.util.Set;
         @OneToMany(mappedBy = "account")
         private List<VerificationToken> verificationTokens;
 
+        private String avatar;
         private boolean status = true;
 }

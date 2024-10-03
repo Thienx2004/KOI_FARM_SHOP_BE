@@ -1,21 +1,12 @@
 package com.group2.KoiFarmShop.controller;
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.dto.reponse.IntrospectResponse;
-import com.group2.KoiFarmShop.dto.request.IntrospectRequest;
-import com.group2.KoiFarmShop.entity.Account;
-import com.group2.KoiFarmShop.entity.VerificationToken;
-import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.service.AccountService;
 import com.group2.KoiFarmShop.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @RestController
 public class VerificationController {

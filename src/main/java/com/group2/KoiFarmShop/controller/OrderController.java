@@ -1,10 +1,10 @@
 package com.group2.KoiFarmShop.controller;
 
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.dto.reponse.OrderDetailReponse;
-import com.group2.KoiFarmShop.dto.reponse.OrderHistoryReponse;
-import com.group2.KoiFarmShop.dto.reponse.PaginReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.OrderDetailReponse;
+import com.group2.KoiFarmShop.dto.response.OrderHistoryReponse;
+import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.dto.request.OrderRequest;
 import com.group2.KoiFarmShop.entity.Orders;
 import com.group2.KoiFarmShop.entity.Payment;

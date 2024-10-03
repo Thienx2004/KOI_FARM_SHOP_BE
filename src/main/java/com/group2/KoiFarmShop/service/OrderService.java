@@ -1,8 +1,8 @@
 package com.group2.KoiFarmShop.service;
 
-import com.group2.KoiFarmShop.dto.reponse.OrderDetailReponse;
-import com.group2.KoiFarmShop.dto.reponse.OrderHistoryReponse;
-import com.group2.KoiFarmShop.dto.reponse.PaginReponse;
+import com.group2.KoiFarmShop.dto.response.OrderDetailReponse;
+import com.group2.KoiFarmShop.dto.response.OrderHistoryReponse;
+import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.dto.request.OrderRequest;
 import com.group2.KoiFarmShop.entity.*;
 import com.group2.KoiFarmShop.exception.AppException;

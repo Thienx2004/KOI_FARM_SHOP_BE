@@ -1,8 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.dto.reponse.CategoryHomeReponse;
-import com.group2.KoiFarmShop.dto.reponse.CategoryReponse;
+import com.group2.KoiFarmShop.dto.response.CategoryHomeReponse;
+import com.group2.KoiFarmShop.dto.response.CategoryReponse;
 import com.group2.KoiFarmShop.entity.Category;
 
 import java.util.List;

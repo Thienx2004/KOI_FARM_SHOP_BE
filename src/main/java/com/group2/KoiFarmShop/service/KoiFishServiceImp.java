@@ -1,14 +1,12 @@
 package com.group2.KoiFarmShop.service;
 
-import com.group2.KoiFarmShop.dto.reponse.KoiFishPageResponse;
-import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
+import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
+import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
-import com.group2.KoiFarmShop.entity.KoiFish;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 public interface KoiFishServiceImp {

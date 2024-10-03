@@ -1,8 +1,8 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
-import com.group2.KoiFarmShop.dto.reponse.KoiFishPageResponse;
-import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
+import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
+import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;

@@ -1,10 +1,10 @@
 package com.group2.KoiFarmShop.controller;
 
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.dto.reponse.CertificationReponse;
-import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
-import com.group2.KoiFarmShop.dto.reponse.PaginReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.CertificationReponse;
+import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
+import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.service.CertificateServiceImp;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;

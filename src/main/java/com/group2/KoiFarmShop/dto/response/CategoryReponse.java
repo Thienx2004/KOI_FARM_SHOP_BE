@@ -1,7 +1,5 @@
-package com.group2.KoiFarmShop.dto.reponse;
+package com.group2.KoiFarmShop.dto.response;
 
-import com.group2.KoiFarmShop.entity.Batch;
-import com.group2.KoiFarmShop.entity.KoiFish;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
