@@ -63,7 +63,7 @@ public class CategoryService implements CategoryServiceImp{
     @Transactional
     @Override
     public CategoryHomeReponse getListHomeCategory(int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<Category> categories = categoryRepository.findAll(pageable);
         List<Category> categoryHome = categories.getContent();
         List<CategoryReponse> categoryReponses = new ArrayList<>();
@@ -98,7 +98,7 @@ public class CategoryService implements CategoryServiceImp{
             categoryReponses.add(categoryReponse);
         }
         categoryHomeReponse.setCategoryReponses(categoryReponses);
-        categoryHomeReponse.setPageNum(categories.getNumber());
+        categoryHomeReponse.setPageNum(pageNum);
         categoryHomeReponse.setPageSize(categories.getSize());
         categoryHomeReponse.setTotalElements(categories.getNumberOfElements());
         categoryHomeReponse.setTotalPages(categories.getTotalPages());
