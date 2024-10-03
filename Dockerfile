@@ -1,17 +1,16 @@
-FROM --platform=linux/amd64 openjdk:17-jdk-slim-buster
-
+FROM maven:3-openjdk-17 AS build
 WORKDIR /app
 
 COPY . .
+RUN mvn clean package -DskipTests
 
-RUN chmod +x ./mvnw
 
-RUN ./mvnw clean package -DskipTests
+# Run stage
 
-RUN ./mvnw dependency:go-offline
+FROM openjdk:17-jdk-slim
+WORKDIR /app
 
-COPY src ./src
-
+COPY --from=build /app/target/DrComputer-0.0.1-SNAPSHOT.war drcomputer.war
 EXPOSE 8080
 
-CMD ["./mvnw", "spring-boot:run"]
+ENTRYPOINT ["java","-jar","drcomputer.war"]
