@@ -1,9 +1,15 @@
 package com.group2.KoiFarmShop.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Consignment")
 public class Consignment {
@@ -17,7 +23,7 @@ public class Consignment {
     private Account account;
 
     @ManyToOne
-    @JoinColumn(name = "koiID", referencedColumnName = "koiID")
+    @JoinColumn(name = "koiID", nullable = true)
     private KoiFish koiFish;
 
     private boolean consignmentType; // true/false for Sale/Care
