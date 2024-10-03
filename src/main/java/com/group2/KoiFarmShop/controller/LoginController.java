@@ -1,7 +1,7 @@
 package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.Content;
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
 import com.group2.KoiFarmShop.service.AccountServiceImp;

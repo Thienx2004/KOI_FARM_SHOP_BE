@@ -1,10 +1,11 @@
 package com.group2.KoiFarmShop.controller;
 
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.service.ConsignmentService;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
+import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
+import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.service.ConsignmentServiceImp;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,12 +29,13 @@ public class ConsignmentController {
                                                 @RequestParam String name,
                                                 @RequestParam MultipartFile certImg,
                                                 @RequestParam String notes,
+                                                @RequestParam String phoneNumber,
                                                 @RequestParam boolean consignmentType,
                                                 @RequestParam boolean online
                                                 ){
 
         ApiReponse apiReponse = new ApiReponse();
-        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, categoryId, name, certImg ,notes, consignmentType, online));
+        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, categoryId, name, certImg ,notes, phoneNumber, consignmentType, online));
 
         return apiReponse;
     }
@@ -54,4 +56,29 @@ public class ConsignmentController {
 
         return apiReponse;
     }
+
+    @GetMapping("/getAllConsignment")
+    public ApiReponse<PaginReponse<ConsignmentResponse>> getAllConsignmentForCustomer(@RequestParam int pageNo, @RequestParam int pageSize,@RequestParam int accountId){
+        ApiReponse apiReponse = new ApiReponse();
+        PaginReponse<ConsignmentResponse> consignmentResponse = consignmentService.getAllConsignmentForCustomer(pageNo, pageSize, accountId);
+        apiReponse.setData(consignmentResponse);
+        return apiReponse;
+    }
+
+    @GetMapping("/getAllConsignmentManagement")
+    public ApiReponse<PaginReponse<ConsignmentResponse>> getAllConsignmentForStaff(@RequestParam int pageNo, @RequestParam int pageSize){
+        ApiReponse apiReponse = new ApiReponse();
+        PaginReponse<ConsignmentResponse> consignmentResponse = consignmentService.getAllConsignmentForStaff(pageNo, pageSize);
+        apiReponse.setData(consignmentResponse);
+        return apiReponse;
+    }
+
+    @GetMapping("/consignmentDetail/{consignmentId}")
+    public ApiReponse<ConsignmentDetailResponse> getConsignmentDetail(@PathVariable int consignmentId) {
+        ApiReponse<ConsignmentDetailResponse> response = new ApiReponse<>();
+        response.setData(consignmentService.getConsignmentDetail(consignmentId));
+        return response;
+    }
+
+
 }

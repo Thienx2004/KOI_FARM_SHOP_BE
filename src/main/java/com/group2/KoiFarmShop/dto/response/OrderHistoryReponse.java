@@ -1,4 +1,4 @@
-package com.group2.KoiFarmShop.dto.reponse;
+package com.group2.KoiFarmShop.dto.response;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data

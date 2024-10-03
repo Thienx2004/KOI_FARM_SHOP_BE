@@ -1,17 +1,15 @@
 package com.group2.KoiFarmShop.service;
 
-import com.group2.KoiFarmShop.dto.reponse.CategoryHomeReponse;
-import com.group2.KoiFarmShop.dto.reponse.CategoryReponse;
-import com.group2.KoiFarmShop.dto.reponse.KoiFishReponse;
+import com.group2.KoiFarmShop.dto.response.CategoryHomeReponse;
+import com.group2.KoiFarmShop.dto.response.CategoryReponse;
+import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.entity.Category;
-import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

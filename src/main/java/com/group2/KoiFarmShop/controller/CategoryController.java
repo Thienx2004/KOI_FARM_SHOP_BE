@@ -1,9 +1,9 @@
 package com.group2.KoiFarmShop.controller;
 
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.dto.reponse.CategoryHomeReponse;
-import com.group2.KoiFarmShop.dto.reponse.CategoryReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.CategoryHomeReponse;
+import com.group2.KoiFarmShop.dto.response.CategoryReponse;
 import com.group2.KoiFarmShop.service.CategoryServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

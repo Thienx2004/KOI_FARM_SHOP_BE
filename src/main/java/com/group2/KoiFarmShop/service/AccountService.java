@@ -1,8 +1,8 @@
 package com.group2.KoiFarmShop.service;
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.Content;
-import com.group2.KoiFarmShop.dto.reponse.ProfileRespone;
+import com.group2.KoiFarmShop.dto.response.ProfileRespone;
 import com.group2.KoiFarmShop.dto.request.*;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Role;
@@ -25,8 +25,6 @@ import java.time.LocalDateTime;
 
 import java.util.Optional;
 import java.util.*;
-
-import static java.lang.System.out;
 
 
 @Service

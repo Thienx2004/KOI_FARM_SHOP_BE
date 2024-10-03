@@ -1,8 +1,8 @@
 package com.group2.KoiFarmShop.controller;
 
-import com.group2.KoiFarmShop.dto.reponse.ApiReponse;
-import com.group2.KoiFarmShop.dto.reponse.BatchPageReponse;
-import com.group2.KoiFarmShop.dto.reponse.BatchReponse;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.BatchPageReponse;
+import com.group2.KoiFarmShop.dto.response.BatchReponse;
 import com.group2.KoiFarmShop.dto.request.BatchCreateDTO;
 import com.group2.KoiFarmShop.service.BatchServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;

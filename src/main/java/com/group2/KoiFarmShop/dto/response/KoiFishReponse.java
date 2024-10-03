@@ -1,8 +1,6 @@
-package com.group2.KoiFarmShop.dto.reponse;
+package com.group2.KoiFarmShop.dto.response;
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
-import com.group2.KoiFarmShop.entity.Category;
-import com.group2.KoiFarmShop.entity.Certificate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
