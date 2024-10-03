@@ -15,7 +15,10 @@ public enum ErrorCode {
     BATCH_NOT_EXISTED(5007, "Không tìm thấy lô,"),
     POWERLESS(5008,"Không có quyền hạn"),
     PAYMENT_FAILED(5009,"Thanh toán thất bại"),
-    TRANSACTION_INVALID(5010, "Mã thanh toán này không hợp lệ")
+    TRANSACTION_INVALID(5010, "Mã thanh toán này không hợp lệ"),
+    SAVE_FAILED(5011, "Lưu thất bại"),
+    CONSIGNMENT_NOT_FOUND(5012, "Đơn ký gửi không tìm thấy")
+
     ;
 
 
