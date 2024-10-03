@@ -10,7 +10,7 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-COPY src ./src
+COPY --from=build /app/target/KoiFarmShop-0.0.1-SNAPSHOT.jar /app/KoiFarmShop.jar
 
 EXPOSE 8080
 
