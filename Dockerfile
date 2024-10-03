@@ -14,4 +14,4 @@ COPY --from=build /app/target/KoiFarmShop-0.0.1-SNAPSHOT.jar /app/KoiFarmShop.ja
 
 EXPOSE 8080
 
-CMD ["./mvnw", "spring-boot:run"]
+ENTRYPOINT ["java","-jar","KoiFarmShop.jar"]
