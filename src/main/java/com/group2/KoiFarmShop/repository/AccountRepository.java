@@ -23,5 +23,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("update Account acc set acc.isVerified=?2 where acc.email=?1")
     void updateVerify(String email, boolean verify);
 
+    Optional<Account> findByAccountID(int accountID);
 
 }

@@ -17,7 +17,8 @@ public enum ErrorCode {
     PAYMENT_FAILED(5009,"Thanh toán thất bại"),
     TRANSACTION_INVALID(5010, "Mã thanh toán này không hợp lệ"),
     SAVE_FAILED(5011, "Lưu thất bại"),
-    CONSIGNMENT_NOT_FOUND(5012, "Đơn ký gửi không tìm thấy")
+    CONSIGNMENT_NOT_FOUND(5012, "Đơn ký gửi không tìm thấy"),
+    PROMOTION_INVALID(5013, "Mã này không hợp lệ")
 
     ;
 

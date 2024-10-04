@@ -46,6 +46,10 @@ import java.util.Set;
         @OneToMany(mappedBy = "account")
         private List<VerificationToken> verificationTokens;
 
+        @ManyToOne
+        @JoinColumn(name = "promotionID")
+        private Promotion promotion;
+
         private String avatar;
         private boolean status = true;
 }
