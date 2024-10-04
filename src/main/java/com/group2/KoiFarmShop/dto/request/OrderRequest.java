@@ -13,5 +13,6 @@ public class OrderRequest {
     private int[] batchs;
     private int[] quantity;
     private double totalPrice;
+    private String promoCode;
 
 }

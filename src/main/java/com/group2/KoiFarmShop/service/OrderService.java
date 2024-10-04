@@ -7,10 +7,7 @@ import com.group2.KoiFarmShop.dto.request.OrderRequest;
 import com.group2.KoiFarmShop.entity.*;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
-import com.group2.KoiFarmShop.repository.BatchRepository;
-import com.group2.KoiFarmShop.repository.KoiFishRepository;
-import com.group2.KoiFarmShop.repository.OrderDetailRepository;
-import com.group2.KoiFarmShop.repository.OrderRepository;
+import com.group2.KoiFarmShop.repository.*;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,10 @@ public class OrderService implements OrderServiceImp{
     private KoiFishRepository koiFishRepository;
     @Autowired
     private BatchRepository batchRepository;
+    @Autowired
+    private PromotionRepository promotionRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Transactional
     @Override
@@ -95,6 +96,15 @@ public class OrderService implements OrderServiceImp{
                     }
                     batchRepository.save(batch);
                 }
+            }
+            if(order.getPromoCode() != null){
+                Account account1 = accountRepository.findByAccountID(order.getAccountID())
+                        .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+                Promotion promotion = promotionRepository.findByPromoCode(order.getPromoCode())
+                        .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
+
+                account1.setPromotion(promotion);
+                accountRepository.save(account1);
             }
 
             orderDetailRepository.saveAll(orderDetails);
