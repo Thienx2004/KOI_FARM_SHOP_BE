@@ -60,7 +60,7 @@ public class KoiFishController {
                                                        @RequestParam double size,
                                                        @RequestParam String personality,
                                                        @RequestParam double price,
-                                                       @RequestParam String purebred,
+                                                       @RequestParam int purebred,
                                                        @RequestParam String health,
                                                        @RequestParam String temperature,
                                                        @RequestParam String water,

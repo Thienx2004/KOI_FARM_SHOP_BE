@@ -135,7 +135,7 @@ public class KoiFishService implements KoiFishServiceImp{
                                      double size,
                                      String personality,
                                      double price,
-                                     String purebred,
+                                     int purebred,
                                      String health,
                                      String temperature,
                                      String water,
@@ -313,7 +313,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 predicates.add(criteriaBuilder.equal(root.get("origin"), origin));
             }
             if(purebred != null && !purebred.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("purebred"), purebred));
+                predicates.add(criteriaBuilder.equal(root.get("purebred"),  Integer.parseInt(purebred)));
             }
 
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("status"), 3));
