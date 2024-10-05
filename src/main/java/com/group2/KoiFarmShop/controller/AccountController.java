@@ -161,4 +161,14 @@ public class AccountController {
                 .build();
     }
 
+    @Operation(summary = "Cập nhật avatar", description = "")
+    @PostMapping("profile/updateAvatar/{id}")
+    public ApiReponse<ProfileRespone> updateAvatar(@RequestParam("file") MultipartFile file,@PathVariable int id) throws IOException {
+        ProfileRespone profileRespone = accountService.updateAvatar(file, id);
+        return ApiReponse.<ProfileRespone>builder()
+                .data(profileRespone)
+                .statusCode(200)
+                .build();
+    }
+
 }
