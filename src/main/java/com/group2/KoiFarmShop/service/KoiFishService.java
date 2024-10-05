@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
+import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
@@ -54,6 +55,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
             koiFishReponse.setStatus(koiFish.getStatus());
+            koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -85,7 +87,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
             koiFishReponse.setStatus(koiFish.getStatus());
-
+            koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -98,12 +100,13 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
     @Override
-    public KoiFishReponse getKoiFishById(int id) {
+    public KoiFishDetailReponse getKoiFishById(int id) {
         KoiFish koiFish=koiFishRepository.findByKoiID(id);
+        List<KoiFishReponse> koiList= getKoiByCategory(koiFish.getCategory(),1,3).getKoiFishReponseList();
         if(koiFish==null) {
             throw new AppException(ErrorCode.KOINOTFOUND);
         }
-        return KoiFishReponse.builder()
+        return KoiFishDetailReponse.builder()
                 .id(koiFish.getKoiID())
                 .age(koiFish.getAge())
                 .gender(koiFish.isGender())
@@ -115,16 +118,29 @@ public class KoiFishService implements KoiFishServiceImp{
                 .categoryId(koiFish.getCategory().getCategoryID())
                 .category(koiFish.getCategory().getCategoryName())
                 .status(koiFish.getStatus())
+                .purebred(koiFish.getPurebred())
+                .health(koiFish.getHealth())
+                .temperature(koiFish.getTemperature())
+                .water(koiFish.getWater())
+                .pH(koiFish.getPH())
+                .food(koiFish.getFood())
+                .list(koiList)
                 .build();
     }
 
     @Override
-    public KoiFishReponse addKoiFish(String origin,
+    public KoiFishDetailReponse addKoiFish(String origin,
                                      boolean gender,
                                      int age,
                                      double size,
                                      String personality,
                                      double price,
+                                     String purebred,
+                                     String health,
+                                     String temperature,
+                                     String water,
+                                     String pH,
+                                     String food,
                                      int categoryId,
                                      MultipartFile file,
                                      String name,
@@ -137,6 +153,12 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setSize(size);
         koiFish.setPersonality(personality);
         koiFish.setPrice(price);
+        koiFish.setPurebred(purebred);
+        koiFish.setHealth(health);
+        koiFish.setTemperature(temperature);
+        koiFish.setWater(water);
+        koiFish.setPH(pH);
+        koiFish.setFood(food);
         koiFish.setKoiImage(firebaseService.uploadImage(file));
         Category category = categoryRepository.findByCategoryID(categoryId);
         koiFish.setCategory(category);
@@ -152,7 +174,7 @@ public class KoiFishService implements KoiFishServiceImp{
         certificateRequest.setName(newCertificate.getName());
         certificateRequest.setImage(newCertificate.getImage());
         certificateRequest.setCreatedDate(new Date());
-        return KoiFishReponse.builder()
+        return KoiFishDetailReponse.builder()
                 .id(savedKoiFish.getKoiID())
                 .age(savedKoiFish.getAge())
                 .gender(savedKoiFish.isGender())
@@ -164,11 +186,17 @@ public class KoiFishService implements KoiFishServiceImp{
                 .categoryId(newCertificate.getId())
                 .category(newCertificate.getName())
                 .certificate(certificateRequest)
+                .purebred(savedKoiFish.getPurebred())
+                .health(savedKoiFish.getHealth())
+                .temperature(savedKoiFish.getTemperature())
+                .water(savedKoiFish.getWater())
+                .pH(savedKoiFish.getPH())
+                .food(savedKoiFish.getFood())
                 .build();
     }
 
     @Override
-    public KoiFishReponse updateKoiFish(KoiRequest koiRequest,int id) {
+    public KoiFishDetailReponse updateKoiFish(KoiRequest koiRequest,int id) {
         KoiFish koiFish = new KoiFish();
         koiFish.setKoiID(id);
         koiFish.setOrigin(koiRequest.getOrigin());
@@ -177,11 +205,17 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setSize(koiRequest.getSize());
         koiFish.setPersonality(koiRequest.getPersonality());
         koiFish.setPrice(koiRequest.getPrice());
+        koiFish.setPurebred(koiRequest.getPurebred());
+        koiFish.setHealth(koiRequest.getHealth());
+        koiFish.setTemperature(koiRequest.getTemperature());
+        koiFish.setWater(koiRequest.getWater());
+        koiFish.setPH(koiRequest.getPH());
+        koiFish.setFood(koiRequest.getFood());
         koiFish.setKoiImage(koiRequest.getKoiImage());
         Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
         KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
-        return KoiFishReponse.builder()
+        return KoiFishDetailReponse.builder()
                 .id(updateddKoiFish.getKoiID())
                 .age(updateddKoiFish.getAge())
                 .gender(updateddKoiFish.isGender())
@@ -192,9 +226,15 @@ public class KoiFishService implements KoiFishServiceImp{
                 .origin(updateddKoiFish.getOrigin())
                 .categoryId(updateddKoiFish.getCategory().getCategoryID())
                 .category(updateddKoiFish.getCategory().getCategoryName())
+                .purebred(updateddKoiFish.getPurebred())
+                .health(updateddKoiFish.getHealth())
+                .temperature(updateddKoiFish.getTemperature())
+                .water(updateddKoiFish.getWater())
+                .pH(updateddKoiFish.getPH())
+                .food(updateddKoiFish.getFood())
                 .build();
     }
-    public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection,String sortField2,String sortDirection2) {
+    public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection,String sortField2,String sortDirection2,String purebred) {
         // Xử lý sortField1 và sortDirection1
         if (sortField == null || sortField.isEmpty()) {
             sortField = "koiID";
@@ -272,7 +312,11 @@ public class KoiFishService implements KoiFishServiceImp{
             if(origin != null && !origin.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("origin"), origin));
             }
+            if(purebred != null && !purebred.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("purebred"), purebred));
+            }
 
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("status"), 3));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };
@@ -292,7 +336,7 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
             koiFishReponse.setStatus(koiFish.getStatus());
-
+            koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -305,10 +349,10 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
     @Override
-    public List<KoiFishReponse> compareKoiFish(int koiFishId1, int koiFishId2) {
-        KoiFishReponse koiFish1 = getKoiFishById(koiFishId1);
-        KoiFishReponse koiFish2 = getKoiFishById(koiFishId2);
-        List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
+    public List<KoiFishDetailReponse> compareKoiFish(int koiFishId1, int koiFishId2) {
+        KoiFishDetailReponse koiFish1 = getKoiFishById(koiFishId1);
+        KoiFishDetailReponse koiFish2 = getKoiFishById(koiFishId2);
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
         koiFishReponseList.add(koiFish1);
         koiFishReponseList.add(koiFish2);
         return koiFishReponseList;

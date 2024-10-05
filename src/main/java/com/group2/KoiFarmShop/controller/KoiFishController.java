@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
@@ -44,54 +45,64 @@ public class KoiFishController {
     // Lấy cá Koi theo ID
     @GetMapping("/{id}")
     @Operation(summary = "Lấy Koi theo id", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishReponse> getKoiFishById(@PathVariable int id) {
-        KoiFishReponse koiFish = koiFishService.getKoiFishById(id);
+    public ApiReponse<KoiFishDetailReponse> getKoiFishById(@PathVariable int id) {
+        KoiFishDetailReponse koiFish = koiFishService.getKoiFishById(id);
 
-            return ApiReponse.<KoiFishReponse>builder().data(koiFish).build();
+            return ApiReponse.<KoiFishDetailReponse>builder().data(koiFish).build();
     }
 
     // Thêm mới cá Koi
     @PostMapping("/add")
     @Operation(summary = "Thêm cá Koi", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishReponse> addKoiFish(@RequestParam ("file") MultipartFile file,
-                                                 @RequestParam String origin,
-                                                 @RequestParam boolean gender, @RequestParam int age,
-                                                 @RequestParam double size,
-                                                 @RequestParam String personality,
-                                                 @RequestParam double price,
-
-                                                 @RequestParam int categoryId,
-                                                 @RequestParam String name,
-                                                 @RequestParam MultipartFile certImg
+    public ApiReponse<KoiFishDetailReponse> addKoiFish(@RequestParam ("file") MultipartFile file,
+                                                       @RequestParam String origin,
+                                                       @RequestParam boolean gender, @RequestParam int age,
+                                                       @RequestParam double size,
+                                                       @RequestParam String personality,
+                                                       @RequestParam double price,
+                                                       @RequestParam String purebred,
+                                                       @RequestParam String health,
+                                                       @RequestParam String temperature,
+                                                       @RequestParam String water,
+                                                       @RequestParam String pH,
+                                                       @RequestParam String food,
+                                                       @RequestParam int categoryId,
+                                                       @RequestParam String name,
+                                                       @RequestParam MultipartFile certImg
                                                 ) throws IOException {
 //        if(koiFish.getCategoryId()==0){
 //            throw new AppException(ErrorCode.KOINOTFOUND);
 //        }
-        KoiFishReponse koiFishReponse=koiFishService.addKoiFish(origin,
+        KoiFishDetailReponse koiFishReponse=koiFishService.addKoiFish(origin,
                                                                 gender,
                                                                 age,
                                                                 size,
                                                                 personality,
                                                                 price,
-
+                                                                purebred,
+                                                                health,
+                                                                temperature,
+                                                                water,
+                                                                pH,
+                                                                food,
                                                                 categoryId,
                                                                 file,
                                                                 name,
                                                                 certImg
                                                                );
-        return ApiReponse.<KoiFishReponse>builder().data(koiFishReponse).message("Thêm Koi thành công").statusCode(200).build();
+        return ApiReponse.<KoiFishDetailReponse>builder().data(koiFishReponse).message("Thêm Koi thành công").statusCode(200).build();
     }
 
 
     // Cập nhật cá Koi
     @PutMapping("/update/{id}")
     @Operation(summary = "Cập nhật Koi theo id", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishReponse> updateKoiFish(@PathVariable int id, @RequestBody KoiRequest koiFish) {
+    public ApiReponse<KoiFishDetailReponse> updateKoiFish(@PathVariable int id, @RequestBody KoiRequest koiFish) {
         if(koiFish.getCategoryId()==0){
             throw new AppException(ErrorCode.KOINOTFOUND);
         }
-        KoiFishReponse koiFishReponse = koiFishService.updateKoiFish(koiFish,id);
-        return ApiReponse.<KoiFishReponse>builder().data(koiFishReponse).message("Cập nhật thành công").statusCode(200).build();
+        KoiFishDetailReponse koiFishReponse = koiFishService.updateKoiFish(koiFish,id);
+        return ApiReponse.<KoiFishDetailReponse>builder().data(koiFishReponse).message("Cập nhật thành công").statusCode(200).build();
     }
 
     @GetMapping("/filter")
@@ -109,19 +120,20 @@ public class KoiFishController {
             @RequestParam(required = false) String sortDirection1,
             @RequestParam(required = false) String sortField2,
             @RequestParam(required = false) String sortDirection2,
+            @RequestParam(required = false) String purebred,
             @RequestParam(defaultValue = "1") int page,      // Thêm tham số page với giá trị mặc định là 1
             @RequestParam(defaultValue = "6") int pageSize
             // Thêm tham số pageSize với giá trị mặc định là 6
     ) {
 
-        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID,maxSize,minSize,gender, age, minPrice, maxPrice, origin, page, pageSize,sortField1,sortDirection1,sortField2,sortDirection2); // Truyền thêm page và pageSize vào filter
+        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID,maxSize,minSize,gender, age, minPrice, maxPrice, origin, page, pageSize,sortField1,sortDirection1,sortField2,sortDirection2,purebred); // Truyền thêm page và pageSize vào filter
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
     }
 
     @GetMapping("/compare")
     @Operation(summary = "So sánh Koi", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<List<KoiFishReponse>> compareKoiFish(@RequestParam("koiFishId1") int id1, @RequestParam("koiFishId2") int id2) {
-        List<KoiFishReponse> koiFishReponses = koiFishService.compareKoiFish(id1, id2);
-        return ApiReponse.<List<KoiFishReponse>>builder().data(koiFishReponses).build();
+    public ApiReponse<List<KoiFishDetailReponse>> compareKoiFish(@RequestParam("koiFishId1") int id1, @RequestParam("koiFishId2") int id2) {
+        List<KoiFishDetailReponse> koiFishReponses = koiFishService.compareKoiFish(id1, id2);
+        return ApiReponse.<List<KoiFishDetailReponse>>builder().data(koiFishReponses).build();
     }
 }
