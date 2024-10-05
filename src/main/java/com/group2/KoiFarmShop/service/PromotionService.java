@@ -31,6 +31,14 @@ public class PromotionService implements PromotionServiceImp{
     @Override
     public String createPromotion(String description, Date startDate, Date endDate, double discountRate) {
 
+        List<Promotion> existingPromotions = promotionRepository.findAll();
+
+        for (Promotion existingPromotion : existingPromotions) {
+            if (datesOverlap(startDate, endDate, existingPromotion.getStartDate(), existingPromotion.getEndDate())) {
+                throw new AppException(ErrorCode.PROMOTION_DATE_OVERLAP);
+            }
+        }
+
         Promotion promotion = new Promotion();
 
         promotion.setPromoCode(generatePromoCode());
@@ -42,6 +50,11 @@ public class PromotionService implements PromotionServiceImp{
 
         promotionRepository.save(promotion);
         return "Tạo mã giảm giá thành công!";
+    }
+
+    // Hàm kiểm tra xem 2 khoảng thời gian có giao nhau không
+    private boolean datesOverlap(Date newStartDate, Date newEndDate, Date existingStartDate, Date existingEndDate) {
+        return !(newEndDate.before(existingStartDate) || newStartDate.after(existingEndDate));
     }
 
     @Override
