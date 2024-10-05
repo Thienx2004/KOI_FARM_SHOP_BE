@@ -302,18 +302,18 @@ public class AccountService implements AccountServiceImp{
    }
 
 
-    public ProfileRespone updateProfile (String fullName,String address, String phone , int id, MultipartFile file) throws IOException {
+    public ProfileRespone updateProfile (ProfileRequest profileRequest, int id) throws IOException {
         Account account = new Account();
         Optional<Account>account1 = accountRepository.findById(id);
         account.setAccountID(id);
         account.setEmail(account1.get().getEmail());
-        account.setFullName(fullName);
+        account.setFullName(profileRequest.getFullName());
         account.setPassword(account1.get().getPassword());
-        account.setAddress(address);
-        account.setPhone(phone);
+        account.setAddress(profileRequest.getAddress());
+        account.setPhone(profileRequest.getPhone());
         account.setVerified(account1.get().isVerified());
         account.setRole(account1.get().getRole());
-        account.setAvatar(firebaseService.uploadImage(file));
+
 
         Account accSave = accountRepository.save(account);
         return ProfileRespone.builder()
@@ -361,7 +361,7 @@ public class AccountService implements AccountServiceImp{
             accountDTO.setStatus(account.isStatus());
             accountDTOList.add(accountDTO);
         }
-        return AccountDTO.;
+        return null;
     }
 
 }
