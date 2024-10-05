@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.controller;
 
 
 import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.dto.response.PromotionDTO;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
@@ -9,12 +10,10 @@ import com.group2.KoiFarmShop.service.PromotionService;
 import com.group2.KoiFarmShop.service.PromotionServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/promotion")
@@ -48,5 +47,14 @@ public class PromotionController {
             return apiReponse;
         }
         throw new AppException(ErrorCode.PROMOTION_INVALID);
+    }
+
+    @GetMapping("/getAllPromotion")
+    public ApiReponse<PaginReponse<PromotionDTO>> getAllPromotion(@RequestParam int page, @RequestParam int pageSize){
+
+        ApiReponse<PaginReponse<PromotionDTO>> apiReponse = new ApiReponse<>();
+        PaginReponse<PromotionDTO> paginReponse = promotionService.getAllPromotion(page, pageSize);
+        apiReponse.setData(paginReponse);
+        return apiReponse;
     }
 }

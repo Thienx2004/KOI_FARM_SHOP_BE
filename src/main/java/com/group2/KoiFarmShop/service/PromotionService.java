@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.dto.response.PromotionDTO;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Promotion;
@@ -8,9 +9,15 @@ import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.PromotionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -58,6 +65,33 @@ public class PromotionService implements PromotionServiceImp{
             return promotionDTO;
         }
         return null;
+    }
+
+    @Override
+    public PaginReponse<PromotionDTO> getAllPromotion(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("promotionID").descending());
+        Page<Promotion> promotions = promotionRepository.findAll(pageable);
+        List<PromotionDTO> promotionDTOList = new ArrayList<>();
+
+        for(Promotion promotion : promotions) {
+            PromotionDTO promotionDTO = new PromotionDTO();
+            promotionDTO.setPromoCode(promotion.getPromoCode());
+            promotionDTO.setPromotionID(promotion.getPromotionID());
+            promotionDTO.setStartDate(promotion.getStartDate());
+            promotionDTO.setEndDate(promotion.getEndDate());
+            promotionDTO.setDiscountRate(promotion.getDiscountRate());
+            promotionDTO.setDesciption(promotion.getDesciption());
+            promotionDTO.setStatus(promotion.isStatus());
+            promotionDTOList.add(promotionDTO);
+        }
+
+        PaginReponse<PromotionDTO> paginReponse = new PaginReponse<>();
+        paginReponse.setContent(promotionDTOList);
+        paginReponse.setPageSize(pageSize);
+        paginReponse.setPageNum(pageNo);
+        paginReponse.setTotalElements(promotions.getNumberOfElements());
+        paginReponse.setTotalPages(promotions.getTotalPages());
+        return paginReponse;
     }
 
     private String generatePromoCode() {
