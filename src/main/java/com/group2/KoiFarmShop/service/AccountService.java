@@ -363,5 +363,13 @@ public class AccountService implements AccountServiceImp{
         }
         return null;
     }
-
+     public ProfileRespone updateAvatar(MultipartFile file, int id) throws IOException {
+         Optional<Account>account1 = accountRepository.findById(id);
+         Account account=(Account) account1.get();
+         account.setAvatar(firebaseService.uploadImage(file));
+         Account accSave = accountRepository.save(account);
+         return ProfileRespone.builder()
+                 .avatar(accSave.getAvatar())
+                 .build();
+     }
 }
