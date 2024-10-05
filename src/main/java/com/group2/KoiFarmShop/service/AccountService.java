@@ -20,7 +20,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import java.util.Optional;
@@ -44,6 +46,8 @@ public class AccountService implements AccountServiceImp{
     private VerificationTokenRepository verificationTokenRepository;
     @Autowired
     private ForgotPasswordRepositoryI forgotPasswordRepository;
+    @Autowired
+    private FirebaseService firebaseService;
 
     @Override
         public ApiReponse login(LoginRequest loginRequest) {
@@ -289,21 +293,23 @@ public class AccountService implements AccountServiceImp{
                 .phone(account.get().getPhone())
                 .address(account.get().getAddress())
                 .isVerified(account.get().isVerified())
+                .avatar(account.get().getAvatar())
                 .build();
    }
 
 
-    public ProfileRespone updateProfile (ProfileRequest profileRequest,int id) {
+    public ProfileRespone updateProfile (String fullName,String address, String phone , int id, MultipartFile file) throws IOException {
         Account account = new Account();
         Optional<Account>account1 = accountRepository.findById(id);
         account.setAccountID(id);
         account.setEmail(account1.get().getEmail());
-        account.setFullName(profileRequest.getFullName());
+        account.setFullName(fullName);
         account.setPassword(account1.get().getPassword());
-        account.setAddress(profileRequest.getAddress());
-        account.setPhone(profileRequest.getPhone());
+        account.setAddress(address);
+        account.setPhone(phone);
         account.setVerified(account1.get().isVerified());
         account.setRole(account1.get().getRole());
+        account.setAvatar(firebaseService.uploadImage(file));
 
         Account accSave = accountRepository.save(account);
         return ProfileRespone.builder()
@@ -314,6 +320,7 @@ public class AccountService implements AccountServiceImp{
                 .phone(accSave.getPhone())
                 .address(accSave.getAddress())
                 .isVerified(accSave.isVerified())
+                .avatar(accSave.getAvatar())
                 .build();
     }
 
