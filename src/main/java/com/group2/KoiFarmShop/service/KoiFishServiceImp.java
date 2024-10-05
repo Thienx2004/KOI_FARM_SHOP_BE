@@ -22,7 +22,7 @@ public interface KoiFishServiceImp {
                               double size,
                               String personality,
                               double price,
-                              String purebred,
+                              int purebred,
                               String health,
                               String temperature,
                               String water,

@@ -28,7 +28,7 @@ public class KoiFish {
     private double price;
     private String koiImage;
     private int status;
-    private String purebred;
+    private int purebred;
     private String health;
     private String temperature;
     private String water;

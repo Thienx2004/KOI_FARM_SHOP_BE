@@ -37,3 +37,11 @@ target/
 koi-farm-shop-key.json
 ### Node.js ###
 node_modules/
+package-lock.json
+package.json
+steps.d.ts
+tsconfig.json
+steps_file.ts
+ApiTesting_test.ts
+codecept.conf.ts
+*.json
