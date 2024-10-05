@@ -37,7 +37,7 @@ public class PromotionService implements PromotionServiceImp{
         promotion.setDesciption(description);
         promotion.setStartDate(startDate);
         promotion.setEndDate(endDate);
-        promotion.setDiscountRate(discountRate);
+        promotion.setDiscountRate(discountRate / 100);
         promotion.setStatus(true);
 
         promotionRepository.save(promotion);
@@ -92,6 +92,36 @@ public class PromotionService implements PromotionServiceImp{
         paginReponse.setTotalElements(promotions.getNumberOfElements());
         paginReponse.setTotalPages(promotions.getTotalPages());
         return paginReponse;
+    }
+
+    @Override
+    public String updatePromotion(PromotionDTO promotion) {
+        Promotion newPromotion = promotionRepository.findByPromotionID(promotion.getPromotionID())
+                .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
+        newPromotion.setPromoCode(promotion.getPromoCode());
+        newPromotion.setStartDate(promotion.getStartDate());
+        newPromotion.setEndDate(promotion.getEndDate());
+        newPromotion.setDiscountRate(promotion.getDiscountRate() / 100);
+        newPromotion.setDesciption(promotion.getDesciption());
+        newPromotion.setStatus(promotion.isStatus());
+        promotionRepository.save(newPromotion);
+        return "Update mã giảm giá #" + promotion.getPromotionID() + " thành công";
+    }
+
+    @Override
+    public String deletePromotion(int promotionId) {
+
+        Promotion promotion = promotionRepository.findByPromotionID(promotionId)
+                .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
+        if(promotion.getAccounts() != null){
+            for(Account account : promotion.getAccounts()) {
+                account.setPromotion(null);
+                accountRepository.save(account);
+            }
+        }
+        promotionRepository.delete(promotion);
+
+        return "Xoá mã giảm giá #" + promotion.getPromotionID() + " thành công";
     }
 
     private String generatePromoCode() {
