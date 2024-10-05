@@ -123,7 +123,7 @@ public class AccountController {
                 .build();
     }
 
-    @PutMapping("/update/updatePassword/{id}")
+    @PutMapping("/updatePassword/{id}")
     public ApiReponse<ProfileRespone> updatePassword(@RequestBody PasswordRequest passwordRequest,
                                                      @PathVariable int id,
                                                      HttpServletRequest request) {
