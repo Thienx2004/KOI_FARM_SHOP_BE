@@ -36,7 +36,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
     private final String[] ADMIN_URLS = {};
-    private final String[] USER_URLS = {"/account/profile/updatePassword/**"};
+    private final String[] USER_URLS = {"/account/profile/update/**"};
     private final String[] OTP_CHECK = {"/login/changePassword/**"};
     @Autowired
     CustomUserDetailsService userDetailsService;

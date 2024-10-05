@@ -31,10 +31,14 @@ public class FirebaseConfig {
                 .build();
 
 
+        if (FirebaseApp.getApps().isEmpty()) {
             return FirebaseApp.initializeApp(options);
-
-
+        } else {
+            return FirebaseApp.getInstance();  // Trả về FirebaseApp đã được khởi tạo
         }
+
+
     }
+}
 
 
