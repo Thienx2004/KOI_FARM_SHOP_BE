@@ -14,6 +14,7 @@ import com.group2.KoiFarmShop.service.AccountService;
 import com.group2.KoiFarmShop.service.AccountServiceImp;
 import com.group2.KoiFarmShop.service.AuthenticationService;
 import com.group2.KoiFarmShop.service.FileServiceImp;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -81,7 +83,7 @@ public class AccountController {
                 .body(resource);
     }
 
-
+    @Operation(summary = "Lấy profile theo email", description = "")
     @GetMapping("profile/{email}")
     ApiReponse<ProfileRespone> getProfile(@PathVariable String email) {
         ProfileRespone profileRespone = accountService.getProfile(email);
@@ -95,23 +97,30 @@ public class AccountController {
         }
 
     }
-    
-    @PutMapping("/profile/update/{id}")
-    public ApiReponse<ProfileRespone> updateProfile(@RequestBody ProfileRequest profileRequest,
+    @Operation(summary = "Cập nhật thông tin người dùng", description = "")
+    @PutMapping("/profile/{id}")
+    public ApiReponse<ProfileRespone> updateProfile(
+            @RequestParam String fullName,
+            @RequestParam String address,
+            @RequestParam String phone,
+            @PathVariable int id,
+            @RequestParam("file") MultipartFile file,
+            HttpServletRequest request) throws IOException {
 
-                                                     @PathVariable int id,
-                                                    HttpServletRequest request) {
         // Lấy và kiểm tra JWT token
-//        String token = authenticationService.extractTokenFromRequest(request);
-//        Optional<Account> account = accountRepository.findById(id);
-//         if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
-//             throw new AppException(ErrorCode.POWERLESS);
-//         }
-         ProfileRespone profileRespone=accountService.updateProfile(profileRequest,id);
-//                                                    @PathVariable String email) {
-//        ProfileRespone profileRespone=accountService.updateProfile(profileRequest,email);
-        return ApiReponse.<ProfileRespone>builder().data(profileRespone).statusCode(200).build();
+        // String token = authenticationService.extractTokenFromRequest(request);
+        // Optional<Account> account = accountRepository.findById(id);
+        // if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
+        //     throw new AppException(ErrorCode.POWERLESS);
+        // }
+
+        ProfileRespone profileRespone = accountService.updateProfile(fullName,address,phone , id, file);
+        return ApiReponse.<ProfileRespone>builder()
+                .data(profileRespone)
+                .statusCode(200)
+                .build();
     }
+
     @PutMapping("/profile/updatePassword/{id}")
     public ApiReponse<ProfileRespone> updatePassword(@RequestBody PasswordRequest passwordRequest,
                                                      @PathVariable int id,

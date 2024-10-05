@@ -17,4 +17,5 @@ public class ProfileRespone {
     private String phone;
     private String address;
     private boolean isVerified=true;
+    private String avatar;
 }
