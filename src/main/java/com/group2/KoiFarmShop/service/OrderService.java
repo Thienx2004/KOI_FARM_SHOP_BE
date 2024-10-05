@@ -41,18 +41,15 @@ public class OrderService implements OrderServiceImp{
     @Override
     public Orders addOrder(OrderRequest order) {
         try {
+            Account account = accountRepository.findByAccountID(order.getAccountID())
+                    .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
             if(order.getPromoCode() != null){
-                Account account1 = accountRepository.findByAccountID(order.getAccountID())
-                        .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
                 Promotion promotion = promotionRepository.findByPromoCode(order.getPromoCode())
                         .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
 
-                account1.setPromotion(promotion);
-                accountRepository.save(account1);
+                account.setPromotion(promotion);
+                accountRepository.save(account);
             }
-
-            Account account = new Account();
-            account.setAccountID(order.getAccountID());
 
             Orders orders = new Orders();
             orders.setAccount(account);
@@ -106,6 +103,7 @@ public class OrderService implements OrderServiceImp{
                     }
                     batchRepository.save(batch);
                 }
+                orderDetails.get(i).setQuantity(order.getQuantity()[i]);
             }
 
             orderDetailRepository.saveAll(orderDetails);
