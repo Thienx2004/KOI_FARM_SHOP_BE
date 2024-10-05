@@ -28,6 +28,12 @@ public class KoiFish {
     private double price;
     private String koiImage;
     private int status;
+    private String purebred;
+    private String health;
+    private String temperature;
+    private String water;
+    private String pH;
+    private String food;
     /*
     1_Còn Hàng
     2_Đâ bán

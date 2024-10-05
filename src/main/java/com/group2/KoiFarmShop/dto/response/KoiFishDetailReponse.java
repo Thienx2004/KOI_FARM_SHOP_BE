@@ -1,10 +1,21 @@
-package com.group2.KoiFarmShop.dto.request;
+package com.group2.KoiFarmShop.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.group2.KoiFarmShop.dto.CertificateRequest;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-public class KoiRequest {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class KoiFishDetailReponse {
+    private int id;
     private String origin;
     private boolean gender;
     private int age;
@@ -13,6 +24,7 @@ public class KoiRequest {
     private double price;
     private String koiImage;
     private int categoryId;
+    private String category;
     private CertificateRequest certificate;
     private String purebred;
     private String health;
@@ -20,4 +32,9 @@ public class KoiRequest {
     private String water;
     private String pH;
     private String food;
+    private int status;
+    List<KoiFishReponse> list;
+  
+
+
 }
