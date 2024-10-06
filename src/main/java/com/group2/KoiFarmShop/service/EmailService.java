@@ -1,8 +1,11 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.MailBody;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +38,24 @@ public class EmailService {
         emailMessage.setText(message);
 
         javaMailSender.send(emailMessage);
+    }
+
+    public void sendOrderConfirmationEmail(String toEmail, int orderId) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        String subject = "Xác nhận đơn hàng";
+        String content = "<p>Xin chào,</p>"
+                + "<p>Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đã được ghi nhận thành công!</p>"
+                + "<p>Mã đơn hàng: " + orderId + "</p>"
+                + "<p>Vui lòng truy cập <a href='http://localhost:5173/payment-history'>lịch sử thanh toán</a> để xem chi tiết.</p>"
+                + "<p>Trân trọng!</p>";
+
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setText(content, true);  // Nội dung email dạng HTML
+
+        javaMailSender.send(message);
     }
 
 }

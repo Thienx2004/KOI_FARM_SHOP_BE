@@ -55,6 +55,5 @@ public class KoiFish {
     @OneToMany(mappedBy = "koiFish")
     private List<OrderDetail> orderDetail;
 
-
 }
 
