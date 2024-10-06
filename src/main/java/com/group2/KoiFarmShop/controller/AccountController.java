@@ -88,8 +88,6 @@ public class AccountController {
     ApiReponse<ProfileRespone> getProfile(@PathVariable String email) {
         ProfileRespone profileRespone = accountService.getProfile(email);
 
-
-
         if (profileRespone != null) {
             return ApiReponse.<ProfileRespone>builder().data(profileRespone).build();
         }else {
@@ -98,30 +96,34 @@ public class AccountController {
 
     }
     @Operation(summary = "Cập nhật thông tin người dùng", description = "")
-    @PutMapping("/profile/{id}")
+    @PutMapping("update/updateProfile/{id}")
     public ApiReponse<ProfileRespone> updateProfile(
-            @RequestParam String fullName,
-            @RequestParam String address,
-            @RequestParam String phone,
+            @RequestBody ProfileRequest profileRequest,
             @PathVariable int id,
-            @RequestParam("file") MultipartFile file,
+
             HttpServletRequest request) throws IOException {
 
-        // Lấy và kiểm tra JWT token
-        // String token = authenticationService.extractTokenFromRequest(request);
-        // Optional<Account> account = accountRepository.findById(id);
-        // if(!account.get().getEmail().equals(authenticationService.validateTokenByEmail(token))){
-        //     throw new AppException(ErrorCode.POWERLESS);
-        // }
+//        // Lấy và kiểm tra JWT token
+//        String token = authenticationService.extractTokenFromRequest(request);
+//
+//        // Kiểm tra tài khoản tồn tại
+//        Account account=accountRepository.findByAccountID(id)
+//                .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+//
+//       // Xác thực email từ token có khớp với email của tài khoản không
+//        String emailFromToken = authenticationService.validateTokenByEmail(token);
+//        if (!account.getEmail().equals(emailFromToken)) {
+//            throw new AppException(ErrorCode.POWERLESS);
+//        }
 
-        ProfileRespone profileRespone = accountService.updateProfile(fullName,address,phone , id, file);
+        ProfileRespone profileRespone = accountService.updateProfile(profileRequest , id);
         return ApiReponse.<ProfileRespone>builder()
                 .data(profileRespone)
                 .statusCode(200)
                 .build();
     }
 
-    @PutMapping("/profile/updatePassword/{id}")
+    @PutMapping("/updatePassword/{id}")
     public ApiReponse<ProfileRespone> updatePassword(@RequestBody PasswordRequest passwordRequest,
                                                      @PathVariable int id,
                                                      HttpServletRequest request) {
@@ -155,6 +157,16 @@ public class AccountController {
         }
         return ApiReponse.<Boolean>builder()
                 .data(true).message("Mật khẩu hợp lệ")
+                .statusCode(200)
+                .build();
+    }
+
+    @Operation(summary = "Cập nhật avatar", description = "")
+    @PostMapping("profile/updateAvatar/{id}")
+    public ApiReponse<ProfileRespone> updateAvatar(@RequestParam("file") MultipartFile file,@PathVariable int id) throws IOException {
+        ProfileRespone profileRespone = accountService.updateAvatar(file, id);
+        return ApiReponse.<ProfileRespone>builder()
+                .data(profileRespone)
                 .statusCode(200)
                 .build();
     }

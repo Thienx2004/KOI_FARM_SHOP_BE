@@ -20,6 +20,8 @@ public enum ErrorCode {
     CONSIGNMENT_NOT_FOUND(5012, "Đơn ký gửi không tìm thấy"),
     PROMOTION_INVALID(5013, "Mã này không hợp lệ"),
     INVALIDNUMBER(5014,"số không hợp lệ")
+    PROMOTION_DATE_OVERLAP(5015, "Đã có mã khuyến mãi trong thời gian này")
+
     ;
 
 

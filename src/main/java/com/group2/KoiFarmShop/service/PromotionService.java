@@ -31,17 +31,30 @@ public class PromotionService implements PromotionServiceImp{
     @Override
     public String createPromotion(String description, Date startDate, Date endDate, double discountRate) {
 
+        List<Promotion> existingPromotions = promotionRepository.findAll();
+
+        for (Promotion existingPromotion : existingPromotions) {
+            if (datesOverlap(startDate, endDate, existingPromotion.getStartDate(), existingPromotion.getEndDate())) {
+                throw new AppException(ErrorCode.PROMOTION_DATE_OVERLAP);
+            }
+        }
+
         Promotion promotion = new Promotion();
 
         promotion.setPromoCode(generatePromoCode());
         promotion.setDesciption(description);
         promotion.setStartDate(startDate);
         promotion.setEndDate(endDate);
-        promotion.setDiscountRate(discountRate);
+        promotion.setDiscountRate(discountRate / 100);
         promotion.setStatus(true);
 
         promotionRepository.save(promotion);
         return "Tạo mã giảm giá thành công!";
+    }
+
+    // Hàm kiểm tra xem 2 khoảng thời gian có giao nhau không
+    private boolean datesOverlap(Date newStartDate, Date newEndDate, Date existingStartDate, Date existingEndDate) {
+        return !(newEndDate.before(existingStartDate) || newStartDate.after(existingEndDate));
     }
 
     @Override
@@ -92,6 +105,36 @@ public class PromotionService implements PromotionServiceImp{
         paginReponse.setTotalElements(promotions.getNumberOfElements());
         paginReponse.setTotalPages(promotions.getTotalPages());
         return paginReponse;
+    }
+
+    @Override
+    public String updatePromotion(PromotionDTO promotion) {
+        Promotion newPromotion = promotionRepository.findByPromotionID(promotion.getPromotionID())
+                .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
+        newPromotion.setPromoCode(promotion.getPromoCode());
+        newPromotion.setStartDate(promotion.getStartDate());
+        newPromotion.setEndDate(promotion.getEndDate());
+        newPromotion.setDiscountRate(promotion.getDiscountRate() / 100);
+        newPromotion.setDesciption(promotion.getDesciption());
+        newPromotion.setStatus(promotion.isStatus());
+        promotionRepository.save(newPromotion);
+        return "Update mã giảm giá #" + promotion.getPromotionID() + " thành công";
+    }
+
+    @Override
+    public String deletePromotion(int promotionId) {
+
+        Promotion promotion = promotionRepository.findByPromotionID(promotionId)
+                .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
+        if(promotion.getAccounts() != null){
+            for(Account account : promotion.getAccounts()) {
+                account.setPromotion(null);
+                accountRepository.save(account);
+            }
+        }
+        promotionRepository.delete(promotion);
+
+        return "Xoá mã giảm giá #" + promotion.getPromotionID() + " thành công";
     }
 
     private String generatePromoCode() {

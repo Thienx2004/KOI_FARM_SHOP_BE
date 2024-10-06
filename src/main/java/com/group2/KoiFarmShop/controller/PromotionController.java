@@ -57,4 +57,19 @@ public class PromotionController {
         apiReponse.setData(paginReponse);
         return apiReponse;
     }
+
+    @PutMapping("/updatePromo")
+    public ApiReponse<String> updatePromotion(@RequestBody PromotionDTO promotionDTO){
+        ApiReponse<String> apiReponse = new ApiReponse<>();
+        apiReponse.setData(new String(promotionService.updatePromotion(promotionDTO)));
+        return apiReponse;
+    }
+
+    @DeleteMapping("/deletePromo")
+    public ApiReponse<String> deletePromotion(@RequestParam int promotionId){
+        ApiReponse<String> apiReponse = new ApiReponse<>();
+        String success = promotionService.deletePromotion(promotionId);
+        apiReponse.setData(success);
+        return apiReponse;
+    }
 }
