@@ -1,62 +1,75 @@
 package com.group2.KoiFarmShop;
 
+import com.google.cloud.storage.Bucket;
+import com.google.firebase.cloud.StorageClient;
 import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
+import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.service.AccountServiceImp;
+import com.group2.KoiFarmShop.service.FirebaseService;
 import com.group2.KoiFarmShop.service.KoiFishService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.net.URL;
+import com.google.cloud.storage.Blob;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @SpringBootTest(classes = KoiFarmShopApplication.class)
 class KoiFarmShopApplicationTests {
-
+	@Autowired
+	private AccountServiceImp accountServiceImp;
 	@Autowired
 	private KoiFishService koiFishService;
+	@Mock
+	private Bucket bucket;
 
-	@Autowired
-	private KoiFishService koiFishServiceImpl;
-
-
+	@Mock
+	private Blob blob;
 	@Test
-	void testCompareKoiFish() {
-		// Mock koi fish responses
-		KoiFishDetailReponse koiFish1 = KoiFishDetailReponse.builder()
-				.id(1)
-				.origin("Japan")
-				.gender(true)
-				.age(2)
-				.size(45.5)
-				.personality("Friendly")
-				.price(2000.0)
-				.build();
+	void testGenerateOTPFormat() {
+		// Gọi phương thức generateOTP
+		String otp = accountServiceImp.generateOTP();
 
-		KoiFishDetailReponse koiFish2 = KoiFishDetailReponse.builder()
-				.id(2)
-				.origin("China")
-				.gender(false)
-				.age(3)
-				.size(50.0)
-				.personality("Aggressive")
-				.price(2500.0)
-				.build();
+		// Kiểm tra độ dài của OTP là 6
+		assertEquals("Kiểm tra độ dài của OTP là 6",6, otp.length());
 
-		// Khi gọi phương thức getKoiFishById(), trả về koiFish1 và koiFish2
-		when(koiFishService.getKoiFishById(1)).thenReturn(koiFish1);
-		when(koiFishService.getKoiFishById(2)).thenReturn(koiFish2);
-
-		// Thực thi phương thức compareKoiFish
-		List<KoiFishDetailReponse> result = koiFishServiceImpl.compareKoiFish(1, 2);
-
-		// Kiểm tra số lượng koi fish trả về
-		assertEquals("Số lượng Koi trả về",2, result.size());
-
-		// Kiểm tra từng koi fish có đúng như mock không
-		assertEquals("so sánh koi 1",koiFish1, result.get(0));
-		assertEquals("so sánh koi 2",koiFish2, result.get(1));
+		// Kiểm tra OTP chỉ chứa các chữ số
+		assertTrue(otp.matches("\\d+"), "OTP should only contain digits");
 	}
 
+	@Test
+	void testGenerateOTPRange() {
+		// Gọi phương thức generateOTP
+		String otp = accountServiceImp.generateOTP();
+
+		// Chuyển OTP từ chuỗi sang số nguyên
+		int otpValue = Integer.parseInt(otp);
+
+		// Kiểm tra OTP nằm trong phạm vi từ 100000 đến 999999
+		assertTrue(otpValue >= 100000 && otpValue <= 999999, "OTP should be between 100000 and 999999");
+	}
+
+	@Test
+	void testGetKoiFishByIdInvalidIdThrowsException() {
+		// Kiểm tra xem ngoại lệ AppException có được ném ra khi id <= 0
+		int invalidId = -1;
+
+		AppException exception = assertThrows(AppException.class, () -> {
+			koiFishService.getKoiFishById(invalidId);
+		});
+
+		// Kiểm tra xem thông báo lỗi của exception có đúng với ErrorCode.INVALIDNUMBER
+		assertEquals("tìm cá koi với id không hợp lệ",ErrorCode.INVALIDNUMBER, exception.getErrorCode());
+	}
+	
 }
