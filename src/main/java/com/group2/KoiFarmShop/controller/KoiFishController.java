@@ -3,7 +3,6 @@ package com.group2.KoiFarmShop.controller;
 import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
-import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.exception.AppException;
@@ -29,6 +28,9 @@ public class KoiFishController {
     @GetMapping("/allkoi")
     @Operation(summary = "Lấy danh sách Koi", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishPageResponse> getAllKoiFish(@RequestParam("page") int page,@RequestParam("pageSize") int pageSize) {
+        if(page<=0||pageSize<=0){
+            throw new AppException(ErrorCode.INVALIDNUMBER);
+        }
         KoiFishPageResponse koiFishList = koiFishService.getAllKoiFish(page,pageSize);
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishList).statusCode(200).build();
     }
@@ -46,6 +48,7 @@ public class KoiFishController {
     @GetMapping("/{id}")
     @Operation(summary = "Lấy Koi theo id", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishDetailReponse> getKoiFishById(@PathVariable int id) {
+
         KoiFishDetailReponse koiFish = koiFishService.getKoiFishById(id);
 
             return ApiReponse.<KoiFishDetailReponse>builder().data(koiFish).build();
@@ -98,7 +101,7 @@ public class KoiFishController {
     @PutMapping("/update/{id}")
     @Operation(summary = "Cập nhật Koi theo id", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishDetailReponse> updateKoiFish(@PathVariable int id, @RequestBody KoiRequest koiFish) {
-        if(koiFish.getCategoryId()==0){
+        if(koiFish.getCategoryId()==0||id<=0){
             throw new AppException(ErrorCode.KOINOTFOUND);
         }
         KoiFishDetailReponse koiFishReponse = koiFishService.updateKoiFish(koiFish,id);

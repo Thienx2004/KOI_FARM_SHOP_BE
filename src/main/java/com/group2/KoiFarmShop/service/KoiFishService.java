@@ -101,11 +101,15 @@ public class KoiFishService implements KoiFishServiceImp{
 
     @Override
     public KoiFishDetailReponse getKoiFishById(int id) {
+        if(id<=0){
+            throw new AppException(ErrorCode.INVALIDNUMBER);
+        }
         KoiFish koiFish=koiFishRepository.findByKoiID(id);
-        List<KoiFishReponse> koiList= getKoiByCategory(koiFish.getCategory(),1,3).getKoiFishReponseList();
         if(koiFish==null) {
             throw new AppException(ErrorCode.KOINOTFOUND);
         }
+        List<KoiFishReponse> koiList= getKoiByCategory(koiFish.getCategory(),1,3).getKoiFishReponseList();
+
         return KoiFishDetailReponse.builder()
                 .id(koiFish.getKoiID())
                 .age(koiFish.getAge())
