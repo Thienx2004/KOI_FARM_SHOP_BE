@@ -36,6 +36,8 @@ public class OrderService implements OrderServiceImp{
     private PromotionRepository promotionRepository;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     @Override
@@ -107,6 +109,9 @@ public class OrderService implements OrderServiceImp{
             }
 
             orderDetailRepository.saveAll(orderDetails);
+
+            // Gửi email xác nhận sau khi đơn hàng đã lưu thành công
+            emailService.sendOrderConfirmationEmail(account.getEmail(), orders.getPayment().getTransactionCode());
 
             return orders;
         } catch (Exception e) {

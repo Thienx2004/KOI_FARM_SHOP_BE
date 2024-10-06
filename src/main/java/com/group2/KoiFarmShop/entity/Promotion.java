@@ -33,6 +33,7 @@ public class Promotion {
     @OneToMany(mappedBy = "promotion")
     private List<Account> accounts;
 
+
     private boolean status = true;
 
 }
