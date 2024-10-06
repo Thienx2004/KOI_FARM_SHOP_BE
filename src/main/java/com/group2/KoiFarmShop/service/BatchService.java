@@ -65,19 +65,19 @@ public class BatchService implements BatchServiceImp{
                 predicates.add(criteriaBuilder.equal(root.get("category").get("categoryID"), Integer.parseInt(categoryID)));
             }
 
-            if (avgSize != null) {
+            if (avgSize != null && !avgSize.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("avgSize"), avgSize));
             }
 
-            if (age != null) {
+            if (age != null && !age.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("age"), Integer.parseInt(age)));
             }
 
             // Lọc theo minPrice và maxPrice
-            if (minPrice != null) {
+            if (minPrice != null && !minPrice.isEmpty()) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), Double.parseDouble(minPrice)));
             }
-            if (maxPrice != null) {
+            if (maxPrice != null && !maxPrice.isEmpty()) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), Double.parseDouble(maxPrice)));
             }
 
