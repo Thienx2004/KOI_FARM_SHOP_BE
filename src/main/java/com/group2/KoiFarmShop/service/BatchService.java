@@ -211,7 +211,7 @@ public class BatchService implements BatchServiceImp{
         batchPageReponse.setBatchReponses(batchReponseList);
         batchPageReponse.setPageNum(pageNo);
         batchPageReponse.setPageSize(batchPage.getSize());
-        batchPageReponse.setTotalElements(batchPage.getNumberOfElements());
+        batchPageReponse.setTotalElements(batchPage.getTotalElements());
         batchPageReponse.setTotalPages(batchPage.getTotalPages());
 
 
@@ -243,7 +243,7 @@ public class BatchService implements BatchServiceImp{
         batchPageReponse.setBatchReponses(batchReponseList);
         batchPageReponse.setPageNum(pageNo);
         batchPageReponse.setPageSize(batchPage.getSize());
-        batchPageReponse.setTotalElements(batchPage.getNumberOfElements());
+        batchPageReponse.setTotalElements(batchPage.getTotalElements());
         batchPageReponse.setTotalPages(batchPage.getTotalPages());
 
 

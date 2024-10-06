@@ -19,8 +19,12 @@ public class BatchController {
 
     public ApiReponse<BatchPageReponse> getAllBatchesByFilter(@RequestParam int pageNo, @RequestParam int pageSize,
         @RequestParam(required = false) String categoryID,
-        @RequestParam(required = false) String avgSize, @RequestParam(required = false) String age, @RequestParam(required = false) String minPrice, @RequestParam(required = false) String maxPrice,
-                                                              @RequestParam(required = false) String sortField, @RequestParam(required = false) String sortDirection) {
+        @RequestParam(required = false) String avgSize,
+        @RequestParam(required = false) String age,
+        @RequestParam(required = false) String minPrice,
+        @RequestParam(required = false) String maxPrice,
+        @RequestParam(required = false) String sortField,
+        @RequestParam(required = false) String sortDirection) {
         ApiReponse apiReponse = new ApiReponse();
         BatchPageReponse batchPageReponse = batchService.getBatchListFilter(pageNo, pageSize, categoryID, avgSize, age, minPrice, maxPrice, sortField, sortDirection);
 
