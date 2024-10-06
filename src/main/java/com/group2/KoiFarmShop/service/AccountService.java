@@ -312,6 +312,7 @@ public class AccountService implements AccountServiceImp{
         account.setAddress(profileRequest.getAddress());
         account.setPhone(profileRequest.getPhone());
         account.setVerified(account1.get().isVerified());
+        account.setAvatar(account1.get().getAvatar());
         account.setRole(account1.get().getRole());
 
 
