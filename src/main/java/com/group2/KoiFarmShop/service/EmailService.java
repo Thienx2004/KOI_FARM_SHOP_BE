@@ -40,14 +40,14 @@ public class EmailService {
         javaMailSender.send(emailMessage);
     }
 
-    public void sendOrderConfirmationEmail(String toEmail, String transactionCode) throws MessagingException {
+    public void sendOrderConfirmationEmail(String toEmail, int orderId) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         String subject = "Xác nhận đơn hàng";
         String content = "<p>Xin chào,</p>"
                 + "<p>Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đã được ghi nhận thành công!</p>"
-                + "<p>Mã đơn hàng: " + transactionCode + "</p>"
+                + "<p>Mã đơn hàng: " + orderId + "</p>"
                 + "<p>Vui lòng truy cập <a href='http://localhost:5173/payment-history'>lịch sử thanh toán</a> để xem chi tiết.</p>"
                 + "<p>Trân trọng!</p>";
 
