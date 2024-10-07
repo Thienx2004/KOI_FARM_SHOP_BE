@@ -123,4 +123,12 @@ public class ConsignmentController {
             throw new AppException(ErrorCode.TRANSACTION_INVALID);
         }
     }
+
+    @DeleteMapping("/deleteConsignment")
+    public ApiReponse<String> deleteConsignment(@RequestParam int consignmentId) {
+        ApiReponse<String> apiReponse = new ApiReponse<>();
+        apiReponse.setData(consignmentService.deleteConsignment(consignmentId));
+
+        return apiReponse;
+    }
 }
