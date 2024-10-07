@@ -24,6 +24,10 @@ public class Payment {
     @JoinColumn(name = "orderID")
     private Orders order;
 
+    @OneToOne
+    @JoinColumn(name = "consignmentID")
+    private Consignment consignment;
+
     private boolean status;
     private Date paymentDate;
 

@@ -46,6 +46,9 @@ public class Consignment {
     private int duration; // Thời gian ký gửi: 1, 3 hoặc 6 tháng
     private double serviceFee;
 
+    @OneToOne(mappedBy = "consignment")
+    private Payment payment;
+
 //    @OneToMany(mappedBy = "consignment")
 //    private List<OrderDetail> orderDetails;
 

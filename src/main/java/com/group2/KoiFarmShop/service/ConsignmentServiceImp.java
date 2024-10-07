@@ -17,6 +17,12 @@ public interface ConsignmentServiceImp {
                                     double size,
                                     String personality,
                                     double price,
+                                    String food,
+                                    String health,
+                                    String ph,
+                                    String temperature,
+                                    String water,
+                                    int pureBred,
                                     int categoryId,
                                     String name,
                                     MultipartFile certImg,
@@ -35,4 +41,6 @@ public interface ConsignmentServiceImp {
     public PaginReponse<ConsignmentResponse> getAllConsignmentForStaff(int pageNo, int pageSize);
 
     public ConsignmentDetailResponse getConsignmentDetail(int consignmentId);
+
+    public Consignment processPayment(int consignmentId, boolean isPay);
 }
