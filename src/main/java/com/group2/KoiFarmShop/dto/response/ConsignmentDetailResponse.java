@@ -19,8 +19,12 @@ public class ConsignmentDetailResponse {
     private String email;
     private String fullname;
     private String phoneNumber;
+    private int duration; // Thời gian ký gửi: 1, 3 hoặc 6 tháng
+    private double serviceFee;
+    private Date startDate;
+    private Date endDate;
     private int status;
     private boolean online;
 
-    private KoiFishReponse koiFish;
+    private KoiFishDetailReponse koiFish;
 }

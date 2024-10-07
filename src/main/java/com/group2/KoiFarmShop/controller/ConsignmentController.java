@@ -1,10 +1,17 @@
 package com.group2.KoiFarmShop.controller;
 
 
+import com.group2.KoiFarmShop.dto.request.OrderRequest;
 import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
 import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
 import com.group2.KoiFarmShop.dto.response.PaginReponse;
+import com.group2.KoiFarmShop.entity.Consignment;
+import com.group2.KoiFarmShop.entity.Orders;
+import com.group2.KoiFarmShop.entity.Payment;
+import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.repository.PaymentRepository;
 import com.group2.KoiFarmShop.service.ConsignmentServiceImp;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +24,8 @@ public class ConsignmentController {
 
     @Autowired
     private ConsignmentServiceImp consignmentService;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     @PostMapping("/createConsignment")
     public ApiReponse<String> createConsignment(@RequestParam int accountId, @RequestParam MultipartFile koiImg,
@@ -26,6 +35,12 @@ public class ConsignmentController {
                                                 @RequestParam double size,
                                                 @RequestParam String personality,
                                                 @RequestParam double price,
+                                                @RequestParam String food,
+                                                @RequestParam String health,
+                                                @RequestParam String ph,
+                                                @RequestParam String temperature,
+                                                @RequestParam String water,
+                                                @RequestParam int pureBred,
                                                 @RequestParam int categoryId,
                                                 @RequestParam String name,
                                                 @RequestParam MultipartFile certImg,
@@ -38,7 +53,8 @@ public class ConsignmentController {
                                                 ){
 
         ApiReponse apiReponse = new ApiReponse();
-        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, categoryId, name, certImg ,notes, phoneNumber, consignmentType, duration, serviceFee, online));
+        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, food, health, ph, temperature, water,
+        pureBred, categoryId, name, certImg, notes, phoneNumber, consignmentType, duration, serviceFee, online));
 
         return apiReponse;
     }
@@ -83,5 +99,23 @@ public class ConsignmentController {
         return response;
     }
 
-
+    @PostMapping("/processPayment")
+    public ApiReponse<String> processPayment(@RequestParam int consignmentId, @RequestParam String transactionCode) {
+        ApiReponse<String> resp = new ApiReponse<>();
+        Payment payment = paymentRepository.findPaymentByTransactionCode(transactionCode).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_FAILED));
+        if(!payment.isStatus()) {
+            Consignment success = consignmentService.processPayment(consignmentId, true);
+            if(success == null){
+                throw new AppException(ErrorCode.PAYMENT_FAILED);
+            }
+            payment.setConsignment(success);
+            payment.setStatus(true);
+            paymentRepository.save(payment);
+            resp.setData("Thanh toán thành công! Cá đã được đưa lên bán.");
+            return resp;
+        }
+        else {
+            throw new AppException(ErrorCode.TRANSACTION_INVALID);
+        }
+    }
 }

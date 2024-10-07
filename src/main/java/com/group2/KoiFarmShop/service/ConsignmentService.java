@@ -41,7 +41,12 @@ public class ConsignmentService implements ConsignmentServiceImp{
     private EmailService emailService;
 
     @Override
-    public String createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, int categoryId, String name, MultipartFile certImg,String notes,
+    public String createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, String food,
+                                    String health,
+                                    String ph,
+                                    String temperature,
+                                    String water,
+                                    int pureBred, int categoryId, String name, MultipartFile certImg,String notes,
                                     String phoneNumber,
                                     boolean consignmentType,
                                     int duration,
@@ -64,6 +69,12 @@ public class ConsignmentService implements ConsignmentServiceImp{
             koiFish.setSize(size);
             koiFish.setPersonality(personality);
             koiFish.setPrice(price);
+            koiFish.setFood(food);
+            koiFish.setHealth(health);
+            koiFish.setPH(ph);
+            koiFish.setTemperature(temperature);
+            koiFish.setWater(water);
+            koiFish.setPurebred(pureBred);
             koiFish.setKoiImage(firebaseService.uploadImage(koiImg));
             koiFish.setCategory(category);
             koiFish.setStatus(4);  // set status pending dang cho dc duyet
@@ -172,6 +183,10 @@ public class ConsignmentService implements ConsignmentServiceImp{
             consignmentResponse.setEmail(consignment.getAccount().getEmail());
             consignmentResponse.setFullname(consignment.getAccount().getFullName());
             consignmentResponse.setPhoneNumber(consignment.getPhoneNumber());
+            consignmentResponse.setDuration(consignment.getDuration());
+            consignmentResponse.setServiceFee(consignment.getServiceFee());
+            consignmentResponse.setStartDate(consignment.getStartDate());
+            consignmentResponse.setEndDate(consignment.getEndDate());
             consignmentResponse.setStatus(consignment.getStatus());
             consignmentResponse.setOnline(consignment.isOnline());
             consignmentResponses.add(consignmentResponse);
@@ -201,6 +216,10 @@ public class ConsignmentService implements ConsignmentServiceImp{
             consignmentResponse.setEmail(consignment.getAccount().getEmail());
             consignmentResponse.setFullname(consignment.getAccount().getFullName());
             consignmentResponse.setPhoneNumber(consignment.getPhoneNumber());
+            consignmentResponse.setDuration(consignment.getDuration());
+            consignmentResponse.setServiceFee(consignment.getServiceFee());
+            consignmentResponse.setStartDate(consignment.getStartDate());
+            consignmentResponse.setEndDate(consignment.getEndDate());
             consignmentResponse.setStatus(consignment.getStatus());
             consignmentResponse.setOnline(consignment.isOnline());
             consignmentResponses.add(consignmentResponse);
@@ -229,12 +248,16 @@ public class ConsignmentService implements ConsignmentServiceImp{
         detailResponse.setEmail(consignment.getAccount().getEmail());
         detailResponse.setFullname(consignment.getAccount().getFullName());
         detailResponse.setPhoneNumber(consignment.getPhoneNumber());
+        detailResponse.setDuration(consignment.getDuration());
+        detailResponse.setServiceFee(consignment.getServiceFee());
+        detailResponse.setStartDate(consignment.getStartDate());
+        detailResponse.setEndDate(consignment.getEndDate());
         detailResponse.setStatus(consignment.getStatus());
         detailResponse.setOnline(consignment.isOnline());
 
         KoiFish koiFish = consignment.getKoiFish();
         if (koiFish != null) {
-            KoiFishReponse koiFishResponse = new KoiFishReponse();
+            KoiFishDetailReponse koiFishResponse = new KoiFishDetailReponse();
             koiFishResponse.setId(koiFish.getKoiID());
             koiFishResponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishResponse.setCategory(koiFish.getCategory().getCategoryName());
@@ -244,6 +267,12 @@ public class ConsignmentService implements ConsignmentServiceImp{
             koiFishResponse.setSize(koiFish.getSize());
             koiFishResponse.setPersonality(koiFish.getPersonality());
             koiFishResponse.setPrice(koiFish.getPrice());
+            koiFishResponse.setFood(koiFish.getFood());
+            koiFishResponse.setHealth(koiFish.getHealth());
+            koiFishResponse.setPH(koiFish.getPH());
+            koiFishResponse.setTemperature(koiFish.getTemperature());
+            koiFishResponse.setWater(koiFish.getWater());
+            koiFishResponse.setPurebred(koiFish.getPurebred());
             koiFishResponse.setKoiImage(koiFish.getKoiImage());
             koiFishResponse.setStatus(koiFish.getStatus());
 
@@ -260,6 +289,31 @@ public class ConsignmentService implements ConsignmentServiceImp{
         }
 
         return detailResponse;
+    }
+
+    @Override
+    public Consignment processPayment(int consignmentId, boolean isPaid) {
+        Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(consignmentId)
+                .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
+
+        if (consignment.getStatus() == 4) { // Nếu đơn đang ở trạng thái Pending Payment
+            if (isPaid) {
+                consignment.setStatus(2); // Đơn đã được thanh toán, chờ bán
+                KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
+                if(koiFish != null) {
+                    koiFish.setStatus(3); // Đặt trạng thái bán cho cá
+                } else throw new AppException(ErrorCode.KOINOTFOUND);
+
+                consignmentRepository.save(consignment);
+                return consignment;
+            } else if (new Date().after(consignment.getEndDate())) {
+                consignment.setStatus(5); // Đơn quá hạn
+                consignmentRepository.save(consignment);
+                throw new AppException(ErrorCode.CONSIGNMENT_OUT_OF_DATE);
+            }
+        }
+
+        return consignment;
     }
 }
 
