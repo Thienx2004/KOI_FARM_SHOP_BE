@@ -51,7 +51,7 @@ public class KoiFishController {
 
         KoiFishDetailReponse koiFish = koiFishService.getKoiFishById(id);
 
-            return ApiReponse.<KoiFishDetailReponse>builder().data(koiFish).build();
+            return ApiReponse.<KoiFishDetailReponse>builder().data(koiFish).message("Xử lý thành công").build();
     }
 
     // Thêm mới cá Koi
