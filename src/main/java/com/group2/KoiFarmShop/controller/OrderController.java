@@ -11,7 +11,9 @@ import com.group2.KoiFarmShop.entity.Payment;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.PaymentRepository;
+import com.group2.KoiFarmShop.service.EmailService;
 import com.group2.KoiFarmShop.service.OrderService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +27,11 @@ public class OrderController {
     private PaymentRepository paymentRepository;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/saveOrder")
-    public ApiReponse<String> saveOrder(@RequestBody OrderRequest orderRequest, @RequestParam String transactionCode) {
+    public ApiReponse<String> saveOrder(@RequestBody OrderRequest orderRequest, @RequestParam String transactionCode) throws MessagingException {
         ApiReponse<String> resp = new ApiReponse<>();
         Payment payment = paymentRepository.findPaymentByTransactionCode(transactionCode).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_FAILED));
         if(!payment.isStatus()) {
@@ -38,6 +42,8 @@ public class OrderController {
             payment.setOrder(success);
             payment.setStatus(true);
             paymentRepository.save(payment);
+            // Gửi email xác nhận sau khi đơn hàng đã lưu thành công
+            emailService.sendOrderConfirmationEmail(payment.getOrder().getAccount().getEmail(), payment.getTransactionCode());
             resp.setData("Lưu thanh toán thành công");
             return resp;
         }

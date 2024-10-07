@@ -126,7 +126,7 @@ public class OrderService implements OrderServiceImp{
             orderDetailRepository.saveAll(orderDetails);
 
             // Gửi email xác nhận sau khi đơn hàng đã lưu thành công
-            emailService.sendOrderConfirmationEmail(account.getEmail(), orders.getOrderID());
+            //emailService.sendOrderConfirmationEmail(account.getEmail(), orders.getOrderID());
 
             return orders;
         } catch (Exception e) {

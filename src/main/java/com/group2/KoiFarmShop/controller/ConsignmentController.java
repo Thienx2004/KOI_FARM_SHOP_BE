@@ -13,6 +13,7 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.PaymentRepository;
 import com.group2.KoiFarmShop.service.ConsignmentServiceImp;
+import com.group2.KoiFarmShop.service.EmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class ConsignmentController {
     private ConsignmentServiceImp consignmentService;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/createConsignment")
     public ApiReponse<String> createConsignment(@RequestParam int accountId, @RequestParam MultipartFile koiImg,
@@ -100,7 +103,7 @@ public class ConsignmentController {
     }
 
     @PostMapping("/processPayment")
-    public ApiReponse<String> processPayment(@RequestParam int consignmentId, @RequestParam String transactionCode) {
+    public ApiReponse<String> processPayment(@RequestParam int consignmentId, @RequestParam String transactionCode) throws MessagingException {
         ApiReponse<String> resp = new ApiReponse<>();
         Payment payment = paymentRepository.findPaymentByTransactionCode(transactionCode).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_FAILED));
         if(!payment.isStatus()) {
@@ -111,6 +114,8 @@ public class ConsignmentController {
             payment.setConsignment(success);
             payment.setStatus(true);
             paymentRepository.save(payment);
+            // Gửi email xác nhận sau khi đơn hàng đã lưu thành công
+            emailService.sendOrderConfirmationEmail(payment.getConsignment().getAccount().getEmail(), payment.getTransactionCode());
             resp.setData("Thanh toán thành công! Cá đã được đưa lên bán.");
             return resp;
         }
