@@ -58,4 +58,22 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendEmailToCustomer(String toEmail, int consignmentID) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        String subject = "Xác nhận đơn hàng";
+        String content = "<p>Xin chào,</p>"
+                + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Đơn ký gửi của bạn đã được duyệt thành công!</p>"
+                + "<p>Mã đơn ký gửi: " + consignmentID + "</p>"
+                + "<p>Vui lòng truy cập <a href='http://localhost:5173/payment-history'>lịch sử thanh toán</a> để xem chi tiết.</p>"
+                + "<p>Trân trọng!</p>";
+
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setText(content, true);  // Nội dung email dạng HTML
+
+        javaMailSender.send(message);
+    }
+
 }

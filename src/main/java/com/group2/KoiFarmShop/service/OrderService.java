@@ -38,6 +38,8 @@ public class OrderService implements OrderServiceImp{
     private AccountRepository accountRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private ConsignmentRepository consignmentRepository;
 
     @Transactional
     @Override
@@ -107,6 +109,19 @@ public class OrderService implements OrderServiceImp{
                 }
                 orderDetails.get(i).setQuantity(order.getQuantity()[i]);
             }
+            // Xử lý nếu có đơn ký gửi trong đơn hàng
+//            if (order.getConsignmentID() != 0) {
+//                Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(order.getConsignmentID())
+//                        .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
+//
+//                OrderDetail orderDetail = new OrderDetail();
+//                orderDetail.setOrders(orders);
+//                orderDetail.setConsignment(consignment);
+//                orderDetails.add(orderDetail);
+//
+//                consignment.setStatus(2);  // Status 2 = thanh toán và đơn đã đc duyệt
+//                consignmentRepository.save(consignment);
+//            }
 
             orderDetailRepository.saveAll(orderDetails);
 

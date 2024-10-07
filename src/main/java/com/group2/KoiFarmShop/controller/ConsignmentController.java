@@ -6,6 +6,7 @@ import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
 import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
 import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.service.ConsignmentServiceImp;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,17 +32,19 @@ public class ConsignmentController {
                                                 @RequestParam String notes,
                                                 @RequestParam String phoneNumber,
                                                 @RequestParam boolean consignmentType,
+                                                @RequestParam int duration,
+                                                @RequestParam double serviceFee,
                                                 @RequestParam boolean online
                                                 ){
 
         ApiReponse apiReponse = new ApiReponse();
-        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, categoryId, name, certImg ,notes, phoneNumber, consignmentType, online));
+        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, categoryId, name, certImg ,notes, phoneNumber, consignmentType, duration, serviceFee, online));
 
         return apiReponse;
     }
 
     @PutMapping("/approve/{consignmentID}")
-    public ApiReponse<String> approveConsignment(@PathVariable int consignmentID){
+    public ApiReponse<String> approveConsignment(@PathVariable int consignmentID) throws MessagingException {
 
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(consignmentService.approveConsignment(consignmentID));

@@ -14,5 +14,6 @@ public class OrderRequest {
     private int[] quantity;
     private double totalPrice;
     private String promoCode;
+    //private int consignmentID;
 
 }

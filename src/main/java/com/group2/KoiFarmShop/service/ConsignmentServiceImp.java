@@ -4,6 +4,7 @@ import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
 import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
 import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.entity.Consignment;
+import jakarta.mail.MessagingException;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,9 +23,11 @@ public interface ConsignmentServiceImp {
                                     String notes,
                                     String phoneNumber,
                                     boolean consignmentType,
+                                    int duration,
+                                    double serviceFee,
                                     boolean online);
 
-    public String approveConsignment(int consignmentId);
+    public String approveConsignment(int consignmentId) throws MessagingException;
 
     public String rejectConsignment(int consignmentId, String rejectionReason);
 

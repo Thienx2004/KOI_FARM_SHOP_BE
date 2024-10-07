@@ -9,6 +9,7 @@ import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.CertificateRepository;
 import com.group2.KoiFarmShop.repository.ConsignmentRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,11 +37,15 @@ public class ConsignmentService implements ConsignmentServiceImp{
     private CertificateService certificateService;
     @Autowired
     private CertificateRepository certificateRepository;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public String createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, int categoryId, String name, MultipartFile certImg,String notes,
                                     String phoneNumber,
                                     boolean consignmentType,
+                                    int duration,
+                                    double serviceFee,
                                     boolean online) {
         try {
             Consignment consignment = new Consignment();
@@ -81,30 +87,39 @@ public class ConsignmentService implements ConsignmentServiceImp{
             consignment.setPhoneNumber(phoneNumber);
             consignment.setStatus(1);
             consignment.setConsignmentDate(new Date());
+            consignment.setDuration(duration);
+            consignment.setServiceFee(serviceFee);
             consignmentRepository.save(consignment);
         } catch (Exception e) {
             throw new AppException(ErrorCode.SAVE_FAILED);
         }
 
-        return "Nộp đơn kí gửi thành công";
+        return "Đơn ký gửi đã được tạo thành công, chờ phê duyệt!";
     }
 
     @Override
-    public String approveConsignment(int consignmentId) {
+    public String approveConsignment(int consignmentId) throws MessagingException {
 
-        Consignment consignment = consignmentRepository.findById(consignmentId)
+        Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(consignmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
 
-        if(consignment.getStatus() == 1){
+        if (consignment.getStatus() == 1) { // Nếu đơn đang ở trạng thái Pending
+            // Cập nhật trạng thái chờ thanh toán
+            consignment.setStatus(4); // Pending Payment
+            consignment.setStartDate(new Date());
 
-            KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
-            koiFish.setStatus(3); //set cho cá này sang status đã ký gửi
-            koiFishRepository.save(koiFish);
+            // Tính ngày hết hạn thanh toán (3 ngày sau khi phê duyệt)
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.DAY_OF_MONTH, 3);
+            consignment.setEndDate(calendar.getTime());
 
-            consignment.setStatus(2);//set cho đơn này đã đc duyệt cho ky gui
             consignmentRepository.save(consignment);
 
-            return "Đơn đã được duyệt!";
+            // Gửi mail cho customer thông báo về đơn đã phê duyệt và hướng dẫn thanh toán
+            emailService.sendEmailToCustomer(consignment.getAccount().getEmail(), consignment.getConsignmentID());
+
+            return "Đơn ký gửi đã được phê duyệt và chờ thanh toán!";
         } else {
             throw new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND);
         }
@@ -140,7 +155,6 @@ public class ConsignmentService implements ConsignmentServiceImp{
         } else {
             throw new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND);
         }
-
     }
 
     @Override

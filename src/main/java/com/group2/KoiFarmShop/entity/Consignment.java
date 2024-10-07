@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -32,9 +33,20 @@ public class Consignment {
     @Temporal(TemporalType.DATE)
     private Date consignmentDate;
 
+    @Temporal(TemporalType.DATE)
+    private Date startDate;
+    @Temporal(TemporalType.DATE)
+    private Date endDate;
+
     private String notes;
     private String phoneNumber;
-    private int status;     //1 = Pending, 2 = Confirm, 3 = Sold
+    private int status;     //1 = Pending, 2 = Confirmed (đã duyệt), 3 = Reject, 4 = Pending Payment, 5 = Expired
     private boolean online;
+
+    private int duration; // Thời gian ký gửi: 1, 3 hoặc 6 tháng
+    private double serviceFee;
+
+//    @OneToMany(mappedBy = "consignment")
+//    private List<OrderDetail> orderDetails;
 
 }

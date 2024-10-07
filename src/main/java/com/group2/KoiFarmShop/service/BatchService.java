@@ -119,6 +119,7 @@ public class BatchService implements BatchServiceImp{
                 .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
         BatchReponse batchReponse = new BatchReponse();
         batchReponse.setBatchID(batch.getBatchID());
+        batchReponse.setAge(batch.getAge());
         batchReponse.setOrigin(batch.getOrigin());
         batchReponse.setQuantity(batch.getQuantity());
         batchReponse.setPrice(batch.getPrice());
@@ -196,6 +197,7 @@ public class BatchService implements BatchServiceImp{
         for(Batch batch : batchList) {
             BatchReponse batchReponse = new BatchReponse();
             batchReponse.setBatchID(batch.getBatchID());
+            batchReponse.setAge(batch.getAge());
             batchReponse.setOrigin(batch.getOrigin());
             batchReponse.setQuantity(batch.getQuantity());
             batchReponse.setPrice(batch.getPrice());
@@ -228,6 +230,7 @@ public class BatchService implements BatchServiceImp{
         for(Batch batch : batchList) {
             BatchReponse batchReponse = new BatchReponse();
             batchReponse.setBatchID(batch.getBatchID());
+            batchReponse.setAge(batch.getAge());
             batchReponse.setOrigin(batch.getOrigin());
             batchReponse.setQuantity(batch.getQuantity());
             batchReponse.setPrice(batch.getPrice());
