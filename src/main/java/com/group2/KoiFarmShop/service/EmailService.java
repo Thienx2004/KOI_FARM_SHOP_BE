@@ -51,6 +51,7 @@ public class EmailService {
                 + "<p>Vui lòng truy cập <a href='http://localhost:5173/payment-history'>lịch sử thanh toán</a> để xem chi tiết.</p>"
                 + "<p>Trân trọng!</p>";
 
+        helper.setFrom("koifarmofficial@gmail.com");
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(content, true);  // Nội dung email dạng HTML
@@ -69,6 +70,7 @@ public class EmailService {
                 + "<p>Vui lòng truy cập <a href='http://localhost:5173/payment-history'>lịch sử thanh toán</a> để xem chi tiết.</p>"
                 + "<p>Trân trọng!</p>";
 
+        helper.setFrom("koifarmofficial@gmail.com");
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(content, true);  // Nội dung email dạng HTML
