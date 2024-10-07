@@ -28,6 +28,10 @@ public class OrderDetail {
     @JoinColumn(name = "batchID")
     private Batch batch;
 
+//    @ManyToOne
+//    @JoinColumn(name = "consignmentID")
+//    private Consignment consignment;
+
     private boolean type; // true/false for Batch/Fish
     private int quantity;
     private double price;
