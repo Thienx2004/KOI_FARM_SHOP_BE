@@ -307,10 +307,10 @@ public class KoiFishService implements KoiFishServiceImp{
                 predicates.add(criteriaBuilder.equal(root.get("age"), Integer.parseInt(age)));
             }
             // Lọc theo minPrice và maxPrice
-            if (minPrice != null&& !origin.isEmpty()) {
+            if (minPrice != null&& !minPrice.isEmpty()) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), Double.parseDouble(minPrice)));
             }
-            if (maxPrice != null&& !origin.isEmpty()) {
+            if (maxPrice != null&& !maxPrice.isEmpty()) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), Double.parseDouble(maxPrice)));
             }
             if(origin != null && !origin.isEmpty()) {
