@@ -1,6 +1,6 @@
 package com.group2.KoiFarmShop.service;
 
-//import com.group2.KoiFarmShop.dto.response.AccountDTO;
+import com.group2.KoiFarmShop.dto.response.AccountDTO;
 import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.Content;
 import com.group2.KoiFarmShop.dto.response.ProfileRespone;
@@ -17,6 +17,9 @@ import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -342,26 +345,25 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
-//    public AccountDTO getAllAccounts(int page, int pageSize) {
-//        Pageable pageable = PageRequest.of(page - 1, pageSize);
-//        Page<Account> accountList = accountRepository.findAll(pageable);
-//        List<AccountDTO> accountDTOList = new ArrayList<>();
-//        for (Account account : accountList) {
-//            AccountDTO accountDTO = new AccountDTO();
-//            accountDTO.setId(account.getAccountID());
-//            accountDTO.setFullName(account.getFullName());
-//            accountDTO.setEmail(account.getEmail());
-//            accountDTO.setPassword(account.getPassword());
-//            accountDTO.setPhone(account.getPhone());
-//            accountDTO.setAddress(account.getAddress());
-//            accountDTO.setRole(account.getRole());
-//            accountDTO.setAvatar(account.getAvatar());
-//            accountDTO.setStatus(account.isStatus());
-//            accountDTOList.add(accountDTO);
-//        }
-//        return null;
-//    }
-
+    public AccountDTO getAllAccounts(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Account> accountList = accountRepository.findAll(pageable);
+        List<AccountDTO> accountDTOList = new ArrayList<>();
+        for (Account account : accountList) {
+            AccountDTO accountDTO = new AccountDTO();
+            accountDTO.setId(account.getAccountID());
+            accountDTO.setFullName(account.getFullName());
+            accountDTO.setEmail(account.getEmail());
+            accountDTO.setPassword(account.getPassword());
+            accountDTO.setPhone(account.getPhone());
+            accountDTO.setAddress(account.getAddress());
+            accountDTO.setRole(account.getRole());
+            accountDTO.setAvatar(account.getAvatar());
+            accountDTO.setStatus(account.isStatus());
+            accountDTOList.add(accountDTO);
+        }
+        return null;
+    }
      public ProfileRespone updateAvatar(MultipartFile file, int id) throws IOException {
          Optional<Account>account1 = accountRepository.findById(id);
          Account account=(Account) account1.get();
