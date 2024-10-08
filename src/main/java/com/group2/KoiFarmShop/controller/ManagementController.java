@@ -38,8 +38,8 @@ public class ManagementController {
     @PutMapping("/updateStatus/{id}")
     @Operation(summary = "Cập nhật trạng thái tài khoản", description = "")
 
-    public ApiReponse<AccountDTO> changeStatus(@PathVariable int id, @RequestBody AccountUpdateStatusRequest status) {
-        AccountDTO accountDTO = accountService.updateAccountStatus(id, status.isStatus());
+    public ApiReponse<AccountDTO> changeStatus(@PathVariable int id) {
+        AccountDTO accountDTO = accountService.updateAccountStatus(id);
         return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
     }
     @PostMapping("/createAccount")
