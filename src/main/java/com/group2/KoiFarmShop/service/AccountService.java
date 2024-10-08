@@ -1,9 +1,8 @@
 package com.group2.KoiFarmShop.service;
 
-import com.group2.KoiFarmShop.dto.response.AccountDTO;
-import com.group2.KoiFarmShop.dto.response.ApiReponse;
+import com.group2.KoiFarmShop.dto.AccountDTO;
+import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.dto.Content;
-import com.group2.KoiFarmShop.dto.response.ProfileRespone;
 import com.group2.KoiFarmShop.dto.request.*;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Role;
@@ -12,6 +11,7 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
+import com.group2.KoiFarmShop.repository.RoleRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
 
@@ -35,7 +35,8 @@ import java.util.*;
 
 @Service
 public class AccountService implements AccountServiceImp{
-
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -64,7 +65,7 @@ public class AccountService implements AccountServiceImp{
             // Kiểm tra mật khẩu
             if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
                 // Kiểm tra trạng thái xác thực
-                if(account.isVerified()){
+                if(account.isVerified() && account.isStatus()){
                     String Token=jwtUltilsHelper.generateToken(account);
                     Content content = new Content();
                     content.setId(account.getAccountID());
@@ -74,6 +75,7 @@ public class AccountService implements AccountServiceImp{
                     content.setRole(account.getRole().getRoleName());
                     content.setPhone(account.getPhone());
                     content.setAccessToken(Token);
+
                     apiReponse.setData(content);
                     apiReponse.setMessage("Đăng nhập thành công");
                     // Tài khoản đăng nhập thành công
@@ -345,7 +347,7 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
-    public AccountDTO getAllAccounts(int page, int pageSize) {
+    public AccountPageRespone getAllAccounts(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         Page<Account> accountList = accountRepository.findAll(pageable);
         List<AccountDTO> accountDTOList = new ArrayList<>();
@@ -362,7 +364,13 @@ public class AccountService implements AccountServiceImp{
             accountDTO.setStatus(account.isStatus());
             accountDTOList.add(accountDTO);
         }
-        return null;
+        return AccountPageRespone.builder()
+                .pageNum(accountList.getNumber()+1)
+                .totalPages(accountList.getTotalPages())
+                .totalElements(accountList.getTotalElements())
+                .pageSize(accountList.getSize())
+                .accounts(accountDTOList)
+                .build();
     }
      public ProfileRespone updateAvatar(MultipartFile file, int id) throws IOException {
          Optional<Account>account1 = accountRepository.findById(id);
@@ -373,4 +381,69 @@ public class AccountService implements AccountServiceImp{
                  .avatar(accSave.getAvatar())
                  .build();
      }
+
+    public AccountDTO updateAccountStatus(int accountId, boolean newStatus) {
+        // Tìm account theo ID
+        Optional<Account> optionalAccount = accountRepository.findById(accountId);
+
+        if (!optionalAccount.isPresent()) {
+            throw new RuntimeException("Account not found with id: " + accountId);
+        }
+
+        Account account = optionalAccount.get();
+        // Cập nhật status
+        account.setStatus(newStatus);
+        accountRepository.save(account);// Lưu thay đổi vào DB
+
+        // Ánh xạ dữ liệu từ entity sang DTO
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setId(account.getAccountID());
+        accountDTO.setFullName(account.getFullName());
+        accountDTO.setEmail(account.getEmail());
+        accountDTO.setPassword(account.getPassword());
+        accountDTO.setPhone(account.getPhone());
+        accountDTO.setAddress(account.getAddress());
+        accountDTO.setRole(account.getRole());
+        accountDTO.setAvatar(account.getAvatar());
+        accountDTO.setStatus(account.isStatus());
+
+        return accountDTO;
+    }
+
+    public AccountCreateRespone createAccount(AccountCreateRequest accountRequest) {
+        if (accountRepository.existsByEmail(accountRequest.getEmail())) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+        Role role = new Role();
+        role.setRoleID(accountRequest.getRoleId());
+        Account account = new Account();
+        account.setFullName(accountRequest.getFullName());
+        account.setAddress(accountRequest.getAddress());
+        account.setPhone(accountRequest.getPhone());
+        account.setEmail(accountRequest.getEmail());
+        if(accountRequest.getPassword()!=null) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            account.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
+        }
+        account.setStatus(true);
+        account.setVerified(true);
+        account.setRole(role);
+//        account.setAvatar(accountRequest.getAvatar());
+        accountRepository.save(account);
+        return AccountCreateRespone.builder()
+                .fullName(accountRequest.getFullName())
+                .accountId(account.getAccountID())
+                .address(accountRequest.getAddress())
+                .phone(accountRequest.getPhone())
+                .email(accountRequest.getEmail())
+                .password(accountRequest.getPassword())
+                .roleId(accountRequest.getRoleId())
+                .status(accountRequest.isStatus())
+                .isVerified(accountRequest.isVerified())
+                .build();
+    }
+
+
+
 }

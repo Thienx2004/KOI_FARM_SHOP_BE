@@ -1,5 +1,7 @@
 package com.group2.KoiFarmShop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +37,8 @@ import java.util.Set;
 
         @ManyToOne
         @JoinColumn(name = "roleID")
+        @JsonManagedReference
+
         private Role role;
 
         @OneToMany(mappedBy = "account")

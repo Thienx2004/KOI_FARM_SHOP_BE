@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class Role {
     private String roleName;
 
     @OneToMany(mappedBy = "role")
+    @JsonBackReference
     private List<Account> accounts;
 
     // Getters and Setters
