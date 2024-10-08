@@ -43,4 +43,6 @@ public interface ConsignmentServiceImp {
     public ConsignmentDetailResponse getConsignmentDetail(int consignmentId);
 
     public Consignment processPayment(int consignmentId, boolean isPay);
+
+    public String deleteConsignment(int consignmentId);
 }

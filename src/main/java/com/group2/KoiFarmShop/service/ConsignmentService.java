@@ -9,6 +9,7 @@ import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.CertificateRepository;
 import com.group2.KoiFarmShop.repository.ConsignmentRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
+import com.group2.KoiFarmShop.repository.PaymentRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,8 @@ public class ConsignmentService implements ConsignmentServiceImp{
     private CertificateRepository certificateRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     @Override
     public String createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, String food,
@@ -314,6 +317,39 @@ public class ConsignmentService implements ConsignmentServiceImp{
         }
 
         return consignment;
+    }
+
+    @Override
+    public String deleteConsignment(int consignmentId) {
+        Consignment consignment = consignmentRepository.findById(consignmentId)
+                .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
+
+        if(consignment != null){
+
+            KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
+            consignment.setKoiFish(null);
+            consignmentRepository.save(consignment);
+
+            if(koiFish != null){
+
+                Certificate certificate = koiFish.getCertificate();
+                if(certificate != null){
+                    certificateRepository.delete(certificate);
+                }
+
+                koiFishRepository.delete(koiFish);
+            }
+
+            Payment payment = consignment.getPayment();
+            if(payment != null){
+                paymentRepository.delete(payment);
+            }
+            consignmentRepository.delete(consignment);
+
+            return "Đã xoá thành công đơn ký gửi!";
+        } else {
+            throw new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND);
+        }
     }
 }
 

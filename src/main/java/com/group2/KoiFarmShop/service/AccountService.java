@@ -1,7 +1,11 @@
 package com.group2.KoiFarmShop.service;
 
+
 import com.group2.KoiFarmShop.dto.AccountDTO;
 import com.group2.KoiFarmShop.dto.response.*;
+=======
+//import com.group2.KoiFarmShop.dto.response.AccountDTO;
+
 import com.group2.KoiFarmShop.dto.Content;
 import com.group2.KoiFarmShop.dto.request.*;
 import com.group2.KoiFarmShop.entity.Account;
@@ -347,7 +351,9 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
+
     public AccountPageRespone getAllAccounts(int page, int pageSize) {
+
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         Page<Account> accountList = accountRepository.findAll(pageable);
         List<AccountDTO> accountDTOList = new ArrayList<>();
@@ -364,6 +370,7 @@ public class AccountService implements AccountServiceImp{
             accountDTO.setStatus(account.isStatus());
             accountDTOList.add(accountDTO);
         }
+
         return AccountPageRespone.builder()
                 .pageNum(accountList.getNumber()+1)
                 .totalPages(accountList.getTotalPages())
@@ -372,6 +379,7 @@ public class AccountService implements AccountServiceImp{
                 .accounts(accountDTOList)
                 .build();
     }
+
      public ProfileRespone updateAvatar(MultipartFile file, int id) throws IOException {
          Optional<Account>account1 = accountRepository.findById(id);
          Account account=(Account) account1.get();
