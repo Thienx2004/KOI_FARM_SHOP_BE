@@ -63,7 +63,7 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        String subject = "Xác nhận đơn hàng";
+        String subject = "Thông báo đơn ký gửi";
         String content = "<p>Xin chào,</p>"
                 + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Đơn ký gửi của bạn đã được duyệt thành công!</p>"
                 + "<p>Mã đơn ký gửi: " + consignmentID + "</p>"
