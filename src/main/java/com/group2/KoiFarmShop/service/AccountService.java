@@ -390,7 +390,7 @@ public class AccountService implements AccountServiceImp{
                  .build();
      }
 
-    public AccountDTO updateAccountStatus(int accountId, boolean newStatus) {
+    public AccountDTO updateAccountStatus(int accountId) {
         // Tìm account theo ID
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
 
@@ -400,7 +400,13 @@ public class AccountService implements AccountServiceImp{
 
         Account account = optionalAccount.get();
         // Cập nhật status
-        account.setStatus(newStatus);
+        if(account.isStatus()){
+            account.setStatus(false);
+        }else{
+            account.setStatus(true);
+        }
+
+
         accountRepository.save(account);// Lưu thay đổi vào DB
 
         // Ánh xạ dữ liệu từ entity sang DTO
