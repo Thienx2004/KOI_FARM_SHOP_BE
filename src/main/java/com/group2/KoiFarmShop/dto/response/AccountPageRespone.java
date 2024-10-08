@@ -1,23 +1,20 @@
 package com.group2.KoiFarmShop.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.group2.KoiFarmShop.dto.AccountDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class PaginReponse<T> {
-
-    private List<T> content;
+public class AccountPageRespone {
     private int pageNum;
     private int pageSize;
-    private int totalElements;
+    private long totalElements;
     private int totalPages;
+    List<AccountDTO> accounts;
 }
