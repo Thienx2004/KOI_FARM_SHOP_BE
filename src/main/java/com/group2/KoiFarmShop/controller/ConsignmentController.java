@@ -1,12 +1,15 @@
 package com.group2.KoiFarmShop.controller;
 
 
+import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
+import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.dto.request.OrderRequest;
 import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
 import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
 import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.entity.Consignment;
+import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.entity.Orders;
 import com.group2.KoiFarmShop.entity.Payment;
 import com.group2.KoiFarmShop.exception.AppException;
@@ -130,5 +133,11 @@ public class ConsignmentController {
         apiReponse.setData(consignmentService.deleteConsignment(consignmentId));
 
         return apiReponse;
+    }
+
+    @PutMapping("/update/{id}/{koiId}")
+    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @RequestBody ConsignmentRequest consignmentRequest, @RequestBody KoiRequest koiRequest,@PathVariable int koiId) throws MessagingException {
+        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest,koiRequest,id,koiId);
+        return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
     }
 }

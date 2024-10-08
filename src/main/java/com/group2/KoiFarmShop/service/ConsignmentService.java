@@ -2,14 +2,13 @@ package com.group2.KoiFarmShop.service;
 
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
+import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
+import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.entity.*;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
-import com.group2.KoiFarmShop.repository.CertificateRepository;
-import com.group2.KoiFarmShop.repository.ConsignmentRepository;
-import com.group2.KoiFarmShop.repository.KoiFishRepository;
-import com.group2.KoiFarmShop.repository.PaymentRepository;
+import com.group2.KoiFarmShop.repository.*;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,13 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ConsignmentService implements ConsignmentServiceImp{
@@ -42,6 +37,10 @@ public class ConsignmentService implements ConsignmentServiceImp{
     private EmailService emailService;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private KoiFishService koiFishService;
 
     @Override
     public String createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, String food,
@@ -350,6 +349,46 @@ public class ConsignmentService implements ConsignmentServiceImp{
         } else {
             throw new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND);
         }
+    }
+    @Override
+    public ConsignmentDetailResponse updateConsignment(ConsignmentRequest consignment, KoiRequest koiFish, int consignmentId, int koiId) {
+        if(consignment.getStatus()==1){
+            throw new AppException(ErrorCode.CANNOTUPDATE);
+        }
+            Consignment consignmentToUpdated = new Consignment();
+            koiFishService.updateKoiFish(koiFish,koiId);
+            Optional<Account> account = accountRepository.findById(consignment.getAccountid());
+            consignmentToUpdated.setConsignmentID(consignmentId);
+            consignmentToUpdated.setConsignmentDate(consignment.getConsignmentDate());
+            consignmentToUpdated.setConsignmentType(consignment.isConsignmentType());
+            consignmentToUpdated.setAccount(account.get());
+            consignmentToUpdated.setStatus(consignment.getStatus());
+            consignmentToUpdated.setOnline(consignment.isOnline());
+            consignmentToUpdated.setNotes(consignment.getNotes());
+            consignmentToUpdated.setDuration(consignment.getDuration());
+            consignmentToUpdated.setKoiFish(koiFishRepository.findByKoiID(koiFishService.updateKoiFish(koiFish,koiId).getId()));
+            consignmentToUpdated.setAgreedPrice(consignment.getAgreedPrice());
+            consignmentToUpdated.setEndDate(consignment.getEndDate());
+            consignmentToUpdated.setStartDate(consignment.getStartDate());
+            consignmentToUpdated.setServiceFee(consignment.getServiceFee());
+            Consignment consignmentUpdated = consignmentRepository.save(consignmentToUpdated);
+            return ConsignmentDetailResponse.builder()
+                    .consignmentID(consignmentUpdated.getConsignmentID())
+                    .consignmentDate(consignmentUpdated.getConsignmentDate())
+                    .consignmentType(consignmentUpdated.isConsignmentType())
+                    .email(consignmentUpdated.getAccount().getEmail())
+                    .agreedPrice(consignmentUpdated.getAgreedPrice())
+                    .notes(consignmentUpdated.getNotes())
+                    .duration(consignmentUpdated.getDuration())
+                    .endDate(consignmentUpdated.getEndDate())
+                    .startDate(consignmentUpdated.getStartDate())
+                    .serviceFee(consignmentUpdated.getServiceFee())
+                    .fullname(consignmentUpdated.getAccount().getFullName())
+                    .koiFish(koiFishService.getKoiFishById(consignmentUpdated.getKoiFish().getKoiID()))
+                    .online(consignmentUpdated.isOnline())
+                    .phoneNumber(consignmentUpdated.getPhoneNumber())
+                    .notes(consignmentUpdated.getNotes())
+                    .build();
     }
 }
 
