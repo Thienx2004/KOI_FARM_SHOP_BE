@@ -445,7 +445,7 @@ public class AccountService implements AccountServiceImp{
                 .address(accountRequest.getAddress())
                 .phone(accountRequest.getPhone())
                 .email(accountRequest.getEmail())
-                .password(accountRequest.getPassword())
+                .password(passwordEncoder.encode(accountRequest.getPassword()))
                 .roleId(accountRequest.getRoleId())
                 .status(accountRequest.isStatus())
                 .isVerified(accountRequest.isVerified())
