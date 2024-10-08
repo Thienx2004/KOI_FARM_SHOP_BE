@@ -1,9 +1,12 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
+import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
 import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
 import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.entity.Consignment;
+import com.group2.KoiFarmShop.entity.KoiFish;
 import jakarta.mail.MessagingException;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,4 +48,5 @@ public interface ConsignmentServiceImp {
     public Consignment processPayment(int consignmentId, boolean isPay);
 
     public String deleteConsignment(int consignmentId);
+    public ConsignmentDetailResponse updateConsignment(ConsignmentRequest consignment, KoiRequest koiFish, int consignmentId, int koiId);
 }
