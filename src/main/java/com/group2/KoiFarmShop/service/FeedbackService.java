@@ -186,7 +186,6 @@ public class FeedbackService implements FeedbackServiceImp {
             feedbackResponse.setComment(feedback.getComment());
             feedbackResponse.setFeedbackDate(feedback.getDate());
             feedbackResponseList.add(feedbackResponse);
-
         }
         return FeedbackPageResponse.builder()
                 .pageSize(feedbackList.getTotalPages())
