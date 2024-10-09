@@ -100,11 +100,11 @@ public class KoiFishController {
     // Cập nhật cá Koi
     @PutMapping("/update/{id}")
     @Operation(summary = "Cập nhật Koi theo id", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishDetailReponse> updateKoiFish(@PathVariable int id, @RequestBody KoiRequest koiFish, @RequestParam MultipartFile koiImg, @RequestParam MultipartFile certImg) throws IOException {
+    public ApiReponse<KoiFishDetailReponse> updateKoiFish(@PathVariable int id, @RequestBody KoiRequest koiFish) throws IOException {
         if(koiFish.getCategoryId()<=0||id<=0){
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
-        KoiFishDetailReponse koiFishReponse = koiFishService.updateKoiFish(id, koiFish, koiImg, certImg);
+        KoiFishDetailReponse koiFishReponse = koiFishService.updateKoiFish(id, koiFish);
         return ApiReponse.<KoiFishDetailReponse>builder().data(koiFishReponse).message("Cập nhật thành công").statusCode(200).build();
     }
 

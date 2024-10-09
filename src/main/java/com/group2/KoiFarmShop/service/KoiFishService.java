@@ -211,7 +211,7 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
     @Override
-    public KoiFishDetailReponse updateKoiFish(int id, KoiRequest koiRequest, MultipartFile koiImg, MultipartFile certImg) {
+    public KoiFishDetailReponse updateKoiFish(int id, KoiRequest koiRequest) {
         KoiFish koiFish = new KoiFish();
         koiFish.setKoiID(id);
         koiFish.setOrigin(koiRequest.getOrigin());
