@@ -46,3 +46,4 @@ ApiTesting_test.ts
 codecept.conf.ts
 *.json
 .env
+*.env
