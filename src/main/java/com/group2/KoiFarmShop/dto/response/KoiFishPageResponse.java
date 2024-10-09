@@ -15,5 +15,5 @@ public class KoiFishPageResponse {
     private int pageSize;
     private long totalElements;
     private int totalPages;
-    List<KoiFishReponse> koiFishReponseList;
+    List<KoiFishDetailReponse> koiFishReponseList;
 }

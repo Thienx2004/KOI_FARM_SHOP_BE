@@ -39,11 +39,11 @@ public class KoiFishService implements KoiFishServiceImp{
     private CertificateRepository certificateRepository;
     @Override
     public KoiFishPageResponse getAllKoiFish(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("koiID").descending());
         Page<KoiFish> koiFishPage = koiFishRepository.findAll(pageable);
-        List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
-        for (KoiFish koiFish : koiFishPage) {
-            KoiFishReponse koiFishReponse = new KoiFishReponse();
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
+        for (KoiFish koiFish : koiFishPage.getContent()) {
+            KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
             koiFishReponse.setId(koiFish.getKoiID());
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
@@ -54,8 +54,14 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
-            koiFishReponse.setStatus(koiFish.getStatus());
+            koiFishReponse.setFood(koiFish.getFood());
+            koiFishReponse.setHealth(koiFish.getHealth());
+            koiFishReponse.setPH(koiFish.getPH());
+            koiFishReponse.setTemperature(koiFish.getTemperature());
+            koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
+            koiFishReponse.setStatus(koiFish.getStatus());
+
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -71,11 +77,11 @@ public class KoiFishService implements KoiFishServiceImp{
 
     @Override
     public KoiFishPageResponse getKoiByCategory(Category category, int page,int pageSize) {
-        Pageable pageable = PageRequest.of(page-1, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
         Page<KoiFish> koiFishList = koiFishRepository.findByCategory(category, pageable);
-        List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiFishList) {
-            KoiFishReponse koiFishReponse = new KoiFishReponse();
+            KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
             koiFishReponse.setId(koiFish.getKoiID());
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
@@ -86,8 +92,14 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
-            koiFishReponse.setStatus(koiFish.getStatus());
+            koiFishReponse.setFood(koiFish.getFood());
+            koiFishReponse.setHealth(koiFish.getHealth());
+            koiFishReponse.setPH(koiFish.getPH());
+            koiFishReponse.setTemperature(koiFish.getTemperature());
+            koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
+            koiFishReponse.setStatus(koiFish.getStatus());
+
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -101,14 +113,14 @@ public class KoiFishService implements KoiFishServiceImp{
 
     @Override
     public KoiFishDetailReponse getKoiFishById(int id) {
-        if(id<=0){
+        if(id <= 0){
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
-        KoiFish koiFish=koiFishRepository.findByKoiID(id);
+        KoiFish koiFish = koiFishRepository.findByKoiID(id);
         if(koiFish==null) {
             throw new AppException(ErrorCode.KOINOTFOUND);
         }
-        List<KoiFishReponse> koiList= getKoiByCategory(koiFish.getCategory(),1,3).getKoiFishReponseList();
+        List<KoiFishDetailReponse> koiList = getKoiByCategory(koiFish.getCategory(),1,3).getKoiFishReponseList();
 
         return KoiFishDetailReponse.builder()
                 .id(koiFish.getKoiID())
@@ -128,7 +140,6 @@ public class KoiFishService implements KoiFishServiceImp{
                 .water(koiFish.getWater())
                 .pH(koiFish.getPH())
                 .food(koiFish.getFood())
-                .list(koiList)
                 .build();
     }
 
@@ -200,7 +211,7 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
     @Override
-    public KoiFishDetailReponse updateKoiFish(KoiRequest koiRequest,int id) {
+    public KoiFishDetailReponse updateKoiFish(KoiRequest koiRequest, int id) {
         KoiFish koiFish = new KoiFish();
         koiFish.setKoiID(id);
         koiFish.setOrigin(koiRequest.getOrigin());
@@ -326,9 +337,9 @@ public class KoiFishService implements KoiFishServiceImp{
         };
         Page<KoiFish> koiFishPage = koiFishRepository.findAll(spec,pageable);  // Gọi repository với phân trang
 
-        List<KoiFishReponse> koiFishReponseList = new ArrayList<>();
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiFishPage.getContent()) {
-            KoiFishReponse koiFishReponse = new KoiFishReponse();
+            KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
             koiFishReponse.setId(koiFish.getKoiID());
             koiFishReponse.setOrigin(koiFish.getOrigin());
             koiFishReponse.setAge(koiFish.getAge());
@@ -339,6 +350,12 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setKoiImage(koiFish.getKoiImage());
             koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
             koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setFood(koiFish.getFood());
+            koiFishReponse.setHealth(koiFish.getHealth());
+            koiFishReponse.setPH(koiFish.getPH());
+            koiFishReponse.setTemperature(koiFish.getTemperature());
+            koiFishReponse.setWater(koiFish.getWater());
+            koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponse.setStatus(koiFish.getStatus());
             koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponseList.add(koiFishReponse);
