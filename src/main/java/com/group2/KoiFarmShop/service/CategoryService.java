@@ -1,7 +1,9 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.request.CreateCategoryRequest;
 import com.group2.KoiFarmShop.dto.response.CategoryHomeReponse;
 import com.group2.KoiFarmShop.dto.response.CategoryReponse;
+import com.group2.KoiFarmShop.dto.response.CreateCategoryRespone;
 import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
@@ -11,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +24,8 @@ public class CategoryService implements CategoryServiceImp{
 
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private FirebaseService firebaseService;
 
     @Override
     public List<CategoryReponse> getAllCategories() {
@@ -38,9 +44,22 @@ public class CategoryService implements CategoryServiceImp{
     }
 
     @Override
-    public String addCategory(Category category) {
+    public CreateCategoryRespone addCategory( String cateName,String description,boolean status, MultipartFile file) throws IOException {
 
-        return "";
+        Category categoryEntity = new Category();
+//        categoryEntity.getCategoryID();
+        categoryEntity.setCategoryName(cateName);
+        categoryEntity.setDescription(description);
+        categoryEntity.setCategoryImage(firebaseService.uploadImage(file));
+        categoryEntity.setStatus(status);
+        categoryRepository.save(categoryEntity);
+        return CreateCategoryRespone.builder()
+                .categoryId(categoryEntity.getCategoryID())
+                .categoryName(categoryEntity.getCategoryName())
+                .categoryDescription(categoryEntity.getDescription())
+                .categoryImage(categoryEntity.getCategoryImage())
+                .status(status)
+                .build();
     }
 
     @Override
