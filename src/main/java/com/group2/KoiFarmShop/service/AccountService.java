@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -354,7 +355,7 @@ public class AccountService implements AccountServiceImp{
 
     public AccountPageRespone getAllAccounts(int page, int pageSize) {
 
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("accountID").descending());
         Page<Account> accountList = accountRepository.findAll(pageable);
         List<AccountDTO> accountDTOList = new ArrayList<>();
         for (Account account : accountList) {

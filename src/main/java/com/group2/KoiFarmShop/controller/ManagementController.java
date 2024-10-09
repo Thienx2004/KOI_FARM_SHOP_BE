@@ -43,7 +43,7 @@ public class ManagementController {
         return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
     }
     @PostMapping("/createAccount")
-    @Operation(summary = "Tạo tài khoản", description = "-Nguyễn Hoàng Thiên")
+    @Operation(summary = "Tạo tài khoản", description = "")
 
 public ApiReponse<AccountCreateRespone> createAccount (@RequestBody AccountCreateRequest request ) {
         AccountCreateRespone accountCreateRespone = accountService.createAccount(request);
