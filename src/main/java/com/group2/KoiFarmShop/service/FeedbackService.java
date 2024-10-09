@@ -6,10 +6,12 @@ import java.time.LocalDateTime;
 import com.group2.KoiFarmShop.dto.request.FeedbackRequest;
 import com.group2.KoiFarmShop.dto.response.FeedbackPageResponse;
 import com.group2.KoiFarmShop.dto.response.FeedbackResponse;
+import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.Feedback;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.FeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,13 +30,16 @@ import java.util.Optional;
 public class FeedbackService implements FeedbackServiceImp {
     @Autowired
     private FeedbackRepository feedbackRepository;
+    @Autowired
+    private AccountRepository accountRepository;
     @Override
     public FeedbackResponse addFeedback(FeedbackRequest feedback) {
 
         Feedback feedbackEntity = new Feedback();
+        Optional<Account> account = accountRepository.findById(feedback.getAccountId());
         feedbackEntity.setRating(feedback.getRating());
         feedbackEntity.setComment(feedback.getComment());
-        feedbackEntity.setAccount(feedback.getAccount());
+        feedbackEntity.setAccount(account.get());
 
         Feedback feedbackSaved = feedbackRepository.save(feedbackEntity);
 
@@ -89,9 +94,13 @@ public class FeedbackService implements FeedbackServiceImp {
     @Override
     public FeedbackResponse updateFeedback(FeedbackRequest feedback,int id) {
             Optional<Feedback> feedbackOptional = feedbackRepository.findById(id);
-
+            Optional<Account> account = accountRepository.findById(feedback.getAccountId());
             Feedback feedbackToUpdate = (Feedback) feedbackOptional.get();
             feedbackToUpdate.setFeedbackID(id);
+            feedbackToUpdate.setComment(feedback.getComment());
+            feedbackToUpdate.setRating(feedback.getRating());
+            feedbackToUpdate.setRating(feedback.getRating());
+            feedbackToUpdate.setAccount(account.get());
 
             Feedback updatedFeedback = feedbackRepository.save(feedbackToUpdate);
         return FeedbackResponse.builder()

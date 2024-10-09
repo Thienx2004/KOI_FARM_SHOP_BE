@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedbackRequest {
     private int feedbackId ;
-    private Account account;
+    private int accountId;
     private String comment ;
     private String feedback ;
     private int rating ;
