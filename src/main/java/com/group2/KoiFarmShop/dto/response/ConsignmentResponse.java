@@ -5,6 +5,7 @@ import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ConsignmentResponse {
 
     private int consignmentID;

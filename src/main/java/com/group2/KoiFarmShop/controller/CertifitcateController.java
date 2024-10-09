@@ -8,10 +8,10 @@ import com.group2.KoiFarmShop.dto.response.PaginReponse;
 import com.group2.KoiFarmShop.service.CertificateServiceImp;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/certificate")
@@ -36,5 +36,14 @@ public class CertifitcateController {
         CertificationReponse certificationReponse = certificateService.getCertificationReponse(koiId);
         apiReponse.setData(certificationReponse);
         return apiReponse;
+    }
+    @Operation(summary = "Cập nhật avatar", description = "")
+    @PostMapping("/updateImg/{id}")
+    public ApiReponse<CertificationReponse> updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable int id) throws IOException {
+        CertificationReponse certificationReponse = certificateService.updateCertificateImg(file, id);
+        return ApiReponse.<CertificationReponse>builder()
+                .data(certificationReponse)
+                .statusCode(200)
+                .build();
     }
 }

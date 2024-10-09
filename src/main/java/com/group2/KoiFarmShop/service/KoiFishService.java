@@ -5,6 +5,7 @@ import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
+import com.group2.KoiFarmShop.dto.response.ProfileRespone;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;
 import com.group2.KoiFarmShop.entity.KoiFish;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class KoiFishService implements KoiFishServiceImp{
     @Autowired
@@ -378,5 +381,30 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFishReponseList.add(koiFish2);
         return koiFishReponseList;
     }
+    @Override
+    public KoiFishDetailReponse updateKoiImg(MultipartFile file, int id) throws IOException {
+        Optional<KoiFish> koiFish = koiFishRepository.findById(id);
+        KoiFish koi = koiFish.get();
 
+        koi.setKoiImage(firebaseService.uploadImage(file));
+        KoiFish updateddKoiFish = koiFishRepository.save(koi);
+        return KoiFishDetailReponse.builder()
+                .id(updateddKoiFish.getKoiID())
+                .age(updateddKoiFish.getAge())
+                .gender(updateddKoiFish.isGender())
+                .price(updateddKoiFish.getPrice())
+                .koiImage(updateddKoiFish.getKoiImage())
+                .size(updateddKoiFish.getSize())
+                .personality(updateddKoiFish.getPersonality())
+                .origin(updateddKoiFish.getOrigin())
+                .categoryId(updateddKoiFish.getCategory().getCategoryID())
+                .category(updateddKoiFish.getCategory().getCategoryName())
+                .purebred(updateddKoiFish.getPurebred())
+                .health(updateddKoiFish.getHealth())
+                .temperature(updateddKoiFish.getTemperature())
+                .water(updateddKoiFish.getWater())
+                .pH(updateddKoiFish.getPH())
+                .food(updateddKoiFish.getFood())
+                .build();
+    }
 }

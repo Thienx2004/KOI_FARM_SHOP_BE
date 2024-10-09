@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -390,6 +391,7 @@ public class ConsignmentService implements ConsignmentServiceImp{
                     .notes(consignmentUpdated.getNotes())
                     .build();
     }
+
 }
 
 
