@@ -351,12 +351,12 @@ public class ConsignmentService implements ConsignmentServiceImp{
         }
     }
     @Override
-    public ConsignmentDetailResponse updateConsignment(ConsignmentRequest consignment, KoiRequest koiFish, int consignmentId, int koiId) {
+    public ConsignmentDetailResponse updateConsignment(ConsignmentRequest consignment, KoiRequest koiFish, int consignmentId, int koiId, MultipartFile koiImg, MultipartFile certImg) {
         if(consignment.getStatus()!=1){
             throw new AppException(ErrorCode.CANNOTUPDATE);
         }
             Consignment consignmentToUpdated = new Consignment();
-            koiFishService.updateKoiFish(koiFish,koiId);
+            koiFishService.updateKoiFish(koiId, koiFish, koiImg, certImg);
             Optional<Account> account = accountRepository.findById(consignment.getAccountid());
             consignmentToUpdated.setConsignmentID(consignmentId);
             consignmentToUpdated.setConsignmentDate(consignment.getConsignmentDate());
@@ -366,7 +366,7 @@ public class ConsignmentService implements ConsignmentServiceImp{
             consignmentToUpdated.setOnline(consignment.isOnline());
             consignmentToUpdated.setNotes(consignment.getNotes());
             consignmentToUpdated.setDuration(consignment.getDuration());
-            consignmentToUpdated.setKoiFish(koiFishRepository.findByKoiID(koiFishService.updateKoiFish(koiFish,koiId).getId()));
+            consignmentToUpdated.setKoiFish(koiFishRepository.findByKoiID(koiFishService.updateKoiFish(koiId, koiFish, koiImg, certImg).getId()));
             consignmentToUpdated.setAgreedPrice(consignment.getAgreedPrice());
             consignmentToUpdated.setEndDate(consignment.getEndDate());
             consignmentToUpdated.setStartDate(consignment.getStartDate());

@@ -136,8 +136,8 @@ public class ConsignmentController {
     }
 
     @PutMapping("/update/{id}/{koiId}")
-    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @RequestBody ConsignmentRequest consignmentRequest, @RequestBody KoiRequest koiRequest,@PathVariable int koiId) throws MessagingException {
-        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest,koiRequest,id,koiId);
+    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @RequestBody ConsignmentRequest consignmentRequest, @RequestBody KoiRequest koiRequest,@PathVariable int koiId, @RequestParam MultipartFile koiImg, @RequestParam MultipartFile certImg) throws MessagingException {
+        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId, koiImg, certImg);
         return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
     }
 }
