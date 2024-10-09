@@ -459,6 +459,19 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
-
+    public AccountDTO searchByEmail(String email) {
+        Account optionalAccount = accountRepository.findByEmailContains(email).orElseThrow(()-> new AppException(ErrorCode.INVALIDACCOUNT));
+        return AccountDTO.builder()
+                .fullName(optionalAccount.getFullName())
+                .email(optionalAccount.getEmail())
+                .address(optionalAccount.getAddress())
+                .id(optionalAccount.getAccountID())
+                .role(optionalAccount.getRole())
+                .status(optionalAccount.isStatus())
+//                .password(optionalAccount.getPassword())
+                .avatar(optionalAccount.getAvatar())
+                .phone(optionalAccount.getPhone())
+                .build();
+    }
 
 }

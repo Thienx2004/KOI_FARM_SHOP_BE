@@ -45,11 +45,17 @@ public class ManagementController {
     @PostMapping("/createAccount")
     @Operation(summary = "Tạo tài khoản", description = "")
 
-public ApiReponse<AccountCreateRespone> createAccount (@RequestBody AccountCreateRequest request ) {
+    public ApiReponse<AccountCreateRespone> createAccount (@RequestBody AccountCreateRequest request ) {
         AccountCreateRespone accountCreateRespone = accountService.createAccount(request);
 
     return ApiReponse.<AccountCreateRespone>builder().data(accountCreateRespone).statusCode(200).build() ;
 }
 
+    @GetMapping("/search")
+    @Operation(summary = "Tìm tài khoản theo email",description = "")
+    public ApiReponse<AccountDTO> getAccountByEmail(@RequestParam String email) {
+        AccountDTO accountDTO = accountService.searchByEmail(email);
+        return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
+    }
 
 }
