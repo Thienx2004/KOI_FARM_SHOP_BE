@@ -45,3 +45,4 @@ steps_file.ts
 ApiTesting_test.ts
 codecept.conf.ts
 *.json
+.env
