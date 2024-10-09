@@ -4,6 +4,7 @@ import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
+import com.group2.KoiFarmShop.dto.response.ProfileRespone;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
@@ -138,5 +139,15 @@ public class KoiFishController {
     public ApiReponse<List<KoiFishDetailReponse>> compareKoiFish(@RequestParam("koiFishId1") int id1, @RequestParam("koiFishId2") int id2) {
         List<KoiFishDetailReponse> koiFishReponses = koiFishService.compareKoiFish(id1, id2);
         return ApiReponse.<List<KoiFishDetailReponse>>builder().data(koiFishReponses).build();
+    }
+
+    @Operation(summary = "Cập nhật img của Koi", description = "Nguyễn Hoàng Thiên")
+    @PostMapping("/updateImg/{id}")
+    public ApiReponse<KoiFishDetailReponse> updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable int id) throws IOException {
+        KoiFishDetailReponse koiFishDetailReponse = koiFishService.updateKoiImg(file, id);
+        return ApiReponse.<KoiFishDetailReponse>builder()
+                .data(koiFishDetailReponse)
+                .statusCode(200)
+                .build();
     }
 }

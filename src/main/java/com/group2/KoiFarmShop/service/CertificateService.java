@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.response.*;
+import com.group2.KoiFarmShop.entity.Certificate;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
@@ -12,9 +13,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CertificateService implements CertificateServiceImp {
@@ -23,7 +27,8 @@ public class CertificateService implements CertificateServiceImp {
     private CertificateRepository certificateRepository;
     @Autowired
     private KoiFishRepository koiFishRepository;
-
+    @Autowired
+    private FirebaseService firebaseService;
     @Override
     public PaginReponse<KoiFishReponse> getAllKoiFishReponse(int pageNo, int pageSize, String accountId) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("order_date").descending());
@@ -78,6 +83,18 @@ public class CertificateService implements CertificateServiceImp {
         }
         return certificationReponse;
     }
+    public CertificationReponse updateCertificateImg(MultipartFile file, int id) throws IOException {
+        Optional<Certificate> certificate = certificateRepository.findById(id);
+        Certificate certificate1 = certificate.get();
 
+        certificate1.setImage(firebaseService.uploadImage(file));
+        Certificate updatedCertificate = certificateRepository.save(certificate1);
+        return CertificationReponse.builder()
+                .createdDate(updatedCertificate.getCreatedDate())
+                .id(updatedCertificate.getId())
+                .image(updatedCertificate.getImage())
+                .name(updatedCertificate.getName())
+                .build();
+    }
 
 }
