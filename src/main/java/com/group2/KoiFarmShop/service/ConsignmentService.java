@@ -352,7 +352,7 @@ public class ConsignmentService implements ConsignmentServiceImp{
     }
     @Override
     public ConsignmentDetailResponse updateConsignment(ConsignmentRequest consignment, KoiRequest koiFish, int consignmentId, int koiId) {
-        if(consignment.getStatus()==1){
+        if(consignment.getStatus()!=1){
             throw new AppException(ErrorCode.CANNOTUPDATE);
         }
             Consignment consignmentToUpdated = new Consignment();
