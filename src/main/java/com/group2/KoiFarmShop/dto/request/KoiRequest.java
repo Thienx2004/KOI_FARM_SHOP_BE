@@ -20,4 +20,5 @@ public class KoiRequest {
     private String pH;
     private String food;
     private MultipartFile koiImage;
+    private CertificateRequest certificate;
 }

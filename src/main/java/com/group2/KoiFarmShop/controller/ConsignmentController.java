@@ -137,10 +137,10 @@ public class ConsignmentController {
         return apiReponse;
     }
 
-    @PutMapping("/update/{id}/{koiId}")
-    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @PathVariable int koiId, @ModelAttribute ConsignmentKoiRequest consignmentRequest) throws MessagingException, IOException {
-
-        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId);
-        return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
-    }
+//    @PutMapping("/update/{id}/{koiId}")
+//    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @PathVariable int koiId, @ModelAttribute ConsignmentKoiRequest consignmentRequest) throws MessagingException, IOException {
+//
+////        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId);
+//        return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
+//    }
 }
