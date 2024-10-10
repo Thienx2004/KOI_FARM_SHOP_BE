@@ -34,9 +34,9 @@ public class OrderController {
     public ApiReponse<String> saveOrder(@RequestBody OrderRequest orderRequest, @RequestParam String transactionCode) throws MessagingException {
         ApiReponse<String> resp = new ApiReponse<>();
         Payment payment = paymentRepository.findPaymentByTransactionCode(transactionCode).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_FAILED));
-        if(!payment.isStatus()) {
+        if (!payment.isStatus()) {
             Orders success = orderService.addOrder(orderRequest);
-            if(success == null){
+            if (success == null) {
                 throw new AppException(ErrorCode.PAYMENT_FAILED);
             }
             payment.setOrder(success);
@@ -46,8 +46,7 @@ public class OrderController {
             emailService.sendOrderConfirmationEmail(payment.getOrder().getAccount().getEmail(), payment.getTransactionCode());
             resp.setData("Lưu thanh toán thành công");
             return resp;
-        }
-        else {
+        } else {
             throw new AppException(ErrorCode.TRANSACTION_INVALID);
         }
     }

@@ -14,13 +14,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
 import java.util.List;
+
 @RequestMapping
 
 @RestController
 public class FirebaseController {
     @Autowired
     private FirebaseService firebaseService;
-
 
 
     @GetMapping("/image/{fileName}")

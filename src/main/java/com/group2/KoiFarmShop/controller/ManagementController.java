@@ -37,7 +37,7 @@ public class ManagementController {
     @Operation(summary = "Lấy toàn bộ tài khoản", description = "")
 
     public ApiReponse<AccountPageRespone> getAllAccounts(@RequestParam int page, @RequestParam int pageSize) {
-        if(page<=0||pageSize<=0){
+        if (page <= 0 || pageSize <= 0) {
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
         AccountPageRespone accountPageRespone = accountService.getAllAccounts(page, pageSize);
@@ -51,14 +51,15 @@ public class ManagementController {
         AccountDTO accountDTO = accountService.updateAccountStatus(id);
         return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
     }
+
     @PostMapping("/createAccount")
     @Operation(summary = "Tạo tài khoản", description = "")
 
     public ApiReponse<AccountCreateRespone> createAccount (@RequestBody AccountCreateRequest request ) {
         AccountCreateRespone accountCreateRespone = accountService.createAccount(request);
 
-    return ApiReponse.<AccountCreateRespone>builder().data(accountCreateRespone).statusCode(200).build() ;
-}
+        return ApiReponse.<AccountCreateRespone>builder().data(accountCreateRespone).statusCode(200).build();
+    }
 
     @GetMapping("/search")
     @Operation(summary = "Tìm tài khoản theo email",description = "")

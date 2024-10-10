@@ -59,11 +59,11 @@ public class ConsignmentController {
                                                 @RequestParam int duration,
                                                 @RequestParam double serviceFee,
                                                 @RequestParam boolean online
-                                                ){
+    ) {
 
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, food, health, ph, temperature, water,
-        pureBred, categoryId, name, certImg, notes, phoneNumber, consignmentType, duration, serviceFee, online));
+                pureBred, categoryId, name, certImg, notes, phoneNumber, consignmentType, duration, serviceFee, online));
 
         return apiReponse;
     }
@@ -78,7 +78,7 @@ public class ConsignmentController {
     }
 
     @PutMapping("/reject/{consignmentID}")
-    public ApiReponse<String> rejectConsignment(@PathVariable int consignmentID, @RequestParam String rejectionReason){
+    public ApiReponse<String> rejectConsignment(@PathVariable int consignmentID, @RequestParam String rejectionReason) {
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(consignmentService.rejectConsignment(consignmentID, rejectionReason));
 
@@ -86,7 +86,7 @@ public class ConsignmentController {
     }
 
     @GetMapping("/getAllConsignment")
-    public ApiReponse<PaginReponse<ConsignmentResponse>> getAllConsignmentForCustomer(@RequestParam int pageNo, @RequestParam int pageSize,@RequestParam int accountId){
+    public ApiReponse<PaginReponse<ConsignmentResponse>> getAllConsignmentForCustomer(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam int accountId) {
         ApiReponse apiReponse = new ApiReponse();
         PaginReponse<ConsignmentResponse> consignmentResponse = consignmentService.getAllConsignmentForCustomer(pageNo, pageSize, accountId);
         apiReponse.setData(consignmentResponse);
@@ -94,7 +94,7 @@ public class ConsignmentController {
     }
 
     @GetMapping("/getAllConsignmentManagement")
-    public ApiReponse<PaginReponse<ConsignmentResponse>> getAllConsignmentForStaff(@RequestParam int pageNo, @RequestParam int pageSize){
+    public ApiReponse<PaginReponse<ConsignmentResponse>> getAllConsignmentForStaff(@RequestParam int pageNo, @RequestParam int pageSize) {
         ApiReponse apiReponse = new ApiReponse();
         PaginReponse<ConsignmentResponse> consignmentResponse = consignmentService.getAllConsignmentForStaff(pageNo, pageSize);
         apiReponse.setData(consignmentResponse);
@@ -112,9 +112,9 @@ public class ConsignmentController {
     public ApiReponse<String> processPayment(@RequestParam int consignmentId, @RequestParam String transactionCode) throws MessagingException {
         ApiReponse<String> resp = new ApiReponse<>();
         Payment payment = paymentRepository.findPaymentByTransactionCode(transactionCode).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_FAILED));
-        if(!payment.isStatus()) {
+        if (!payment.isStatus()) {
             Consignment success = consignmentService.processPayment(consignmentId, true);
-            if(success == null){
+            if (success == null) {
                 throw new AppException(ErrorCode.PAYMENT_FAILED);
             }
             payment.setConsignment(success);
@@ -124,8 +124,7 @@ public class ConsignmentController {
             emailService.sendOrderConfirmationEmail(payment.getConsignment().getAccount().getEmail(), payment.getTransactionCode());
             resp.setData("Thanh toán thành công! Cá đã được đưa lên bán.");
             return resp;
-        }
-        else {
+        } else {
             throw new AppException(ErrorCode.TRANSACTION_INVALID);
         }
     }
@@ -140,6 +139,7 @@ public class ConsignmentController {
 
     @PutMapping("/update/{id}/{koiId}")
     public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @PathVariable int koiId, @ModelAttribute ConsignmentKoiRequest consignmentRequest) throws MessagingException, IOException {
+
         ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId);
         return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
     }

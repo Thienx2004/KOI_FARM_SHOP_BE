@@ -25,23 +25,24 @@ public class KoiFishController {
     KoiFishServiceImp koiFishService;
     @Autowired
     CategoryRepository categoryRepository;
+
     // Lấy toàn bộ danh sách cá Koi
     @GetMapping("/allkoi")
     @Operation(summary = "Lấy danh sách Koi", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishPageResponse> getAllKoiFish(@RequestParam("page") int page,@RequestParam("pageSize") int pageSize) {
-        if(page<=0||pageSize<=0){
+    public ApiReponse<KoiFishPageResponse> getAllKoiFish(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        if (page <= 0 || pageSize <= 0) {
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
-        KoiFishPageResponse koiFishList = koiFishService.getAllKoiFish(page,pageSize);
+        KoiFishPageResponse koiFishList = koiFishService.getAllKoiFish(page, pageSize);
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishList).statusCode(200).build();
     }
 
     // Lấy cá Koi theo Category và Trang
     @GetMapping("/category")
     @Operation(summary = "Lấy danh sách Koi theo Category", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishPageResponse> getKoiByCategory(@RequestParam("categoryId") int id, @RequestParam("page") int page,@RequestParam("pageSize") int pageSize) {
-        Category category=categoryRepository.findByCategoryID(id);
-        KoiFishPageResponse koiFishList = koiFishService.getKoiByCategory(category, page,pageSize);
+    public ApiReponse<KoiFishPageResponse> getKoiByCategory(@RequestParam("categoryId") int id, @RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        Category category = categoryRepository.findByCategoryID(id);
+        KoiFishPageResponse koiFishList = koiFishService.getKoiByCategory(category, page, pageSize);
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishList).statusCode(200).build();
     }
 
@@ -52,12 +53,13 @@ public class KoiFishController {
 
         KoiFishDetailReponse koiFish = koiFishService.getKoiFishById(id);
 
-            return ApiReponse.<KoiFishDetailReponse>builder().data(koiFish).message("Xử lý thành công").build();
+        return ApiReponse.<KoiFishDetailReponse>builder().data(koiFish).message("Xử lý thành công").build();
     }
 
     // Thêm mới cá Koi
     @PostMapping("/add")
     @Operation(summary = "Thêm cá Koi", description = "-Nguyễn Hoàng Thiên")
+
     public ApiReponse<KoiFishDetailReponse> addKoiFish(@ModelAttribute KoiRequest koiRequest
                                                 ) throws IOException {
 //        if(koiFish.getCategoryId()==0){
@@ -100,7 +102,7 @@ public class KoiFishController {
             // Thêm tham số pageSize với giá trị mặc định là 6
     ) {
 
-        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID,maxSize,minSize,gender, age, minPrice, maxPrice, origin, page, pageSize,sortField1,sortDirection1,sortField2,sortDirection2,purebred); // Truyền thêm page và pageSize vào filter
+        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID, maxSize, minSize, gender, age, minPrice, maxPrice, origin, page, pageSize, sortField1, sortDirection1, sortField2, sortDirection2, purebred); // Truyền thêm page và pageSize vào filter
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
     }
 

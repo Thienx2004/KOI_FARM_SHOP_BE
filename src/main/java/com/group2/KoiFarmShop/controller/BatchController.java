@@ -7,6 +7,7 @@ import com.group2.KoiFarmShop.dto.request.BatchCreateDTO;
 import com.group2.KoiFarmShop.service.BatchServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/BatchKoi")
@@ -18,15 +19,16 @@ public class BatchController {
     @GetMapping("")
 
     public ApiReponse<BatchPageReponse> getAllBatchesByFilter(@RequestParam int pageNo, @RequestParam int pageSize,
-        @RequestParam(required = false) String categoryID,
-        @RequestParam(required = false) String avgSize,
-        @RequestParam(required = false) String age,
-        @RequestParam(required = false) String minPrice,
-        @RequestParam(required = false) String maxPrice,
-        @RequestParam(required = false) String sortField,
-        @RequestParam(required = false) String sortDirection) {
+                                                              @RequestParam(required = false) String categoryID,
+                                                              @RequestParam(required = false) String avgSize,
+                                                              @RequestParam(required = false) String age,
+                                                              @RequestParam(required = false) String minPrice,
+                                                              @RequestParam(required = false) String maxPrice,
+                                                              @RequestParam(required = false) String sortField,
+                                                              @RequestParam(required = false) String sortDirection,
+                                                              @RequestParam(required = false) String purebred) {
         ApiReponse apiReponse = new ApiReponse();
-        BatchPageReponse batchPageReponse = batchService.getBatchListFilter(pageNo, pageSize, categoryID, avgSize, age, minPrice, maxPrice, sortField, sortDirection);
+        BatchPageReponse batchPageReponse = batchService.getBatchListFilter(pageNo, pageSize, categoryID, avgSize, age, minPrice, maxPrice, sortField, sortDirection, purebred);
 
         apiReponse.setData(batchPageReponse);
         return apiReponse;
@@ -57,15 +59,15 @@ public class BatchController {
     }
 
     @PostMapping("/createBatch")
-    public ApiReponse<String> createBatch(@RequestBody BatchCreateDTO batch) {
-            ApiReponse apiReponse = new ApiReponse();
-            apiReponse.setData(batchService.addBatch(batch));
+    public ApiReponse<String> createBatch(@ModelAttribute BatchCreateDTO batch) {
+        ApiReponse apiReponse = new ApiReponse();
+        apiReponse.setData(batchService.addBatch(batch));
 
-            return apiReponse;
+        return apiReponse;
     }
 
-    @PutMapping("/updateBatch")
-    public ApiReponse<String> updateBatch(@RequestParam String batchId, @RequestBody BatchCreateDTO batch) {
+    @PutMapping("/updateBatch/{batchId}")
+    public ApiReponse<String> updateBatch(@PathVariable int batchId, @ModelAttribute BatchCreateDTO batch) {
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(batchService.updateBatch(batchId, batch));
 

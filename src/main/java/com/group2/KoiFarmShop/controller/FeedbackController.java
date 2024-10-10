@@ -25,20 +25,22 @@ public class FeedbackController {
     // Lấy tất cả feedbacks
     @GetMapping("/all")
     public ApiReponse<FeedbackPageResponse> getAllFeedbacks(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
-        if(page<=0||pageSize<=0){
+        if (page <= 0 || pageSize <= 0) {
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
-        FeedbackPageResponse feedbackPageResponse=feedbackServiceImp.getAllFeedback(page,pageSize);
+        FeedbackPageResponse feedbackPageResponse = feedbackServiceImp.getAllFeedback(page, pageSize);
         return ApiReponse.<FeedbackPageResponse>builder().data(feedbackPageResponse).statusCode(200).build();
     }
+
     @GetMapping("/feedbackByRating")
-    public ApiReponse<FeedbackPageResponse> getFeedbackByRating(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize,@RequestParam("rating") int rating) {
-        if(page<=0||pageSize<=0){
+    public ApiReponse<FeedbackPageResponse> getFeedbackByRating(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, @RequestParam("rating") int rating) {
+        if (page <= 0 || pageSize <= 0) {
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
-        FeedbackPageResponse feedbackPageResponse=feedbackServiceImp.getFeedbackByRating(page,pageSize,rating);
+        FeedbackPageResponse feedbackPageResponse = feedbackServiceImp.getFeedbackByRating(page, pageSize, rating);
         return ApiReponse.<FeedbackPageResponse>builder().data(feedbackPageResponse).statusCode(200).build();
     }
+
     @GetMapping("/filterFeedback")
     public ApiReponse<FeedbackPageResponse> getFilterFeedback(
             @RequestParam("page") int page,
@@ -47,31 +49,31 @@ public class FeedbackController {
             @RequestParam(required = false) String sortDirection1,
             @RequestParam(required = false) String sortField2,
             @RequestParam(required = false) String sortDirection2) {
-        if(page<=0||pageSize<=0){
+        if (page <= 0 || pageSize <= 0) {
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
-        FeedbackPageResponse feedbackPageResponse=feedbackServiceImp.filterFeedback(page,pageSize,sortField1,sortDirection1,sortField2,sortDirection2);
+        FeedbackPageResponse feedbackPageResponse = feedbackServiceImp.filterFeedback(page, pageSize, sortField1, sortDirection1, sortField2, sortDirection2);
         return ApiReponse.<FeedbackPageResponse>builder().data(feedbackPageResponse).statusCode(200).build();
     }
 
     // Lấy feedback theo ID
     @GetMapping("/{id}")
     public ApiReponse<FeedbackResponse> getFeedbackById(@PathVariable int id) {
-        FeedbackResponse feedbackResponse=feedbackServiceImp.getFeedbackById(id);
+        FeedbackResponse feedbackResponse = feedbackServiceImp.getFeedbackById(id);
         return ApiReponse.<FeedbackResponse>builder().data(feedbackResponse).statusCode(200).build();
     }
 
     // Tạo mới feedback
     @PostMapping("/add")
     public ApiReponse<FeedbackResponse> createFeedback(@RequestBody FeedbackRequest feedback) {
-        FeedbackResponse feedbackResponse=feedbackServiceImp.addFeedback(feedback);
+        FeedbackResponse feedbackResponse = feedbackServiceImp.addFeedback(feedback);
         return ApiReponse.<FeedbackResponse>builder().data(feedbackResponse).message("Thêm feedback thành công").statusCode(200).build();
     }
 
     // Cập nhật feedback
     @PutMapping("/update/{id}")
     public ApiReponse<FeedbackResponse> updateFeedback(@PathVariable int id, @RequestBody FeedbackRequest feedbackDetails) {
-        FeedbackResponse feedbackResponse=feedbackServiceImp.updateFeedback(feedbackDetails,id);
+        FeedbackResponse feedbackResponse = feedbackServiceImp.updateFeedback(feedbackDetails, id);
         return ApiReponse.<FeedbackResponse>builder().data(feedbackResponse).message("Cập nhật thành công").statusCode(200).build();
     }
 

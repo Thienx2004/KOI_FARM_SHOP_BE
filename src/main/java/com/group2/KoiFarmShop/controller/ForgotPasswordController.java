@@ -43,9 +43,9 @@ public class ForgotPasswordController {
         ApiReponse apiReponse = new ApiReponse();
         Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
-        int otp =otpGen();
+        int otp = otpGen();
 
-        MailBody mailBody=MailBody.builder()
+        MailBody mailBody = MailBody.builder()
                 .to(email)
                 .text("Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 2 phút.")
                 .subject("Mã xác nhận OTP")
@@ -91,7 +91,7 @@ public class ForgotPasswordController {
         ApiReponse apiReponse = new ApiReponse();
 
         if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
-             throw new AppException(ErrorCode.PASSWORDINVALID)  ;
+            throw new AppException(ErrorCode.PASSWORDINVALID);
         }
 
         String encodedPassword = passwordEncoder.encode(changePassword.password());
@@ -100,7 +100,7 @@ public class ForgotPasswordController {
         return apiReponse;
     }
 
-    private Integer otpGen(){
+    private Integer otpGen() {
         Random rand = new Random();
         return rand.nextInt(100_000, 999_999);
     }

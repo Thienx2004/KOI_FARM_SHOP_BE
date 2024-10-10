@@ -31,6 +31,12 @@ public class Batch {
     private int age;
 
     private double price;
+    private int purebred;
+    private String health;
+    private String temperature;
+    private String water;
+    private String pH;
+    private String food;
 
 //    @OneToMany(mappedBy = "batch")
 //    private Set<Feedback> feedbacks;
