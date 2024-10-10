@@ -22,7 +22,7 @@ public class CertifitcateController {
 
     @GetMapping("/getAllKoi")
     @Operation(summary = "Lấy danh sách Koi account đã mua", description = "API này sẽ trả về danh sách tất cả các Koi mà user đã mua trong hệ thống.-Trương Thiên Lộc")
-    public ApiReponse<PaginReponse<KoiFishReponse>> getAllKois(int pageNo, int pageSize,@RequestParam String accountId) {
+    public ApiReponse<PaginReponse<KoiFishReponse>> getAllKois(int pageNo, int pageSize, @RequestParam String accountId) {
         ApiReponse apiReponse = new ApiReponse();
         PaginReponse<KoiFishReponse> koiFishReponsePaginReponse = certificateService.getAllKoiFishReponse(pageNo, pageSize, accountId);
         apiReponse.setData(koiFishReponsePaginReponse);

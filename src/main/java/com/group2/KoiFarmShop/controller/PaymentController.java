@@ -26,6 +26,7 @@ public class PaymentController {
     private final PaymentService paymentService;
     @Autowired
     private final PaymentRepository paymentRepository;
+
     @GetMapping("/vn-pay")
     @Operation(summary = "Thanh toán", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount, @RequestParam String bankCode) {
@@ -41,13 +42,13 @@ public class PaymentController {
         if ("00".equals(responseCode)) {
             // Giao dịch thành công
             String paymentCode = params.get("vnp_TransactionNo");
-            Payment payment=new Payment();
+            Payment payment = new Payment();
             payment.setPaymentDate(new Date());
             payment.setAmount(Double.parseDouble(params.get("vnp_Amount")));
             payment.setStatus(false);
             payment.setTransactionCode(paymentCode);
             paymentRepository.save(payment);
-            response.sendRedirect("http://localhost:5173/thank-you?paymentStatus=1&paymentCode="+paymentCode); // Đường dẫn đến trang "Cảm ơn"
+            response.sendRedirect("http://localhost:5173/thank-you?paymentStatus=1&paymentCode=" + paymentCode); // Đường dẫn đến trang "Cảm ơn"
         } else {
             // Giao dịch không thành công
             response.sendRedirect("http://localhost:5173/payment-fail?paymentStatus=0"); // Đường dẫn đến trang "Thanh toán thất bại"

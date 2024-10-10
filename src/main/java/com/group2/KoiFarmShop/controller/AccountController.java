@@ -62,7 +62,7 @@ public class AccountController {
         return reponse;
 //            accountServiceImp.createAccount(accountCreationDTO);
 //            ApiReponse apiReponse = new ApiReponse();
-            //return reponse;
+        //return reponse;
     }
 
     @PostMapping("/savefile")
@@ -90,11 +90,12 @@ public class AccountController {
 
         if (profileRespone != null) {
             return ApiReponse.<ProfileRespone>builder().data(profileRespone).build();
-        }else {
+        } else {
             throw new AppException(ErrorCode.INVALIDACCOUNT);
         }
 
     }
+
     @Operation(summary = "Cập nhật thông tin người dùng", description = "")
     @PutMapping("update/updateProfile/{id}")
     public ApiReponse<ProfileRespone> updateProfile(
@@ -116,7 +117,7 @@ public class AccountController {
 //            throw new AppException(ErrorCode.POWERLESS);
 //        }
 
-        ProfileRespone profileRespone = accountService.updateProfile(profileRequest , id);
+        ProfileRespone profileRespone = accountService.updateProfile(profileRequest, id);
         return ApiReponse.<ProfileRespone>builder()
                 .data(profileRespone)
                 .statusCode(200)
@@ -150,9 +151,9 @@ public class AccountController {
     }
 
     @PostMapping("/checkPassword/{id}")
-    public ApiReponse<Boolean> checkPassword(@RequestBody PasswordRequest passwordRequest,@PathVariable int id) {
+    public ApiReponse<Boolean> checkPassword(@RequestBody PasswordRequest passwordRequest, @PathVariable int id) {
         Optional<Account> account = accountRepository.findById(id);
-        if(!passwordEncoder.matches(passwordRequest.getPassword(), account.get().getPassword())){
+        if (!passwordEncoder.matches(passwordRequest.getPassword(), account.get().getPassword())) {
             throw new AppException(ErrorCode.PASSWORDINVALID);
         }
         return ApiReponse.<Boolean>builder()
@@ -163,7 +164,7 @@ public class AccountController {
 
     @Operation(summary = "Cập nhật avatar", description = "")
     @PostMapping("profile/updateAvatar/{id}")
-    public ApiReponse<ProfileRespone> updateAvatar(@RequestParam("file") MultipartFile file,@PathVariable int id) throws IOException {
+    public ApiReponse<ProfileRespone> updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable int id) throws IOException {
         ProfileRespone profileRespone = accountService.updateAvatar(file, id);
         return ApiReponse.<ProfileRespone>builder()
                 .data(profileRespone)
