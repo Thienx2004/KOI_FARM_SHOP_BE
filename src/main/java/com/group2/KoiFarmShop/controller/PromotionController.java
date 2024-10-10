@@ -38,11 +38,11 @@ public class PromotionController {
     @PostMapping("/apply")
     public ApiReponse<PromotionDTO> applyPromotionToAccount(
             @RequestParam String promoCode,
-            @RequestParam int accountId){
+            @RequestParam int accountId) {
 
         ApiReponse<PromotionDTO> apiReponse = new ApiReponse<>();
         PromotionDTO promotionDTO = promotionService.assignPromotionToAccount(promoCode, accountId);
-        if(promotionDTO != null){
+        if (promotionDTO != null) {
             apiReponse.setData(promotionDTO);
             return apiReponse;
         }
@@ -50,7 +50,7 @@ public class PromotionController {
     }
 
     @GetMapping("/getAllPromotion")
-    public ApiReponse<PaginReponse<PromotionDTO>> getAllPromotion(@RequestParam int page, @RequestParam int pageSize){
+    public ApiReponse<PaginReponse<PromotionDTO>> getAllPromotion(@RequestParam int page, @RequestParam int pageSize) {
 
         ApiReponse<PaginReponse<PromotionDTO>> apiReponse = new ApiReponse<>();
         PaginReponse<PromotionDTO> paginReponse = promotionService.getAllPromotion(page, pageSize);
@@ -59,14 +59,14 @@ public class PromotionController {
     }
 
     @PutMapping("/updatePromo")
-    public ApiReponse<String> updatePromotion(@RequestBody PromotionDTO promotionDTO){
+    public ApiReponse<String> updatePromotion(@RequestBody PromotionDTO promotionDTO) {
         ApiReponse<String> apiReponse = new ApiReponse<>();
         apiReponse.setData(new String(promotionService.updatePromotion(promotionDTO)));
         return apiReponse;
     }
 
     @DeleteMapping("/deletePromo")
-    public ApiReponse<String> deletePromotion(@RequestParam int promotionId){
+    public ApiReponse<String> deletePromotion(@RequestParam int promotionId) {
         ApiReponse<String> apiReponse = new ApiReponse<>();
         String success = promotionService.deletePromotion(promotionId);
         apiReponse.setData(success);

@@ -17,6 +17,12 @@ public class BatchReponse {
     private double price;
     private int categoryID;
     private String categoryName;
+    private int purebred;
+    private String health;
+    private String temperature;
+    private String water;
+    private String pH;
+    private String food;
     private String batchImg;
 
     private int status;

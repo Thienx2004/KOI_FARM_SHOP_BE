@@ -23,6 +23,7 @@ public class LoginController {
         ApiReponse<Content> reponse = accountServiceImp.login(loginRequest);
         return reponse;
     }
+
     @PostMapping("/signingoogle")
     @Operation(summary = "Đăng nhập google", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<Content> logingoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
