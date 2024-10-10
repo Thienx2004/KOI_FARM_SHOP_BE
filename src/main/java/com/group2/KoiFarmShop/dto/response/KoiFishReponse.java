@@ -27,7 +27,6 @@ public class KoiFishReponse {
     private String category;
     private CertificateRequest certificate;
     private int purebred;
-  
     private int status;
 
 }

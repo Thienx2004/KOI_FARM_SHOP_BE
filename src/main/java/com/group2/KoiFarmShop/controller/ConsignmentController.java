@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.controller;
 
 
+import com.group2.KoiFarmShop.dto.request.ConsignmentKoiRequest;
 import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.dto.request.OrderRequest;
@@ -138,7 +139,7 @@ public class ConsignmentController {
     }
 
     @PutMapping("/update/{id}/{koiId}")
-    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @RequestBody ConsignmentRequest consignmentRequest, @RequestBody KoiRequest koiRequest,@PathVariable int koiId, @RequestParam MultipartFile koiImg, @RequestParam MultipartFile certImg) throws MessagingException, IOException {
+    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @PathVariable int koiId, @ModelAttribute ConsignmentKoiRequest consignmentRequest) throws MessagingException, IOException {
         ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId);
         return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
     }
