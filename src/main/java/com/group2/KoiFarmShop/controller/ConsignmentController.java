@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/consignment")
 public class ConsignmentController {
@@ -135,7 +137,8 @@ public class ConsignmentController {
     }
 
     @PutMapping("/update/{id}/{koiId}")
-    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @RequestBody ConsignmentRequest consignmentRequest, @RequestBody KoiRequest koiRequest, @PathVariable int koiId, @RequestParam MultipartFile koiImg, @RequestParam MultipartFile certImg) throws MessagingException {
+    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @RequestBody ConsignmentRequest consignmentRequest, @RequestBody KoiRequest koiRequest,@PathVariable int koiId, @RequestParam MultipartFile koiImg, @RequestParam MultipartFile certImg) throws MessagingException, IOException {
+
         ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId);
         return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
     }

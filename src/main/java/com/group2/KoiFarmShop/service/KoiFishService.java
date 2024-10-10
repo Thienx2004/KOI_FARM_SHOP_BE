@@ -5,6 +5,7 @@ import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
+import com.group2.KoiFarmShop.dto.response.ProfileRespone;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;
 import com.group2.KoiFarmShop.entity.KoiFish;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class KoiFishService implements KoiFishServiceImp{
     @Autowired
@@ -144,51 +147,25 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
     @Override
-    public KoiFishDetailReponse addKoiFish(String origin,
-                                     boolean gender,
-                                     int age,
-                                     double size,
-                                     String personality,
-                                     double price,
-                                     int purebred,
-                                     String health,
-                                     String temperature,
-                                     String water,
-                                     String pH,
-                                     String food,
-                                     int categoryId,
-                                     MultipartFile file,
-                                     String name,
-                                     MultipartFile certImg
-                                     ) throws IOException {
+    public KoiFishDetailReponse addKoiFish(KoiRequest koiRequest) throws IOException {
         KoiFish koiFish = new KoiFish();
-        koiFish.setOrigin(origin);
-        koiFish.setGender(gender);
-        koiFish.setAge(age);
-        koiFish.setSize(size);
-        koiFish.setPersonality(personality);
-        koiFish.setPrice(price);
-        koiFish.setPurebred(purebred);
-        koiFish.setHealth(health);
-        koiFish.setTemperature(temperature);
-        koiFish.setWater(water);
-        koiFish.setPH(pH);
-        koiFish.setFood(food);
-        koiFish.setKoiImage(firebaseService.uploadImage(file));
-        Category category = categoryRepository.findByCategoryID(categoryId);
+        koiFish.setOrigin(koiRequest.getOrigin());
+        koiFish.setGender(koiRequest.isGender());
+        koiFish.setAge(koiRequest.getAge());
+        koiFish.setSize(koiRequest.getSize());
+        koiFish.setPersonality(koiRequest.getPersonality());
+        koiFish.setPrice(koiRequest.getPrice());
+        koiFish.setPurebred(koiRequest.getPurebred());
+        koiFish.setHealth(koiRequest.getHealth());
+        koiFish.setTemperature(koiRequest.getTemperature());
+        koiFish.setWater(koiRequest.getWater());
+        koiFish.setPH(koiRequest.getPH());
+        koiFish.setFood(koiRequest.getFood());
+        koiFish.setKoiImage(firebaseService.uploadImage(koiRequest.getKoiImage()));
+        Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
         KoiFish savedKoiFish= koiFishRepository.save(koiFish);
-        Certificate newCertificate= certificateRepository.save(
-                Certificate.builder()
-                        .koiFish(savedKoiFish)
-                        .name(name)
-                        .createdDate(new Date())
-                        .image(firebaseService.uploadImage(certImg))
-                        .build());
-        CertificateRequest certificateRequest = new CertificateRequest();
-        certificateRequest.setName(newCertificate.getName());
-        certificateRequest.setImage(newCertificate.getImage());
-        certificateRequest.setCreatedDate(new Date());
+
         return KoiFishDetailReponse.builder()
                 .id(savedKoiFish.getKoiID())
                 .age(savedKoiFish.getAge())
@@ -198,20 +175,20 @@ public class KoiFishService implements KoiFishServiceImp{
                 .size(savedKoiFish.getSize())
                 .personality(savedKoiFish.getPersonality())
                 .origin(savedKoiFish.getOrigin())
-                .categoryId(newCertificate.getId())
-                .category(newCertificate.getName())
-                .certificate(certificateRequest)
                 .purebred(savedKoiFish.getPurebred())
                 .health(savedKoiFish.getHealth())
                 .temperature(savedKoiFish.getTemperature())
                 .water(savedKoiFish.getWater())
                 .pH(savedKoiFish.getPH())
                 .food(savedKoiFish.getFood())
+                .categoryId(savedKoiFish.getCategory().getCategoryID())
+                .category(savedKoiFish.getCategory().getCategoryName())
+                .status(savedKoiFish.getStatus())
                 .build();
     }
 
     @Override
-    public KoiFishDetailReponse updateKoiFish(int id, KoiRequest koiRequest) {
+    public KoiFishDetailReponse updateKoiFish(int id, KoiRequest koiRequest) throws IOException {
         KoiFish koiFish = new KoiFish();
         koiFish.setKoiID(id);
         koiFish.setOrigin(koiRequest.getOrigin());
@@ -226,7 +203,7 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setWater(koiRequest.getWater());
         koiFish.setPH(koiRequest.getPH());
         koiFish.setFood(koiRequest.getFood());
-        koiFish.setKoiImage(koiRequest.getKoiImage());
+        koiFish.setKoiImage(firebaseService.uploadImage(koiRequest.getKoiImage()));
         Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
         KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
@@ -247,6 +224,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .water(updateddKoiFish.getWater())
                 .pH(updateddKoiFish.getPH())
                 .food(updateddKoiFish.getFood())
+                .status(updateddKoiFish.getStatus())
                 .build();
     }
 
@@ -378,5 +356,30 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFishReponseList.add(koiFish2);
         return koiFishReponseList;
     }
+    @Override
+    public KoiFishDetailReponse updateKoiImg(MultipartFile file, int id) throws IOException {
+        Optional<KoiFish> koiFish = koiFishRepository.findById(id);
+        KoiFish koi = koiFish.get();
 
+        koi.setKoiImage(firebaseService.uploadImage(file));
+        KoiFish updateddKoiFish = koiFishRepository.save(koi);
+        return KoiFishDetailReponse.builder()
+                .id(updateddKoiFish.getKoiID())
+                .age(updateddKoiFish.getAge())
+                .gender(updateddKoiFish.isGender())
+                .price(updateddKoiFish.getPrice())
+                .koiImage(updateddKoiFish.getKoiImage())
+                .size(updateddKoiFish.getSize())
+                .personality(updateddKoiFish.getPersonality())
+                .origin(updateddKoiFish.getOrigin())
+                .categoryId(updateddKoiFish.getCategory().getCategoryID())
+                .category(updateddKoiFish.getCategory().getCategoryName())
+                .purebred(updateddKoiFish.getPurebred())
+                .health(updateddKoiFish.getHealth())
+                .temperature(updateddKoiFish.getTemperature())
+                .water(updateddKoiFish.getWater())
+                .pH(updateddKoiFish.getPH())
+                .food(updateddKoiFish.getFood())
+                .build();
+    }
 }

@@ -4,6 +4,7 @@ import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
+import com.group2.KoiFarmShop.dto.response.ProfileRespone;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
@@ -58,42 +59,13 @@ public class KoiFishController {
     // Thêm mới cá Koi
     @PostMapping("/add")
     @Operation(summary = "Thêm cá Koi", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishDetailReponse> addKoiFish(@RequestParam("file") MultipartFile file,
-                                                       @RequestParam String origin,
-                                                       @RequestParam boolean gender, @RequestParam int age,
-                                                       @RequestParam double size,
-                                                       @RequestParam String personality,
-                                                       @RequestParam double price,
-                                                       @RequestParam int purebred,
-                                                       @RequestParam String health,
-                                                       @RequestParam String temperature,
-                                                       @RequestParam String water,
-                                                       @RequestParam String pH,
-                                                       @RequestParam String food,
-                                                       @RequestParam int categoryId,
-                                                       @RequestParam String name,
-                                                       @RequestParam MultipartFile certImg
-    ) throws IOException {
+
+    public ApiReponse<KoiFishDetailReponse> addKoiFish(@ModelAttribute KoiRequest koiRequest
+                                                ) throws IOException {
 //        if(koiFish.getCategoryId()==0){
 //            throw new AppException(ErrorCode.KOINOTFOUND);
 //        }
-        KoiFishDetailReponse koiFishReponse = koiFishService.addKoiFish(origin,
-                gender,
-                age,
-                size,
-                personality,
-                price,
-                purebred,
-                health,
-                temperature,
-                water,
-                pH,
-                food,
-                categoryId,
-                file,
-                name,
-                certImg
-        );
+        KoiFishDetailReponse koiFishReponse=koiFishService.addKoiFish(koiRequest);
         return ApiReponse.<KoiFishDetailReponse>builder().data(koiFishReponse).message("Thêm Koi thành công").statusCode(200).build();
     }
 
@@ -101,8 +73,8 @@ public class KoiFishController {
     // Cập nhật cá Koi
     @PutMapping("/update/{id}")
     @Operation(summary = "Cập nhật Koi theo id", description = "-Nguyễn Hoàng Thiên")
-    public ApiReponse<KoiFishDetailReponse> updateKoiFish(@PathVariable int id, @RequestBody KoiRequest koiFish) throws IOException {
-        if (koiFish.getCategoryId() <= 0 || id <= 0) {
+    public ApiReponse<KoiFishDetailReponse> updateKoiFish(@PathVariable int id, @ModelAttribute KoiRequest koiFish) throws IOException {
+        if(koiFish.getCategoryId()<=0||id<=0){
             throw new AppException(ErrorCode.INVALIDNUMBER);
         }
         KoiFishDetailReponse koiFishReponse = koiFishService.updateKoiFish(id, koiFish);
@@ -139,5 +111,15 @@ public class KoiFishController {
     public ApiReponse<List<KoiFishDetailReponse>> compareKoiFish(@RequestParam("koiFishId1") int id1, @RequestParam("koiFishId2") int id2) {
         List<KoiFishDetailReponse> koiFishReponses = koiFishService.compareKoiFish(id1, id2);
         return ApiReponse.<List<KoiFishDetailReponse>>builder().data(koiFishReponses).build();
+    }
+
+    @Operation(summary = "Cập nhật img của Koi", description = "Nguyễn Hoàng Thiên")
+    @PostMapping("/updateImg/{id}")
+    public ApiReponse<KoiFishDetailReponse> updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable int id) throws IOException {
+        KoiFishDetailReponse koiFishDetailReponse = koiFishService.updateKoiImg(file, id);
+        return ApiReponse.<KoiFishDetailReponse>builder()
+                .data(koiFishDetailReponse)
+                .statusCode(200)
+                .build();
     }
 }
