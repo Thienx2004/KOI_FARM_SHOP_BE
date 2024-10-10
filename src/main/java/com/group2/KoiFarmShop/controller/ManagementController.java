@@ -68,10 +68,10 @@ public class ManagementController {
         return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
     }
 
-    @GetMapping("/getCategory")
-    public ApiReponse<List<CategoryReponse>> getListAllCate() {
+    @GetMapping("/getAllCategory")
+    public ApiReponse<CategoryPageResponse> getListAllCate(@RequestParam int pageNum, @RequestParam int pageSize) {
 
-        List<CategoryReponse> categoryReponseList = categoryServiceImp.getAllCategories();
+        CategoryPageResponse categoryReponseList = categoryServiceImp.getAllCategories(pageNum,pageSize);
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(categoryReponseList);
         return apiReponse;

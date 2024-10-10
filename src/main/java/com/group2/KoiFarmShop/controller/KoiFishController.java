@@ -122,4 +122,13 @@ public class KoiFishController {
                 .statusCode(200)
                 .build();
     }
+    @Operation(summary = "Cập nhật status của Koi", description = "Nguyễn Hoàng Thiên")
+    @PostMapping("/changeStatus/{id}/{status}")
+    public ApiReponse changeStatus(@PathVariable int id,@PathVariable int status) throws IOException {
+        koiFishService.changeKoiFishStatus(id, status);
+        return ApiReponse.<KoiFishDetailReponse>builder()
+                .message("cập nhật thành công")
+                .statusCode(200)
+                .build();
+    }
 }

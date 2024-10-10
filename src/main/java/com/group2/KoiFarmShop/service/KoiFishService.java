@@ -164,17 +164,19 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setCategory(category);
 
         KoiFish savedKoiFish= koiFishRepository.save(koiFish);
+        CertificateResponse certificateResponse = new CertificateResponse();
+        if(koiRequest.getName()!=null&&koiRequest.getImage()!=null&&koiRequest.getCreatedDate()!=null) {
         Certificate newCertificate= certificateRepository.save(
                 Certificate.builder()
                         .koiFish(savedKoiFish)
-                        .name(koiFish.getCertificate().getName())
-                        .createdDate(koiFish.getCertificate().getCreatedDate())
-                        .image(firebaseService.uploadImage(koiRequest.getCertificate().getImage()))
+                        .name(koiRequest.getName())
+                        .createdDate(koiRequest.getCreatedDate())
+                        .image(firebaseService.uploadImage(koiRequest.getImage()))
                         .build());
-        CertificateResponse certificateResponse = new CertificateResponse();
         certificateResponse.setName(newCertificate.getName());
         certificateResponse.setImage(newCertificate.getImage());
-        certificateResponse.setCreatedDate(new Date());
+        certificateResponse.setCreatedDate(newCertificate.getCreatedDate());
+        }
         return KoiFishDetailReponse.builder()
                 .id(savedKoiFish.getKoiID())
                 .age(savedKoiFish.getAge())
@@ -217,17 +219,24 @@ public class KoiFishService implements KoiFishServiceImp{
         Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
         KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
-        Certificate newCertificate= certificateRepository.save(
-                Certificate.builder()
-                        .koiFish(updateddKoiFish)
-                        .name(koiFish.getCertificate().getName())
-                        .createdDate(koiFish.getCertificate().getCreatedDate())
-                        .image(firebaseService.uploadImage(koiRequest.getCertificate().getImage()))
-                        .build());
         CertificateResponse certificateResponse = new CertificateResponse();
-        certificateResponse.setName(newCertificate.getName());
-        certificateResponse.setImage(newCertificate.getImage());
-        certificateResponse.setCreatedDate(new Date());
+        if(koiRequest.getName()!=null&&koiRequest.getImage()!=null&&koiRequest.getCreatedDate()!=null) {
+            Optional<Certificate> certificate = certificateRepository.findById(updateddKoiFish.getKoiID());
+            if(certificate.isPresent()) {
+                certificateRepository.delete(certificate.get());
+            }
+            Certificate newCertificate = certificateRepository.save(
+                    Certificate.builder()
+                            .koiFish(updateddKoiFish)
+                            .name(koiRequest.getName())
+                            .createdDate(koiRequest.getCreatedDate())
+                            .image(firebaseService.uploadImage(koiRequest.getImage()))
+                            .build());
+
+            certificateResponse.setName(newCertificate.getName());
+            certificateResponse.setImage(newCertificate.getImage());
+            certificateResponse.setCreatedDate(newCertificate.getCreatedDate());
+        }
         return KoiFishDetailReponse.builder()
                 .id(updateddKoiFish.getKoiID())
                 .age(updateddKoiFish.getAge())
@@ -403,5 +412,13 @@ public class KoiFishService implements KoiFishServiceImp{
                 .pH(updateddKoiFish.getPH())
                 .food(updateddKoiFish.getFood())
                 .build();
+    }
+
+    @Override
+    public void changeKoiFishStatus(int id, int status) {
+        KoiFish koiFish = koiFishRepository.findById(id).get();
+        koiFish.setStatus(status);
+        koiFishRepository.save(koiFish);
+
     }
 }

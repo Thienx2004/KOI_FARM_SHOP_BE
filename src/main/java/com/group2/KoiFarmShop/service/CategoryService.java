@@ -1,10 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.request.CreateCategoryRequest;
-import com.group2.KoiFarmShop.dto.response.CategoryHomeReponse;
-import com.group2.KoiFarmShop.dto.response.CategoryReponse;
-import com.group2.KoiFarmShop.dto.response.CreateCategoryRespone;
-import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
+import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
@@ -166,6 +163,31 @@ public class CategoryService implements CategoryServiceImp{
                 .categoryImage( category.getCategoryImage())
                 .categoryDescription(category.getDescription())
                 .status(category.isStatus())
+                .build();
+    }
+    @Override
+    public CategoryPageResponse getAllCategories(int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        Page<Category> categories = categoryRepository.findAll(pageable);
+        List<CategoryReponse> categoryReponses = new ArrayList<>();
+        for (Category c : categories) {
+
+            CategoryReponse categoryReponse = new CategoryReponse();
+            categoryReponse.setId(c.getCategoryID());
+            categoryReponse.setDescription(c.getDescription());
+            categoryReponse.setCategoryName(c.getCategoryName());
+            categoryReponse.setCateImg(c.getCategoryImage());
+            categoryReponse.setStatus(c.isStatus());
+
+
+            categoryReponses.add(categoryReponse);
+        }
+        return CategoryPageResponse.builder()
+                .totalPages(categories.getTotalPages())
+                .totalElements(categories.getNumberOfElements())
+                .pageNum(categories.getNumber()+1)
+                .pageSize(categories.getSize())
+                .categoryReponses(categoryReponses)
                 .build();
     }
 }

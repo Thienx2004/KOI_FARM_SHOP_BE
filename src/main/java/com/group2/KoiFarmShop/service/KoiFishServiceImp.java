@@ -21,4 +21,5 @@ public interface KoiFishServiceImp {
     public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection,String sortField2,String sortDirection2,String purebred);
     public List<KoiFishDetailReponse> compareKoiFish(int koiFishId1, int koiFishId2);
     public KoiFishDetailReponse updateKoiImg(MultipartFile file, int id) throws IOException;
+    public void changeKoiFishStatus(int id, int status);
 }
