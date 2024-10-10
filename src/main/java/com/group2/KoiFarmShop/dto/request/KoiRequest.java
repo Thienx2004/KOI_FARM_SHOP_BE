@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.dto.request;
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class KoiRequest {
@@ -18,4 +19,5 @@ public class KoiRequest {
     private String water;
     private String pH;
     private String food;
+    private MultipartFile koiImage;
 }

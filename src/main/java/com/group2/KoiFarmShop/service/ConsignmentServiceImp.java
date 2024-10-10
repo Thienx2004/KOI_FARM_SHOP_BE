@@ -11,6 +11,8 @@ import jakarta.mail.MessagingException;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface ConsignmentServiceImp {
 
     public String createConsignment(int accountId, MultipartFile koiImg,
@@ -48,5 +50,5 @@ public interface ConsignmentServiceImp {
     public Consignment processPayment(int consignmentId, boolean isPay);
 
     public String deleteConsignment(int consignmentId);
-    public ConsignmentDetailResponse updateConsignment(ConsignmentRequest consignment, KoiRequest koiFish, int consignmentId, int koiId);
+    public ConsignmentDetailResponse updateConsignment(ConsignmentRequest consignment, KoiRequest koiFish, int consignmentId, int koiId) throws IOException;
 }
