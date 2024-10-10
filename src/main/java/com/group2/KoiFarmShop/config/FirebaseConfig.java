@@ -22,6 +22,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         // Sử dụng ClassPathResource để nạp tệp từ classpath
+
         ClassPathResource resource = new ClassPathResource(credentialsFilePath);
         InputStream serviceAccount = resource.getInputStream();
 
