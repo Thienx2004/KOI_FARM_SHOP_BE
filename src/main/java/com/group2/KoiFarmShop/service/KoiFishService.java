@@ -216,6 +216,7 @@ public class KoiFishService implements KoiFishServiceImp{
     @Override
     public KoiFishDetailReponse updateKoiFish(int id, KoiRequest koiRequest) {
         KoiFish koiFish = new KoiFish();
+        Optional<KoiFish> koiFishOptional = koiFishRepository.findById(id);
         koiFish.setKoiID(id);
         koiFish.setOrigin(koiRequest.getOrigin());
         koiFish.setGender(koiRequest.isGender());
@@ -229,7 +230,7 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setWater(koiRequest.getWater());
         koiFish.setPH(koiRequest.getPH());
         koiFish.setFood(koiRequest.getFood());
-        koiFish.setKoiImage(koiRequest.getKoiImage());
+        koiFish.setKoiImage(koiFishOptional.get().getKoiImage());
         Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
         KoiFish updateddKoiFish= koiFishRepository.save(koiFish);

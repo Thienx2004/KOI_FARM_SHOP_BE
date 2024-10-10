@@ -11,9 +11,7 @@ public class KoiRequest {
     private double size;
     private String personality;
     private double price;
-    private String koiImage;
     private int categoryId;
-    private CertificateRequest certificate;
     private int purebred;
     private String health;
     private String temperature;
