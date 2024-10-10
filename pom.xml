@@ -111,7 +111,11 @@
 			<artifactId>dotenv-java</artifactId>
 			<version>3.0.2</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.15</version> <!-- Kiểm tra phiên bản mới nhất -->
+		</dependency>
 
 	</dependencies>
 
