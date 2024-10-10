@@ -81,4 +81,16 @@ public class ManagementController {
         CreateCategoryRespone createCategoryRespone = categoryService.addCategory(cateName,description,status,file);
         return ApiReponse.<CreateCategoryRespone>builder().data(createCategoryRespone).statusCode(200).build();
     }
+
+    @PutMapping("/changeStatus/{id}")
+    @Operation(summary = "Update status cho category", description = "")
+    public ApiReponse<CategoryReponse> updateStatus(@PathVariable int id) {
+        CategoryReponse categoryReponse = categoryService.updateStatus(id);
+        return ApiReponse.<CategoryReponse>builder().data(categoryReponse).statusCode(200).build();
+    }
+    @PutMapping("/updateCategory/{id}")
+    public ApiReponse<CreateCategoryRespone> updateCategory(@ModelAttribute CreateCategoryRequest createCategoryRequest,@PathVariable int id,@RequestParam  MultipartFile file) throws IOException {
+        CreateCategoryRespone respone = categoryService.updateCategory(id, createCategoryRequest,file);
+        return ApiReponse.<CreateCategoryRespone>builder().data(respone).statusCode(200).build();
+    }
 }

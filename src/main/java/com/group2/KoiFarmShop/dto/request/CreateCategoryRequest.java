@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CreateCategoryRequest {
-    int categoryId;
+
     String categoryName;
     String categoryDescription;
-    String categoryImage;
+//    String categoryImage;
     boolean status;
 }

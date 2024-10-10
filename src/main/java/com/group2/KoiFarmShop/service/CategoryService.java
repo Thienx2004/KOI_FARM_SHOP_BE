@@ -6,6 +6,8 @@ import com.group2.KoiFarmShop.dto.response.CategoryReponse;
 import com.group2.KoiFarmShop.dto.response.CreateCategoryRespone;
 import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
 import com.group2.KoiFarmShop.entity.Category;
+import com.group2.KoiFarmShop.exception.AppException;
+import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,10 @@ public class CategoryService implements CategoryServiceImp{
 
             CategoryReponse categoryReponse = new CategoryReponse();
             categoryReponse.setId(c.getCategoryID());
+            categoryReponse.setDescription(c.getDescription());
             categoryReponse.setCategoryName(c.getCategoryName());
+            categoryReponse.setCateImg(c.getCategoryImage());
+            categoryReponse.setStatus(c.isStatus());
 
 
             categoryReponses.add(categoryReponse);
@@ -121,5 +126,46 @@ public class CategoryService implements CategoryServiceImp{
         categoryHomeReponse.setTotalPages(categories.getTotalPages());
 
         return categoryHomeReponse;
+    }
+
+    public CategoryReponse updateStatus (int id){
+        Category category = categoryRepository.findByCategoryID(id);
+        if(category == null){
+            throw new AppException(ErrorCode.CANNOTUPDATE);
+        }
+        if(category.isStatus()){
+            category.setStatus(false);
+        }else {
+            category.setStatus(true);
+        }
+        categoryRepository.save(category);
+        return CategoryReponse.builder()
+                .id(category.getCategoryID())
+                .categoryName(category.getCategoryName())
+                .description(category.getDescription())
+                .cateImg(category.getCategoryImage())
+                .status(category.isStatus())
+                .build();
+    }
+
+    public CreateCategoryRespone updateCategory (int id,CreateCategoryRequest createCategoryRequest,MultipartFile file) throws IOException {
+//        Category category = categoryRepository.findByCategoryID(id);
+//        if(category == null){
+//            throw new AppException(ErrorCode.CANNOTUPDATE);
+//        }
+        Category category = new Category();
+        category.setCategoryID(id);
+        category.setCategoryName(createCategoryRequest.getCategoryName());
+        category.setDescription(createCategoryRequest.getCategoryDescription());
+        category.setStatus(createCategoryRequest.isStatus());
+        category.setCategoryImage(firebaseService.uploadImage(file));
+        categoryRepository.save(category);
+        return CreateCategoryRespone.builder()
+                .categoryId(category.getCategoryID())
+                .categoryName(category.getCategoryName())
+                .categoryImage( category.getCategoryImage())
+                .categoryDescription(category.getDescription())
+                .status(category.isStatus())
+                .build();
     }
 }
