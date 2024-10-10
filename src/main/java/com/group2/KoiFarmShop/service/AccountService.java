@@ -392,7 +392,7 @@ public class AccountService implements AccountServiceImp{
      }
 
     public AccountDTO updateAccountStatus(int accountId) {
-        // Tìm account theo ID
+        // Tìm theo ID
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
 
         if (!optionalAccount.isPresent()) {
@@ -410,7 +410,7 @@ public class AccountService implements AccountServiceImp{
 
         accountRepository.save(account);// Lưu thay đổi vào DB
 
-        // Ánh xạ dữ liệu từ entity sang DTO
+
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setId(account.getAccountID());
         accountDTO.setFullName(account.getFullName());
@@ -459,6 +459,19 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
-
+    public AccountDTO searchByEmail(String email) {
+        Account optionalAccount = accountRepository.findByEmailContains(email).orElseThrow(()-> new AppException(ErrorCode.INVALIDACCOUNT));
+        return AccountDTO.builder()
+                .fullName(optionalAccount.getFullName())
+                .email(optionalAccount.getEmail())
+                .address(optionalAccount.getAddress())
+                .id(optionalAccount.getAccountID())
+                .role(optionalAccount.getRole())
+                .status(optionalAccount.isStatus())
+//                .password(optionalAccount.getPassword())
+                .avatar(optionalAccount.getAvatar())
+                .phone(optionalAccount.getPhone())
+                .build();
+    }
 
 }

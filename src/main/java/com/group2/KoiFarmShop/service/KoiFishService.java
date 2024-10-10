@@ -214,7 +214,7 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
     @Override
-    public KoiFishDetailReponse updateKoiFish(KoiRequest koiRequest, int id) {
+    public KoiFishDetailReponse updateKoiFish(int id, KoiRequest koiRequest) {
         KoiFish koiFish = new KoiFish();
         Optional<KoiFish> koiFishOptional = koiFishRepository.findById(id);
         koiFish.setKoiID(id);
@@ -253,6 +253,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .food(updateddKoiFish.getFood())
                 .build();
     }
+
     public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection,String sortField2,String sortDirection2,String purebred) {
         // Xử lý sortField1 và sortDirection1
         if (sortField == null || sortField.isEmpty()) {
@@ -361,7 +362,6 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponse.setStatus(koiFish.getStatus());
-            koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()

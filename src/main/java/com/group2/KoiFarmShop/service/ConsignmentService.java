@@ -357,7 +357,7 @@ public class ConsignmentService implements ConsignmentServiceImp{
             throw new AppException(ErrorCode.CANNOTUPDATE);
         }
             Consignment consignmentToUpdated = new Consignment();
-            koiFishService.updateKoiFish(koiFish,koiId);
+            koiFishService.updateKoiFish(koiId, koiFish);
             Optional<Account> account = accountRepository.findById(consignment.getAccountid());
             consignmentToUpdated.setConsignmentID(consignmentId);
             consignmentToUpdated.setConsignmentDate(consignment.getConsignmentDate());
@@ -367,7 +367,7 @@ public class ConsignmentService implements ConsignmentServiceImp{
             consignmentToUpdated.setOnline(consignment.isOnline());
             consignmentToUpdated.setNotes(consignment.getNotes());
             consignmentToUpdated.setDuration(consignment.getDuration());
-            consignmentToUpdated.setKoiFish(koiFishRepository.findByKoiID(koiFishService.updateKoiFish(koiFish,koiId).getId()));
+            consignmentToUpdated.setKoiFish(koiFishRepository.findByKoiID(koiFishService.updateKoiFish(koiId, koiFish).getId()));
             consignmentToUpdated.setAgreedPrice(consignment.getAgreedPrice());
             consignmentToUpdated.setEndDate(consignment.getEndDate());
             consignmentToUpdated.setStartDate(consignment.getStartDate());
