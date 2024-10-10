@@ -281,7 +281,7 @@ public class ConsignmentService implements ConsignmentServiceImp{
 
             Certificate certificate = koiFish.getCertificate();
             if (certificate != null) {
-                CertificateRequest certificateResponse = new CertificateRequest();
+                CertificateResponse certificateResponse = new CertificateResponse();
                 certificateResponse.setName(certificate.getName());
                 certificateResponse.setImage(certificate.getImage());
                 certificateResponse.setCreatedDate(certificate.getCreatedDate());

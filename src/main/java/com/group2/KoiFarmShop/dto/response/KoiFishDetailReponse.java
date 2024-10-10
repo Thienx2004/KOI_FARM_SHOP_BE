@@ -25,7 +25,7 @@ public class KoiFishDetailReponse {
     private String koiImage;
     private int categoryId;
     private String category;
-    private CertificateRequest certificate;
+    private CertificateResponse certificate;
     private int purebred;
     private String health;
     private String temperature;
