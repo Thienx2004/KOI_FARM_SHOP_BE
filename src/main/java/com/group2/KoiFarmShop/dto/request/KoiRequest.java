@@ -2,7 +2,10 @@ package com.group2.KoiFarmShop.dto.request;
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
 
 @Data
 public class KoiRequest {
@@ -20,5 +23,8 @@ public class KoiRequest {
     private String pH;
     private String food;
     private MultipartFile koiImage;
-    private CertificateRequest certificate;
+    public String name;
+    public MultipartFile image;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    public Date createdDate;
 }
