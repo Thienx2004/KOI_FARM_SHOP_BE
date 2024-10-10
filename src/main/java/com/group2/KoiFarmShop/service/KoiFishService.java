@@ -161,6 +161,7 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setWater(koiRequest.getWater());
         koiFish.setPH(koiRequest.getPH());
         koiFish.setFood(koiRequest.getFood());
+        koiFish.setStatus(1);
         koiFish.setKoiImage(firebaseService.uploadImage(koiRequest.getKoiImage()));
         Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
