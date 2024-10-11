@@ -20,8 +20,9 @@ public class OrderDetailReponse {
     private String koiImg;
     private int batchId;
     private String avgSize;
-    private double koiPrice;
-    private double batchPrice;
+//    private double koiPrice;
+//    private double batchPrice;
+    private double price;
     private String batchImg;
     private int quantity;
     private boolean type;
