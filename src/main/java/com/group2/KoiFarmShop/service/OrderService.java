@@ -91,6 +91,10 @@ public class OrderService implements OrderServiceImp{
                 }
             }
 
+            for (int i = 0; i < order.getPrice().length; i++) {
+                orderDetails.get(i).setPrice(order.getPrice()[i]);
+            }
+
             for (int i = 0; i < order.getQuantity().length; i++) {
                 if(orderDetails.get(i).isType()) {
                     KoiFish koiFish = koiFishRepository.findByKoiID(orderDetails.get(i).getKoiFish().getKoiID());
@@ -242,14 +246,13 @@ public class OrderService implements OrderServiceImp{
                 orderDetailReponse.setGender(orderDetail.getKoiFish().isGender());
                 orderDetailReponse.setKoiAge(orderDetail.getKoiFish().getAge());
                 orderDetailReponse.setKoiSize(orderDetail.getKoiFish().getSize());
-                orderDetailReponse.setKoiPrice(orderDetail.getKoiFish().getPrice());
+                orderDetailReponse.setPrice(orderDetail.getPrice());
                 orderDetailReponse.setKoiImg(orderDetail.getKoiFish().getKoiImage());
             } else {
                 orderDetailReponse.setCategoryName(orderDetail.getBatch().getCategory().getCategoryName());
                 orderDetailReponse.setBatchId(orderDetail.getBatch().getBatchID());
                 orderDetailReponse.setAvgSize(orderDetail.getBatch().getAvgSize());
-                orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
-                orderDetailReponse.setBatchPrice(orderDetail.getBatch().getPrice());
+                orderDetailReponse.setPrice(orderDetail.getPrice());
                 orderDetailReponse.setBatchImg(orderDetail.getBatch().getBatchImg());
             }
             orderDetailReponse.setQuantity(orderDetail.getQuantity());

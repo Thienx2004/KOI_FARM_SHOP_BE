@@ -11,6 +11,7 @@ public class OrderRequest {
     private int accountID;
     private int[] koiFishs;
     private int[] batchs;
+    private double[] price;
     private int[] quantity;
     private double totalPrice;
     private String promoCode;

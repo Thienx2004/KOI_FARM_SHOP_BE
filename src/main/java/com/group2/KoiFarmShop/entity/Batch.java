@@ -38,9 +38,6 @@ public class Batch {
     private String pH;
     private String food;
 
-//    @OneToMany(mappedBy = "batch")
-//    private Set<Feedback> feedbacks;
-
     @OneToMany(mappedBy = "batch")
     private List<OrderDetail> orderDetails;
 
@@ -48,5 +45,4 @@ public class Batch {
 
     private int status = 1;
 
-    // Getters and Setters
 }

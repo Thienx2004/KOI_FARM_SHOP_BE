@@ -36,8 +36,9 @@ public class KoiFish {
     private String food;
     /*
     1_Còn Hàng
-    2_Đâ bán
+    2_Đã bán
     3_Ký gửi
+    4_Chờ duyệt đơn ký gửi
     */
 
 
