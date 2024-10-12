@@ -14,4 +14,5 @@ public class HealthcareResponse {
     private String growthStatus;
     private String careEnvironment;
     private String note;
+    private long dayRemain;
 }

@@ -24,7 +24,8 @@ public class Healthcare {
     private String growthStatus;
     private String careEnvironment;
     private String note;
-
+    @Temporal(TemporalType.DATE)
+    private Date consignmentDate;
     @OneToOne()
     @MapsId
     @JoinColumn(name = "koi_ID")

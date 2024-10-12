@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -303,6 +305,9 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     healthcareResponse.setGrowthStatus(healthcare.get().getGrowthStatus());
                     healthcareResponse.setCareEnvironment(healthcare.get().getCareEnvironment());
                     healthcareResponse.setNote(healthcare.get().getNote());
+                    LocalDate currentDate = LocalDate.now();
+                    LocalDate futureDate = LocalDate.of(healthcare.get().getConsignmentDate().getYear(),healthcare.get().getConsignmentDate().getMonth(),healthcare.get().getConsignmentDate().getDay());
+                    healthcareResponse.setDayRemain(ChronoUnit.DAYS.between(currentDate, futureDate));
                     detailResponse.setHealthcare(healthcareResponse);
                 }
             }
@@ -415,12 +420,14 @@ public class ConsignmentService implements ConsignmentServiceImp {
     @Override
     public HealthcareResponse updateHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException {
         Consignment consignment = consignmentRepository.findById(consignmentId).get();
-        Healthcare healthcare = new Healthcare();
+        Healthcare healthcare = healthcareRepository.findById(consignment.getKoiFish().getKoiID()).get();
         healthcare.setId(consignment.getKoiFish().getKoiID());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
         healthcare.setGrowthStatus(consignmentKoiCare.getGrowthStatus());
         healthcare.setCareEnvironment(consignmentKoiCare.getCareEnvironment());
         healthcare.setNote(consignmentKoiCare.getNote());
+        LocalDate currentDate = LocalDate.now();
+        LocalDate futureDate = LocalDate.of(healthcare.getConsignmentDate().getYear(),healthcare.getConsignmentDate().getMonth(),healthcare.getConsignmentDate().getDay());
         healthcareRepository.save(healthcare);
         emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentId, consignmentKoiCare);
         return HealthcareResponse.builder()
@@ -428,6 +435,32 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .careEnvironment(consignmentKoiCare.getCareEnvironment())
                 .growthStatus(consignmentKoiCare.getGrowthStatus())
                 .note(consignmentKoiCare.getNote())
+                .dayRemain(ChronoUnit.DAYS.between(currentDate, futureDate))
+                .build();
+    }
+    @Override
+    public HealthcareResponse addHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException {
+        Consignment consignment = consignmentRepository.findById(consignmentId).get();
+        Healthcare healthcare = new Healthcare();
+        healthcare.setId(consignment.getKoiFish().getKoiID());
+        healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
+        healthcare.setGrowthStatus(consignmentKoiCare.getGrowthStatus());
+        healthcare.setCareEnvironment(consignmentKoiCare.getCareEnvironment());
+        healthcare.setNote(consignmentKoiCare.getNote());
+        Date currentDate = new Date(); // Ngày hiện tại
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate); // Cài đặt ngày cho Calendar
+        calendar.add(Calendar.MONTH, consignment.getDuration());
+        Healthcare healthcare1=healthcareRepository.save(healthcare);
+        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentId, consignmentKoiCare);
+        LocalDate date = LocalDate.now();
+        LocalDate futureDate = LocalDate.of(healthcare1.getConsignmentDate().getYear(),healthcare1.getConsignmentDate().getMonth(),healthcare1.getConsignmentDate().getDay());
+        return HealthcareResponse.builder()
+                .healthStatus(consignmentKoiCare.getHealthStatus())
+                .careEnvironment(consignmentKoiCare.getCareEnvironment())
+                .growthStatus(consignmentKoiCare.getGrowthStatus())
+                .note(consignmentKoiCare.getNote())
+                .dayRemain(ChronoUnit.DAYS.between(date, futureDate))
                 .build();
     }
 
