@@ -71,7 +71,7 @@ public class ManagementController {
     @GetMapping("/getAllCategory")
     public ApiReponse<CategoryPageResponse> getListAllCate(@RequestParam int pageNum, @RequestParam int pageSize) {
 
-        CategoryPageResponse categoryReponseList = categoryServiceImp.getAllCategories(pageNum,pageSize);
+        CategoryPageResponse categoryReponseList = categoryService.getAllCategories(pageNum,pageSize);
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(categoryReponseList);
         return apiReponse;

@@ -184,7 +184,7 @@ public class CategoryService implements CategoryServiceImp{
         }
         return CategoryPageResponse.builder()
                 .totalPages(categories.getTotalPages())
-                .totalElements(categories.getNumberOfElements())
+                .totalElements(categories.getTotalElements())
                 .pageNum(categories.getNumber()+1)
                 .pageSize(categories.getSize())
                 .categoryReponses(categoryReponses)
