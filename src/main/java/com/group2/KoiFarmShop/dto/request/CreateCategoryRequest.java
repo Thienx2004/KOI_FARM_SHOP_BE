@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -15,4 +16,5 @@ public class CreateCategoryRequest {
     String categoryDescription;
 //    String categoryImage;
     boolean status;
+    MultipartFile imgFile;
 }
