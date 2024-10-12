@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.dto.request;
 
+import com.google.firebase.database.annotations.Nullable;
 import com.group2.KoiFarmShop.dto.CertificateRequest;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,8 +24,9 @@ public class KoiRequest {
     private String pH;
     private String food;
     private MultipartFile koiImage;
-    public String name;
-    public MultipartFile image;
+    private String name;
+    @Nullable
+    private MultipartFile image;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    public Date createdDate;
+    private Date createdDate;
 }

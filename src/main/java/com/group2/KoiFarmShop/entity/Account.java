@@ -29,7 +29,6 @@ import java.util.Set;
 
         private String fullName;
         private int loyaltyPoints = 0;
-        private String verificationToken;
         private boolean isVerified = false;
         private String address;
         private String phone;

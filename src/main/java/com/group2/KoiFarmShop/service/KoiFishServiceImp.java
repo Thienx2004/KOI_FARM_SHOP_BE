@@ -22,4 +22,6 @@ public interface KoiFishServiceImp {
     public List<KoiFishDetailReponse> compareKoiFish(int koiFishId1, int koiFishId2);
     public KoiFishDetailReponse updateKoiImg(MultipartFile file, int id) throws IOException;
     public void changeKoiFishStatus(int id, int status);
-}
+    public KoiFishPageResponse getFishByStatus(int page, int pageSize,int status);
+
+    }

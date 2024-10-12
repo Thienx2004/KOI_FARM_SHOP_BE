@@ -145,7 +145,7 @@ public class CategoryService implements CategoryServiceImp{
                 .build();
     }
 
-    public CreateCategoryRespone updateCategory (int id,CreateCategoryRequest createCategoryRequest,MultipartFile file) throws IOException {
+    public CreateCategoryRespone updateCategory (int id,CreateCategoryRequest createCategoryRequest) throws IOException {
 //        Category category = categoryRepository.findByCategoryID(id);
 //        if(category == null){
 //            throw new AppException(ErrorCode.CANNOTUPDATE);
@@ -155,7 +155,7 @@ public class CategoryService implements CategoryServiceImp{
         category.setCategoryName(createCategoryRequest.getCategoryName());
         category.setDescription(createCategoryRequest.getCategoryDescription());
         category.setStatus(createCategoryRequest.isStatus());
-        category.setCategoryImage(firebaseService.uploadImage(file));
+        category.setCategoryImage(firebaseService.uploadImage(createCategoryRequest.getImgFile()));
         categoryRepository.save(category);
         return CreateCategoryRespone.builder()
                 .categoryId(category.getCategoryID())
@@ -184,7 +184,7 @@ public class CategoryService implements CategoryServiceImp{
         }
         return CategoryPageResponse.builder()
                 .totalPages(categories.getTotalPages())
-                .totalElements(categories.getNumberOfElements())
+                .totalElements(categories.getTotalElements())
                 .pageNum(categories.getNumber()+1)
                 .pageSize(categories.getSize())
                 .categoryReponses(categoryReponses)

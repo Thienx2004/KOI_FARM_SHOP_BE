@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class ConsignmentKoiRequest {
     private KoiRequest koiRequest;
     private ConsignmentRequest consignmentRequest;
-    private CertificateRequest certificateRequest;
 }

@@ -71,7 +71,7 @@ public class ManagementController {
     @GetMapping("/getAllCategory")
     public ApiReponse<CategoryPageResponse> getListAllCate(@RequestParam int pageNum, @RequestParam int pageSize) {
 
-        CategoryPageResponse categoryReponseList = categoryServiceImp.getAllCategories(pageNum,pageSize);
+        CategoryPageResponse categoryReponseList = categoryService.getAllCategories(pageNum,pageSize);
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(categoryReponseList);
         return apiReponse;
@@ -90,8 +90,9 @@ public class ManagementController {
         return ApiReponse.<CategoryReponse>builder().data(categoryReponse).statusCode(200).build();
     }
     @PutMapping("/updateCategory/{id}")
-    public ApiReponse<CreateCategoryRespone> updateCategory(@ModelAttribute CreateCategoryRequest createCategoryRequest,@PathVariable int id,@RequestParam  MultipartFile file) throws IOException {
-        CreateCategoryRespone respone = categoryService.updateCategory(id, createCategoryRequest,file);
+    public ApiReponse<CreateCategoryRespone> updateCategory(@ModelAttribute CreateCategoryRequest createCategoryRequest,@PathVariable int id) throws IOException {
+        System.out.println(createCategoryRequest.getImgFile());
+        CreateCategoryRespone respone = categoryService.updateCategory(id, createCategoryRequest);
         return ApiReponse.<CreateCategoryRespone>builder().data(respone).statusCode(200).build();
     }
 }
