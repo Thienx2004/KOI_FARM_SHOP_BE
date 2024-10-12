@@ -43,7 +43,7 @@ public interface ConsignmentServiceImp {
 
     public String approveConsignment(int consignmentId) throws MessagingException;
 
-    public String rejectConsignment(int consignmentId, String rejectionReason);
+    public String rejectConsignment(int consignmentId, String rejectionReason) throws MessagingException;
 
     public PaginReponse<ConsignmentResponse> getAllConsignmentForCustomer(int pageNo, int pageSize, int accountId);
     public PaginReponse<ConsignmentResponse> getAllConsignmentForStaff(int pageNo, int pageSize);

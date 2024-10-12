@@ -137,7 +137,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
             consignmentRepository.save(consignment);
 
             // Gửi mail cho customer thông báo về đơn đã phê duyệt và hướng dẫn thanh toán
-            emailService.sendEmailToCustomer(consignment.getAccount().getEmail(), consignment.getConsignmentID());
+            emailService.sendEmailApproveToCustomer(consignment.getAccount().getEmail(), consignment.getConsignmentID());
 
             return "Đơn ký gửi đã được phê duyệt và chờ thanh toán!";
         } else {
@@ -148,7 +148,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
     }
 
     @Override
-    public String rejectConsignment(int consignmentId, String rejectionReason) {
+    public String rejectConsignment(int consignmentId, String rejectionReason) throws MessagingException {
         Consignment consignment = consignmentRepository.findById(consignmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
 
@@ -170,7 +170,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
                 koiFishRepository.delete(koiFish);
             }
-
+            emailService.sendEmailRejectToCustomer(consignment.getAccount().getEmail(), consignmentId);
             return "Đã từ chốt đơn ký gửi!";
         } else {
             throw new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND);
