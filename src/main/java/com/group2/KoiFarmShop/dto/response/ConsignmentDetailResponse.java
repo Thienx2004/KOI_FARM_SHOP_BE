@@ -1,5 +1,7 @@
 package com.group2.KoiFarmShop.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.group2.KoiFarmShop.entity.Healthcare;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConsignmentDetailResponse {
 
     private int consignmentID;
@@ -29,4 +32,5 @@ public class ConsignmentDetailResponse {
     private boolean online;
 
     private KoiFishDetailReponse koiFish;
+    private HealthcareResponse healthcare;
 }

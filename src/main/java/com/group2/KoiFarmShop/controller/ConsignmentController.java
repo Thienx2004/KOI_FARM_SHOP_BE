@@ -1,14 +1,8 @@
 package com.group2.KoiFarmShop.controller;
 
 
-import com.group2.KoiFarmShop.dto.request.ConsignmentKoiRequest;
-import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
-import com.group2.KoiFarmShop.dto.request.KoiRequest;
-import com.group2.KoiFarmShop.dto.request.OrderRequest;
-import com.group2.KoiFarmShop.dto.response.ApiReponse;
-import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
-import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
-import com.group2.KoiFarmShop.dto.response.PaginReponse;
+import com.group2.KoiFarmShop.dto.request.*;
+import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.entity.Consignment;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.entity.Orders;
@@ -137,10 +131,17 @@ public class ConsignmentController {
         return apiReponse;
     }
 
-//    @PutMapping("/update/{id}/{koiId}")
-//    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @PathVariable int koiId, @ModelAttribute ConsignmentKoiRequest consignmentRequest) throws MessagingException, IOException {
-//
-////        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId);
-//        return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
-//    }
+    @PutMapping("/update/{id}/{koiId}")
+    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @PathVariable int koiId, @ModelAttribute ConsignmentKoiRequest consignmentRequest) throws MessagingException, IOException {
+
+        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, id, koiId);
+        return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
+    }
+
+    @PutMapping("/update/{Id}")
+    public ApiReponse<HealthcareResponse> updateHealth(@PathVariable int Id, @RequestBody ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
+
+        HealthcareResponse healthcareResponse = consignmentService.updateHealth(Id,consignmentKoiCare);
+        return ApiReponse.<HealthcareResponse>builder().data(healthcareResponse).build();
+    }
 }
