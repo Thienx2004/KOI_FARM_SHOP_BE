@@ -59,7 +59,7 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    public void sendEmailToCustomer(String toEmail, int consignmentID) throws MessagingException {
+    public void sendEmailApproveToCustomer(String toEmail, int consignmentID) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -68,6 +68,45 @@ public class EmailService {
                 + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Đơn ký gửi của bạn đã được duyệt thành công!</p>"
                 + "<p>Mã đơn ký gửi: " + consignmentID + "</p>"
                 + "<p>Vui lòng truy cập <a href='http://localhost:5173/payment-history'>lịch sử thanh toán</a> để xem chi tiết.</p>"
+                + "<p>Trân trọng!</p>";
+
+        helper.setFrom("koifarmofficial@gmail.com");
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setText(content, true);  // Nội dung email dạng HTML
+
+        javaMailSender.send(message);
+    }
+
+    public void sendEmailRejectToCustomer(String toEmail, int consignmentID) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        String subject = "Thông báo đơn ký gửi";
+        String content = "<p>Xin chào,</p>"
+                + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Chúng tôi rất tiếc phải từ chốt đơn ký gửi của bạn!</p>"
+                + "<p>Mã đơn ký gửi: " + consignmentID + "</p>"
+                + "<p>Mọi thắc mắc xin liên hệ để biết thêm chi tiết.</p>"
+                + "<p>Trân trọng!</p>";
+
+        helper.setFrom("koifarmofficial@gmail.com");
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setText(content, true);  // Nội dung email dạng HTML
+
+        javaMailSender.send(message);
+    }
+
+    public void sendEmailCheckKoiToCustomer(String toEmail, int consignmentID) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        String subject = "Thông báo đơn ký gửi";
+        String content = "<p>Xin chào,</p>"
+                + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Đơn ký gửi của bạn đã được chúng tôi xem xét và chờ mong muốn được kiểm tra trực tiếp Koi của bạn.</p>"
+                + "<p>Mã đơn ký gửi: " + consignmentID + "</p>"
+                + "<p>Chúng tôi sẽ sớm liên hệ với bạn qua thông tin bạn đã cung cấp.</p>"
+                + "<p>Mọi thắc mắc xin liên hệ để biết thêm chi tiết.</p>"
                 + "<p>Trân trọng!</p>";
 
         helper.setFrom("koifarmofficial@gmail.com");

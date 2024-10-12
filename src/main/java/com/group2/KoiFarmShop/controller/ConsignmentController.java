@@ -15,6 +15,7 @@ import com.group2.KoiFarmShop.entity.Orders;
 import com.group2.KoiFarmShop.entity.Payment;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.repository.ConsignmentRepository;
 import com.group2.KoiFarmShop.repository.PaymentRepository;
 import com.group2.KoiFarmShop.service.ConsignmentServiceImp;
 import com.group2.KoiFarmShop.service.EmailService;
@@ -33,6 +34,8 @@ public class ConsignmentController {
     private ConsignmentServiceImp consignmentService;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private ConsignmentRepository consignmentRepository;
     @Autowired
     private EmailService emailService;
 
@@ -61,7 +64,7 @@ public class ConsignmentController {
                                                 @RequestParam boolean online
     ) {
 
-        ApiReponse apiReponse = new ApiReponse();
+        ApiReponse<String> apiReponse = new ApiReponse<>();
         apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, food, health, ph, temperature, water,
                 pureBred, categoryId, name, certImg, notes, phoneNumber, consignmentType, duration, serviceFee, online));
 
@@ -71,15 +74,15 @@ public class ConsignmentController {
     @PutMapping("/approve/{consignmentID}")
     public ApiReponse<String> approveConsignment(@PathVariable int consignmentID) throws MessagingException {
 
-        ApiReponse apiReponse = new ApiReponse();
+        ApiReponse<String> apiReponse = new ApiReponse<>();
         apiReponse.setData(consignmentService.approveConsignment(consignmentID));
 
         return apiReponse;
     }
 
     @PutMapping("/reject/{consignmentID}")
-    public ApiReponse<String> rejectConsignment(@PathVariable int consignmentID, @RequestParam String rejectionReason) {
-        ApiReponse apiReponse = new ApiReponse();
+    public ApiReponse<String> rejectConsignment(@PathVariable int consignmentID, @RequestParam String rejectionReason) throws MessagingException {
+        ApiReponse<String> apiReponse = new ApiReponse<>();
         apiReponse.setData(consignmentService.rejectConsignment(consignmentID, rejectionReason));
 
         return apiReponse;
@@ -137,10 +140,24 @@ public class ConsignmentController {
         return apiReponse;
     }
 
+    @GetMapping("/sendMail/{consignmentId}")
+    public ApiReponse<String> sendMail(@PathVariable int consignmentId) throws MessagingException {
+        ApiReponse<String> apiReponse = new ApiReponse<>();
+        Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(consignmentId)
+                        .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
+        if(consignment != null) {
+            emailService.sendEmailCheckKoiToCustomer(consignment.getAccount().getEmail(), consignmentId);
+            apiReponse.setData("Gửi mail thành công!");
+        }
+        return apiReponse;
+    }
+
 //    @PutMapping("/update/{id}/{koiId}")
 //    public ApiReponse<ConsignmentDetailResponse> updateConsignment(@PathVariable int id, @PathVariable int koiId, @ModelAttribute ConsignmentKoiRequest consignmentRequest) throws MessagingException, IOException {
 //
 ////        ConsignmentDetailResponse consignmentDetailResponse = consignmentService.updateConsignment(consignmentRequest, koiRequest, id, koiId);
 //        return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
 //    }
+
+
 }
