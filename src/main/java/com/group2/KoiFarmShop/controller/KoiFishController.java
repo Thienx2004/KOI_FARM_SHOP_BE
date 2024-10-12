@@ -131,4 +131,14 @@ public class KoiFishController {
                 .statusCode(200)
                 .build();
     }
+
+    @GetMapping("/status")
+    @Operation(summary = "Lấy danh sách Koi theo status", description = "-Nguyễn Hoàng Thiên")
+    public ApiReponse<KoiFishPageResponse> getKoiByStatus(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize,@RequestParam("status") int status) {
+        if (page <= 0 || pageSize <= 0) {
+            throw new AppException(ErrorCode.INVALIDNUMBER);
+        }
+        KoiFishPageResponse koiFishList = koiFishService.getFishByStatus(page, pageSize,status);
+        return ApiReponse.<KoiFishPageResponse>builder().data(koiFishList).statusCode(200).build();
+    }
 }

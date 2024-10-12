@@ -165,7 +165,7 @@ public class KoiFishService implements KoiFishServiceImp{
 
         KoiFish savedKoiFish= koiFishRepository.save(koiFish);
         CertificateResponse certificateResponse = new CertificateResponse();
-        if(koiRequest.getName()!=null&&koiRequest.getImage()!=null&&koiRequest.getCreatedDate()!=null) {
+        if(koiRequest.getName()!=null&&koiRequest.getImage()!=null&&!koiRequest.getImage().isEmpty()&&koiRequest.getCreatedDate()!=null) {
         Certificate newCertificate= certificateRepository.save(
                 Certificate.builder()
                         .koiFish(savedKoiFish)
@@ -421,4 +421,45 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFishRepository.save(koiFish);
 
     }
+    @Override
+    public KoiFishPageResponse getFishByStatus(int page, int pageSize,int status) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+        Specification<KoiFish> spec = (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("status"), status);
+
+        Page<KoiFish> koiFishPage = koiFishRepository.findAll(spec, pageable);
+
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
+        for (KoiFish koiFish : koiFishPage.getContent()) {
+            KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
+            koiFishReponse.setOrigin(koiFish.getOrigin());
+            koiFishReponse.setAge(koiFish.getAge());
+            koiFishReponse.setSize(koiFish.getSize());
+            koiFishReponse.setGender(koiFish.isGender());
+            koiFishReponse.setPersonality(koiFish.getPersonality());
+            koiFishReponse.setPrice(koiFish.getPrice());
+            koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setFood(koiFish.getFood());
+            koiFishReponse.setHealth(koiFish.getHealth());
+            koiFishReponse.setPH(koiFish.getPH());
+            koiFishReponse.setTemperature(koiFish.getTemperature());
+            koiFishReponse.setWater(koiFish.getWater());
+            koiFishReponse.setPurebred(koiFish.getPurebred());
+            koiFishReponse.setStatus(koiFish.getStatus());
+            koiFishReponseList.add(koiFishReponse);
+        }
+
+        return KoiFishPageResponse.builder()
+                .pageNum(koiFishPage.getNumber() + 1)
+                .totalPages(koiFishPage.getTotalPages())
+                .totalElements(koiFishPage.getTotalElements())
+                .pageSize(koiFishPage.getSize())
+                .koiFishReponseList(koiFishReponseList)
+                .build();
+    }
+
 }

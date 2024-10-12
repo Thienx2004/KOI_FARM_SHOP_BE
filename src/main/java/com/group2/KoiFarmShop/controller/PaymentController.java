@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,8 @@ public class PaymentController {
     private final PaymentService paymentService;
     @Autowired
     private final PaymentRepository paymentRepository;
-
+    @Value("${APP_DOMAIN}")
+    private String domain;
     @GetMapping("/vn-pay")
     @Operation(summary = "Thanh toán", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<PaymentDTO.VNPayResponse> pay(HttpServletRequest request, @RequestParam Double amount, @RequestParam String bankCode) {
@@ -48,10 +50,10 @@ public class PaymentController {
             payment.setStatus(false);
             payment.setTransactionCode(paymentCode);
             paymentRepository.save(payment);
-            response.sendRedirect("http://localhost:5173/thank-you?paymentStatus=1&paymentCode=" + paymentCode); // Đường dẫn đến trang "Cảm ơn"
+            response.sendRedirect(domain+"/thank-you?paymentStatus=1&paymentCode=" + paymentCode); // Đường dẫn đến trang "Cảm ơn"
         } else {
             // Giao dịch không thành công
-            response.sendRedirect("http://localhost:5173/payment-fail?paymentStatus=0"); // Đường dẫn đến trang "Thanh toán thất bại"
+            response.sendRedirect(domain+"/payment-fail?paymentStatus=0"); // Đường dẫn đến trang "Thanh toán thất bại"
         }
     }
 }
