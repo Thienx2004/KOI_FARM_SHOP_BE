@@ -33,7 +33,7 @@ public class KoiFishDetailReponse {
     private String pH;
     private String food;
     private int status;
-    List<KoiFishReponse> list;
+    private List<KoiFishDetailReponse> list;
   
 
 
