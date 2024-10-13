@@ -252,6 +252,7 @@ public class OrderService implements OrderServiceImp{
                 orderDetailReponse.setCategoryName(orderDetail.getBatch().getCategory().getCategoryName());
                 orderDetailReponse.setBatchId(orderDetail.getBatch().getBatchID());
                 orderDetailReponse.setAvgSize(orderDetail.getBatch().getAvgSize());
+                orderDetailReponse.setBatchAge(orderDetail.getBatch().getAge());
                 orderDetailReponse.setPrice(orderDetail.getPrice());
                 orderDetailReponse.setBatchImg(orderDetail.getBatch().getBatchImg());
             }
