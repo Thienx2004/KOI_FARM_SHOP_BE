@@ -140,6 +140,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .water(koiFish.getWater())
                 .pH(koiFish.getPH())
                 .food(koiFish.getFood())
+                .list(koiList)
                 .build();
     }
 
