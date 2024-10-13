@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public interface ConsignmentServiceImp {
 
-    public String createConsignment(int accountId, MultipartFile koiImg,
+    public int createConsignment(int accountId, MultipartFile koiImg,
                                     String origin,
                                     boolean gender,
                                     int age,

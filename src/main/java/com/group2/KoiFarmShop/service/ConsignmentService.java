@@ -52,7 +52,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
     private HealthcareRepository healthcareRepository;
 
     @Override
-    public String createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, String food,
+    public int createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, String food,
                                     String health,
                                     String ph,
                                     String temperature,
@@ -112,11 +112,10 @@ public class ConsignmentService implements ConsignmentServiceImp {
             consignment.setDuration(duration);
             consignment.setServiceFee(serviceFee);
             consignmentRepository.save(consignment);
+            return consignment.getConsignmentID();
         } catch (Exception e) {
             throw new AppException(ErrorCode.SAVE_FAILED);
         }
-
-        return "Đơn ký gửi đã được tạo thành công, chờ phê duyệt!";
     }
 
     @Override
