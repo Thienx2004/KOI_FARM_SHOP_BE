@@ -214,7 +214,7 @@ public class OrderService implements OrderServiceImp{
             orderHistoryReponse.setTransactionCode(order.getPayment().getTransactionCode());
             orderHistoryReponse.setCreatedDate(order.getOrder_date());
             orderHistoryReponse.setTotalPrice(order.getTotalPrice());
-            orderHistoryReponse.setStatus(order.isStatus());
+            orderHistoryReponse.setStatus(order.getStatus());
             orderHistoryReponse.setPaymentId(order.getPayment().getPaymentID());
 
 
@@ -264,6 +264,11 @@ public class OrderService implements OrderServiceImp{
 
             }
         return orderDetailReponseList;
+    }
+    public void changeStatus(int id, int status){
+        Orders orders = orderRepository.findById(id).get();
+        orders.setStatus(status);
+        orderRepository.save(orders);
     }
 
 

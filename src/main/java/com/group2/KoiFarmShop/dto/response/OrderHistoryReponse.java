@@ -20,7 +20,7 @@ public class OrderHistoryReponse {
     private String transactionCode;
     private Date createdDate;
     private double totalPrice;
-    private boolean status;
+    private int status;
     private int paymentId;
     //private List<OrderDetailReponse> orderDetails;
 }

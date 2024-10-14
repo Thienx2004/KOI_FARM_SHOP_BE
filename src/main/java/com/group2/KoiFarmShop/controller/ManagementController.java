@@ -13,6 +13,7 @@ import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.service.AccountService;
 import com.group2.KoiFarmShop.service.CategoryService;
 import com.group2.KoiFarmShop.service.CategoryServiceImp;
+import com.group2.KoiFarmShop.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,8 @@ public class ManagementController {
     CategoryServiceImp categoryServiceImp;
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    OrderService orderService;
 
 
     @GetMapping("/allAcount")
@@ -96,7 +99,7 @@ public class ManagementController {
     @PutMapping("/updateCategory/{id}")
     @Operation(summary = "Cập nhật category", description = "")
     public ApiReponse<CreateCategoryRespone> updateCategory(@ModelAttribute CreateCategoryRequest createCategoryRequest, @PathVariable int id) throws IOException {
-        System.out.println(createCategoryRequest.getImgFile());
+//        System.out.println(createCategoryRequest.getImgFile());
         CreateCategoryRespone respone = categoryService.updateCategory(id, createCategoryRequest);
         return ApiReponse.<CreateCategoryRespone>builder().data(respone).statusCode(200).build();
     }
@@ -114,4 +117,37 @@ public class ManagementController {
         return ApiReponse.<AccountPageRespone>builder().data(accountPageRespone).statusCode(200).build();
 
     }
+    @GetMapping("/getAllOrders")
+    @Operation(summary = "Lấy toàn bộ đơn hàng ", description = "")
+
+    public ApiReponse<PaginReponse<OrderHistoryReponse>> getAllOrdersWithDetails(
+//            @RequestParam(required = false, defaultValue = "") String accountID,
+            //@RequestParam(required = false) String type,
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(defaultValue = "3") int pageSize) {
+
+        PaginReponse<OrderHistoryReponse> historyReponsePaginReponse = orderService.getOrdersHistory(pageNo, pageSize,null);
+        ApiReponse<PaginReponse<OrderHistoryReponse>> historyReponse = new ApiReponse<>();
+        historyReponse.setData(historyReponsePaginReponse);
+
+        return historyReponse;
+    }
+    @GetMapping("/getOrderDetail")
+    @Operation(summary = "Lấy order detail theo order id", description = "")
+
+    public ApiReponse<List<OrderDetailReponse>> getOrderDetail(@RequestParam int orderID) {
+
+        ApiReponse<List<OrderDetailReponse>> resp = new ApiReponse<>();
+        resp.setData(orderService.getOrderDetail(orderID));
+
+        return resp;
+    }
+
+    @PostMapping("/changeStatus")
+    @Operation(summary = "Cập nhật trạng thái đơn hàng",description = "")
+    public ApiReponse changeStatusOrder(@RequestParam int orderID, @RequestParam int status) {
+        orderService.changeStatus(orderID, status);
+        return ApiReponse.<OrderHistoryReponse>builder().message("Cập nhật thành công").statusCode(200).build();
+    }
+
 }
