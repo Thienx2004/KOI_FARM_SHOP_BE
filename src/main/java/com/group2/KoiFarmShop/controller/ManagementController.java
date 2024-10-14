@@ -15,6 +15,7 @@ import com.group2.KoiFarmShop.service.CategoryService;
 import com.group2.KoiFarmShop.service.CategoryServiceImp;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,44 +56,62 @@ public class ManagementController {
     @PostMapping("/createAccount")
     @Operation(summary = "Tạo tài khoản", description = "")
 
-    public ApiReponse<AccountCreateRespone> createAccount (@RequestBody AccountCreateRequest request ) {
+    public ApiReponse<AccountCreateRespone> createAccount(@RequestBody AccountCreateRequest request) {
         AccountCreateRespone accountCreateRespone = accountService.createAccount(request);
 
         return ApiReponse.<AccountCreateRespone>builder().data(accountCreateRespone).statusCode(200).build();
     }
 
-    @GetMapping("/search")
-    @Operation(summary = "Tìm tài khoản theo email",description = "")
-    public ApiReponse<AccountDTO> getAccountByEmail(@RequestParam String email) {
-        AccountDTO accountDTO = accountService.searchByEmail(email);
-        return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
-    }
+//    @GetMapping("/search")
+//    @Operation(summary = "Tìm tài khoản theo email chính xác", description = "")
+//    public ApiReponse<AccountDTO> getAccountByEmail(@RequestParam String email) {
+//        AccountDTO accountDTO = accountService.searchByEmail(email);
+//        return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
+//    }
 
     @GetMapping("/getAllCategory")
+    @Operation(summary = "Lấy toàn bộ category", description = "")
     public ApiReponse<CategoryPageResponse> getListAllCate(@RequestParam int pageNum, @RequestParam int pageSize) {
 
-        CategoryPageResponse categoryReponseList = categoryService.getAllCategories(pageNum,pageSize);
+        CategoryPageResponse categoryReponseList = categoryService.getAllCategories(pageNum, pageSize);
         ApiReponse apiReponse = new ApiReponse();
         apiReponse.setData(categoryReponseList);
         return apiReponse;
     }
 
     @PostMapping("/addCategory")
-    public ApiReponse<CreateCategoryRespone> createCategory(@RequestParam String cateName,@RequestParam  String description,@RequestParam  boolean status,@RequestParam  MultipartFile file) throws IOException {
-        CreateCategoryRespone createCategoryRespone = categoryService.addCategory(cateName,description,status,file);
+    @Operation(summary = "Thêm category", description = "")
+    public ApiReponse<CreateCategoryRespone> createCategory(@RequestParam String cateName, @RequestParam String description, @RequestParam boolean status, @RequestParam MultipartFile file) throws IOException {
+        CreateCategoryRespone createCategoryRespone = categoryService.addCategory(cateName, description, status, file);
         return ApiReponse.<CreateCategoryRespone>builder().data(createCategoryRespone).statusCode(200).build();
     }
 
     @PutMapping("/changeStatus/{id}")
-    @Operation(summary = "Update status cho category", description = "")
+    @Operation(summary = "Cập nhật status cho category", description = "")
     public ApiReponse<CategoryReponse> updateStatus(@PathVariable int id) {
         CategoryReponse categoryReponse = categoryService.updateStatus(id);
         return ApiReponse.<CategoryReponse>builder().data(categoryReponse).statusCode(200).build();
     }
+
     @PutMapping("/updateCategory/{id}")
-    public ApiReponse<CreateCategoryRespone> updateCategory(@ModelAttribute CreateCategoryRequest createCategoryRequest,@PathVariable int id) throws IOException {
+    @Operation(summary = "Cập nhật category", description = "")
+    public ApiReponse<CreateCategoryRespone> updateCategory(@ModelAttribute CreateCategoryRequest createCategoryRequest, @PathVariable int id) throws IOException {
         System.out.println(createCategoryRequest.getImgFile());
         CreateCategoryRespone respone = categoryService.updateCategory(id, createCategoryRequest);
         return ApiReponse.<CreateCategoryRespone>builder().data(respone).statusCode(200).build();
+    }
+
+
+    @GetMapping("/searchEmail")
+    @Operation(summary = "Tìm khách hàng theo email ", description = "")
+    public ApiReponse<AccountPageRespone> searchAccountsByEmail(@RequestParam String email,
+                                                  @RequestParam int page,
+                                                  @RequestParam int pageSize) {
+        if (page <= 0 || pageSize <= 0) {
+            throw new AppException(ErrorCode.INVALIDNUMBER);
+        }
+        AccountPageRespone accountPageRespone = accountService.searchAccountByEmail(email, page, pageSize);
+        return ApiReponse.<AccountPageRespone>builder().data(accountPageRespone).statusCode(200).build();
+
     }
 }

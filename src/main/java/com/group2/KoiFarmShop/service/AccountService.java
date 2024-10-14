@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 
 import java.util.Optional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -473,5 +474,34 @@ public class AccountService implements AccountServiceImp{
                 .phone(optionalAccount.getPhone())
                 .build();
     }
+
+    public AccountPageRespone searchAccountByEmail(String email,int page, int pageSize) {
+
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("accountID").descending());
+        Page<Account> accountList = accountRepository.findByEmailContaining(email,pageable);
+        List<AccountDTO> accountDTOList = new ArrayList<>();
+        for (Account account : accountList) {
+            AccountDTO accountDTO = new AccountDTO();
+            accountDTO.setId(account.getAccountID());
+            accountDTO.setFullName(account.getFullName());
+            accountDTO.setEmail(account.getEmail());
+            accountDTO.setPassword(account.getPassword());
+            accountDTO.setPhone(account.getPhone());
+            accountDTO.setAddress(account.getAddress());
+            accountDTO.setRole(account.getRole());
+            accountDTO.setAvatar(account.getAvatar());
+            accountDTO.setStatus(account.isStatus());
+            accountDTOList.add(accountDTO);
+        }
+
+        return AccountPageRespone.builder()
+                .pageNum(accountList.getNumber()+1)
+                .totalPages(accountList.getTotalPages())
+                .totalElements(accountList.getTotalElements())
+                .pageSize(accountList.getSize())
+                .accounts(accountDTOList)
+                .build();
+    }
+
 
 }
