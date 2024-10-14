@@ -320,7 +320,14 @@ public class ConsignmentService implements ConsignmentServiceImp {
         Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(consignmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
 
-        if (consignment.getStatus() == 4) { // Nếu đơn đang ở trạng thái Pending Payment
+        // Kiểm tra nếu đơn ký gửi đang ở trạng thái chờ thanh toán
+        if (consignment.getStatus() == 4) { // Pending Payment
+            // Trước tiên, kiểm tra thời hạn thanh toán
+            if (isPaymentOverdue(consignment)) {
+                consignment.setStatus(5); // Đơn quá hạn
+                consignmentRepository.save(consignment);
+                throw new AppException(ErrorCode.CONSIGNMENT_OUT_OF_DATE);
+            } // Nếu đơn đang ở trạng thái Pending Payment
             if (isPaid) {
                 consignment.setStatus(2); // Đơn đã được thanh toán, chờ bán
                 KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
@@ -332,14 +339,16 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
                 consignmentRepository.save(consignment);
                 return consignment;
-            } else if (new Date().after(consignment.getEndDate())) {
-                consignment.setStatus(5); // Đơn quá hạn
-                consignmentRepository.save(consignment);
-                throw new AppException(ErrorCode.CONSIGNMENT_OUT_OF_DATE);
             }
+
         }
 
         return consignment;
+    }
+
+    public boolean isPaymentOverdue(Consignment consignment) {
+        // Kiểm tra nếu ngày hiện tại sau ngày kết thúc thanh toán
+        return new Date().after(consignment.getEndDate());
     }
 
     @Override

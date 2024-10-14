@@ -105,6 +105,14 @@ public class ConsignmentController {
         return response;
     }
 
+    @GetMapping("/checkDate/{consignmentId}")
+    public ApiReponse<Consignment> checkPaymentDate(@PathVariable int consignmentId) {
+        ApiReponse<Consignment> apiReponse = new ApiReponse<>();
+        apiReponse.setData(consignmentService.processPayment(consignmentId, false));
+        return apiReponse;
+
+    }
+
     @PostMapping("/processPayment")
     public ApiReponse<String> processPayment(@RequestParam int consignmentId, @RequestParam String transactionCode) throws MessagingException {
         ApiReponse<String> resp = new ApiReponse<>();
