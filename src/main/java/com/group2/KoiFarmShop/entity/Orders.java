@@ -38,5 +38,4 @@ public class Orders {
     //3
     private boolean status ;
 
-    // Getters and Setters
 }

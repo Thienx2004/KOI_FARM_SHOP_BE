@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Orders, Integer> {
@@ -24,4 +25,25 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
     Page<Orders> findOrdersWithFilters(@Param("accountID") Integer accountID,
                                        //@Param("type") Boolean type,
                                        Pageable pageable);
+
+    // Tổng doanh thu 7 năm gần nhất theo năm
+    @Query("SELECT YEAR(o.order_date) as year, SUM(o.totalPrice) as totalRevenue "
+            + "FROM Orders o "
+            + "WHERE o.order_date >= :startDate "
+            + "GROUP BY YEAR(o.order_date)")
+    List<Object[]> findTotalRevenueByYear(@Param("startDate") Date startDate);
+
+    // Tổng doanh thu của các tháng trong năm hiện tại
+    @Query("SELECT MONTH(o.order_date) as month, SUM(o.totalPrice) as totalRevenue "
+            + "FROM Orders o "
+            + "WHERE YEAR(o.order_date) = YEAR(CURRENT_DATE) "
+            + "GROUP BY MONTH(o.order_date) "
+            + "ORDER BY MONTH(o.order_date)")
+    List<Object[]> findTotalRevenueByMonth();
+
+    // Tổng số đơn hàng trong tháng hiện tại
+    @Query("SELECT COUNT(o) FROM Orders o "
+            + "WHERE YEAR(o.order_date) = YEAR(CURRENT_DATE) "
+            + "AND MONTH(o.order_date) = MONTH(CURRENT_DATE)")
+    int countOrdersInCurrentMonth();
 }

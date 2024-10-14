@@ -35,6 +35,4 @@ public class OrderDetail {
     private boolean type; // true/false for Batch/Fish
     private int quantity;
     private double price;
-
-    // Getters and Setters
 }
