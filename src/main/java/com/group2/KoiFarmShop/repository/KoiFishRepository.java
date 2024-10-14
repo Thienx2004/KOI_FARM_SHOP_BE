@@ -28,5 +28,10 @@ public interface KoiFishRepository extends JpaRepository<KoiFish, Integer> {
             "ORDER BY o.order_date DESC")
     Page<KoiFish> findCustomerKoi(@Param("accountID") Integer accountID,
                                        Pageable pageable);
+
+    // Tổng số Koi có status là 1 hoặc 3
+    @Query("SELECT COUNT(k) FROM KoiFish k WHERE k.status = 1 OR k.status = 3")
+    int findTotalKoiWithStatus1Or3();
 }
+
 

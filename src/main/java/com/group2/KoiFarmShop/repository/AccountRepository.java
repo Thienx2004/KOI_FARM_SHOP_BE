@@ -32,4 +32,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Page<Account> findByEmailContaining(String email, Pageable pageable);
 
+    // Tổng số account
+    @Query("SELECT COUNT(a) FROM Account a")
+    int findTotalAccounts();
+
 }
