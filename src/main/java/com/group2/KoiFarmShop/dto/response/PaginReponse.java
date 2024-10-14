@@ -18,6 +18,6 @@ public class PaginReponse<T> {
     private List<T> content;
     private int pageNum;
     private int pageSize;
-    private int totalElements;
+    private long totalElements;
     private int totalPages;
 }
