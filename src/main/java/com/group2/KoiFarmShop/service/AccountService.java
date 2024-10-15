@@ -79,6 +79,8 @@ public class AccountService implements AccountServiceImp{
                     content.setFullName(account.getFullName());
                     content.setRole(account.getRole().getRoleName());
                     content.setPhone(account.getPhone());
+                    content.setAddress(account.getAddress());
+                    content.setAvatar(account.getAvatar());
                     content.setAccessToken(Token);
 
                     apiReponse.setData(content);
@@ -109,7 +111,6 @@ public class AccountService implements AccountServiceImp{
             if (optionalAccount.isPresent()) {
                 account = optionalAccount.get();
             } else {
-                // Tạo tài khoản mới
                 Role role = new Role();
                 role.setRoleID(3);
                 account = new Account();
@@ -118,21 +119,20 @@ public class AccountService implements AccountServiceImp{
                 account.setRole(role);
                 accountRepository.save(account);
             }
-            // Kiểm tra trạng thái xác thực
             if (!account.isVerified()) {
                 account.setVerified(true);
                 accountRepository.updateVerify(loginGoogleRequest.getEmail(),true);
             }
-            // Tạo token mới
             String newToken = jwtUltilsHelper.generateToken(account);
 
-            // Cấu hình nội dung
             Content content = new Content();
             content.setId(account.getAccountID());
             content.setEmail(account.getEmail());
             content.setPhone(account.getPhone());
             content.setFullName(account.getFullName());
             content.setRole(account.getRole().getRoleName());
+            content.setAddress(account.getAddress());
+            content.setAvatar(account.getAvatar());
             content.setAccessToken(newToken);
             apiReponse.setData(content);
             apiReponse.setMessage("Đăng nhập thành công");

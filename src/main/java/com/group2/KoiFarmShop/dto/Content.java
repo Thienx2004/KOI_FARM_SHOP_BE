@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Content {
     private int id;
     private String email;
     private String fullName;
     private String role;
     private String phone;
+    private String address;
+    private String avatar;
     private String accessToken;
 
 }
