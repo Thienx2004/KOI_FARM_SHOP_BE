@@ -33,9 +33,9 @@ public class Orders {
     @OneToOne(mappedBy = "order")
     private Payment payment;
 
-    //1. 
-    //2
-    //3
-    private boolean status ;
+    //1. Đã thanh toán
+    //2. Đang giao
+    //3. Hoàn tất đơn hàng
+    private int status = 1;
 
 }
