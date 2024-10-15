@@ -270,6 +270,16 @@ public class OrderService implements OrderServiceImp{
         orders.setStatus(status);
         orderRepository.save(orders);
     }
+    public OrderHistoryReponse getOrderById(int id){
+        Orders orders = orderRepository.findById(id).get();
+        return OrderHistoryReponse.builder()
+                .orderId(orders.getOrderID())
+                .accountId(orders.getAccount().getAccountID())
+                .createdDate(orders.getOrder_date())
+                .totalPrice(orders.getTotalPrice())
+                .status(orders.getStatus())
+                .build();
+    }
 
 
 }
