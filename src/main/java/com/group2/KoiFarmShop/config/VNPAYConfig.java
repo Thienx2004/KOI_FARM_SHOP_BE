@@ -31,8 +31,8 @@ public class VNPAYConfig {
     private String vnp_Command;
     @Value("${ORDER_TYPE}")
     private String orderType;
-    @Value("${APP_DOMAIN}")
-    private String appDomain;
+    @Value("${API_DOMAIN}")
+    private String apiDomain;
     public Map<String, String> getVNPayConfig(boolean type) {
         Map<String, String> vnpParamsMap = new HashMap<>();
         vnpParamsMap.put("vnp_Version", this.vnp_Version);
@@ -44,9 +44,9 @@ public class VNPAYConfig {
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
         if(type){
-            vnpParamsMap.put("vnp_ReturnUrl",this.appDomain+ this.vnp_ReturnUrl_Order);
+            vnpParamsMap.put("vnp_ReturnUrl",this.apiDomain+ this.vnp_ReturnUrl_Order);
         }else {
-            vnpParamsMap.put("vnp_ReturnUrl",this.appDomain+ this.vnp_ReturnUrl_Consignment);
+            vnpParamsMap.put("vnp_ReturnUrl",this.apiDomain+ this.vnp_ReturnUrl_Consignment);
         }
 
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
