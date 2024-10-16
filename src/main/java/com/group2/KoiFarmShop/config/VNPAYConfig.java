@@ -16,8 +16,10 @@ public class VNPAYConfig {
     @Getter
     @Value("${PAY_URL}")
     private String vnp_PayUrl;
-    @Value("${RETURN_URL}")
-    private String vnp_ReturnUrl;
+    @Value("${RETURN_URL_ORDER}")
+    private String vnp_ReturnUrl_Order;
+    @Value("${RETURN_URL_CONSIGNMENT}")
+    private String vnp_ReturnUrl_Consignment;
     @Value("${TMN_CODE}")
     private String vnp_TmnCode ;
     @Getter
@@ -29,8 +31,9 @@ public class VNPAYConfig {
     private String vnp_Command;
     @Value("${ORDER_TYPE}")
     private String orderType;
-
-    public Map<String, String> getVNPayConfig() {
+    @Value("${APP_DOMAIN}")
+    private String appDomain;
+    public Map<String, String> getVNPayConfig(boolean type) {
         Map<String, String> vnpParamsMap = new HashMap<>();
         vnpParamsMap.put("vnp_Version", this.vnp_Version);
         vnpParamsMap.put("vnp_Command", this.vnp_Command);
@@ -40,7 +43,12 @@ public class VNPAYConfig {
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  VNPayUtil.getRandomNumber(8));
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
-        vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
+        if(type){
+            vnpParamsMap.put("vnp_ReturnUrl",this.appDomain+ this.vnp_ReturnUrl_Order);
+        }else {
+            vnpParamsMap.put("vnp_ReturnUrl",this.appDomain+ this.vnp_ReturnUrl_Consignment);
+        }
+
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnpCreateDate = formatter.format(calendar.getTime());
