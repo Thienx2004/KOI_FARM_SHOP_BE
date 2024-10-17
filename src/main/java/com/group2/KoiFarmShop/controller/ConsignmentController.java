@@ -34,7 +34,8 @@ public class ConsignmentController {
     private EmailService emailService;
 
     @PostMapping("/createConsignment")
-    public ApiReponse<Integer> createConsignment(@RequestParam int accountId, @RequestParam MultipartFile koiImg,
+    public ApiReponse<Integer> createConsignment(@RequestParam int accountId, @RequestParam(required = false) MultipartFile koiImg,
+                                                 @RequestParam(required = false) String koiImgURL,
                                                 @RequestParam String origin,
                                                 @RequestParam boolean gender,
                                                 @RequestParam int age,
@@ -59,7 +60,7 @@ public class ConsignmentController {
     ) {
 
         ApiReponse<Integer> apiReponse = new ApiReponse<>();
-        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg, origin, gender, age, size, personality, price, food, health, ph, temperature, water,
+        apiReponse.setData(consignmentService.createConsignment(accountId, koiImg,koiImgURL, origin, gender, age, size, personality, price, food, health, ph, temperature, water,
                 pureBred, categoryId, name, certImg, notes, phoneNumber, consignmentType, duration, serviceFee, online));
 
         return apiReponse;
