@@ -51,6 +51,7 @@ public class KoiFish {
 
     @ManyToOne
     @JoinColumn(name = "categoryid")
+
     private Category category;
 
     @OneToMany(mappedBy = "koiFish")

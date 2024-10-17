@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class OrderService implements OrderServiceImp{
+public class OrderService implements OrderServiceImp {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -40,6 +40,8 @@ public class OrderService implements OrderServiceImp{
     private EmailService emailService;
     @Autowired
     private ConsignmentRepository consignmentRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     @Transactional
     @Override
@@ -47,7 +49,7 @@ public class OrderService implements OrderServiceImp{
         try {
             Account account = accountRepository.findByAccountID(order.getAccountID())
                     .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
-            if(order.getPromoCode() != null){
+            if (order.getPromoCode() != null) {
                 Promotion promotion = promotionRepository.findByPromoCode(order.getPromoCode())
                         .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
 
@@ -96,7 +98,7 @@ public class OrderService implements OrderServiceImp{
             }
 
             for (int i = 0; i < order.getQuantity().length; i++) {
-                if(orderDetails.get(i).isType()) {
+                if (orderDetails.get(i).isType()) {
                     KoiFish koiFish = koiFishRepository.findByKoiID(orderDetails.get(i).getKoiFish().getKoiID());
                     koiFish.setStatus(2);  // Giả định "2" là trạng thái "bán"
                     koiFishRepository.save(koiFish);
@@ -106,7 +108,7 @@ public class OrderService implements OrderServiceImp{
 
                     int remainingQuantity = batch.getQuantity() - order.getQuantity()[i];
                     batch.setQuantity(remainingQuantity);
-                    if(remainingQuantity == 0){
+                    if (remainingQuantity == 0) {
                         batch.setStatus(2);  // Giả định "2" là trạng thái "hết hàng"
                     }
                     batchRepository.save(batch);
@@ -225,7 +227,7 @@ public class OrderService implements OrderServiceImp{
         paginReponse.setContent(orderHistoryReponses);
         paginReponse.setPageNum(pageNo);
         paginReponse.setPageSize(pageSize);
-        paginReponse.setTotalElements(orders.getNumberOfElements());
+        paginReponse.setTotalElements(orders.getTotalElements());
         paginReponse.setTotalPages(orders.getTotalPages());
 
         return paginReponse;
@@ -236,11 +238,11 @@ public class OrderService implements OrderServiceImp{
         List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders_OrderID(orderId);
         List<OrderDetailReponse> orderDetailReponseList = new ArrayList<>();
 
-        for(OrderDetail orderDetail : orderDetails){
+        for (OrderDetail orderDetail : orderDetails) {
             OrderDetailReponse orderDetailReponse = new OrderDetailReponse();
 
             orderDetailReponse.setOrderDetailId(orderDetail.getOrderDetailID());
-            if(orderDetail.getKoiFish() != null) {
+            if (orderDetail.getKoiFish() != null) {
                 orderDetailReponse.setCategoryName(orderDetail.getKoiFish().getCategory().getCategoryName());
                 orderDetailReponse.setKoiFishId(orderDetail.getKoiFish().getKoiID());
                 orderDetailReponse.setGender(orderDetail.getKoiFish().isGender());
@@ -262,15 +264,17 @@ public class OrderService implements OrderServiceImp{
 
             orderDetailReponseList.add(orderDetailReponse);
 
-            }
+        }
         return orderDetailReponseList;
     }
-    public void changeStatus(int id, int status){
+
+    public void changeStatus(int id, int status) {
         Orders orders = orderRepository.findById(id).get();
         orders.setStatus(status);
         orderRepository.save(orders);
     }
-    public OrderHistoryReponse getOrderById(int id){
+
+    public OrderHistoryReponse getOrderById(int id) {
         Orders orders = orderRepository.findById(id).get();
         return OrderHistoryReponse.builder()
                 .orderId(orders.getOrderID())
@@ -281,5 +285,31 @@ public class OrderService implements OrderServiceImp{
                 .build();
     }
 
+    public OrderHistoryReponse getOrderHistoryByTransactionCode(String transactionCode) {
+        Orders orders = orderRepository.findPaymentByTransactionCode(transactionCode);
+        return OrderHistoryReponse.builder()
+                .orderId(orders.getOrderID())
+                .accountId(orders.getAccount().getAccountID())
+                .createdDate(orders.getOrder_date())
+                .totalPrice(orders.getTotalPrice())
+                .status(orders.getStatus())
+                .build();
+    }
+    public OrderHistoryReponse getOrderDetailsByTransactionCode(String transactionCode) {
+        Payment payment = paymentRepository.findByTransactionCode(transactionCode);
+        if (payment != null) {
+            Orders orders = orderRepository.findByPaymentTransactionCode(transactionCode);;
+            return OrderHistoryReponse.builder()
+                    .orderId(orders.getOrderID())
+                    .accountId(orders.getAccount().getAccountID())
+                    .createdDate(orders.getOrder_date())
+                    .totalPrice(orders.getTotalPrice())
+                    .status(orders.getStatus())
+                    .build();
+        }else {
 
+        throw new AppException(ErrorCode.TRANSACTION_INVALID);
+        }
+
+    }
 }

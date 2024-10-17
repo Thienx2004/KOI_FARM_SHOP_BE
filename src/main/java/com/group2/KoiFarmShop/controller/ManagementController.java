@@ -7,6 +7,8 @@ import com.group2.KoiFarmShop.dto.request.AccountUpdateStatusRequest;
 import com.group2.KoiFarmShop.dto.request.CreateCategoryRequest;
 import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.entity.Account;
+import com.group2.KoiFarmShop.entity.Category;
+import com.group2.KoiFarmShop.entity.Orders;
 import com.group2.KoiFarmShop.entity.Role;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
@@ -17,6 +19,7 @@ import com.group2.KoiFarmShop.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -149,5 +152,26 @@ public class ManagementController {
         orderService.changeStatus(orderID, status);
         return ApiReponse.<OrderHistoryReponse>builder().message("Cập nhật thành công").statusCode(200).build();
     }
+
+    @GetMapping("/searchCategory")
+    @Operation(summary = "Tìm kím category theo tên",description = "")
+    public ApiReponse<List<CreateCategoryRespone>> searchCategoryByName(@RequestParam String name){
+        List<CreateCategoryRespone> createCategoryRespone = categoryService.searchCategoryByName(name);
+        ApiReponse<List<CreateCategoryRespone>> resp = new ApiReponse<>();
+        resp.setData(createCategoryRespone);
+        resp.setStatusCode(200);
+        return resp;
+    }
+
+    @GetMapping("/searchOrder")
+    @Operation(summary = "Tìm kím order theo transaction code",description = "")
+
+    public ApiReponse<OrderHistoryReponse> searchOrdersByTransactionCode(@RequestParam String transactionCode){
+        OrderHistoryReponse reponse=orderService.getOrderDetailsByTransactionCode(transactionCode);
+        return ApiReponse.<OrderHistoryReponse>builder().data(reponse).build();
+    }
+
+
+
 
 }
