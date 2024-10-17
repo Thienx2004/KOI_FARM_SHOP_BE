@@ -191,7 +191,11 @@ public class BatchService implements BatchServiceImp{
             existedBatch.setTemperature(batchCreateDTO.getTemperature());
             existedBatch.setWater(batchCreateDTO.getWater());
             existedBatch.setPurebred(batchCreateDTO.getPurebred());
-            existedBatch.setBatchImg(firebaseService.uploadImage(batchCreateDTO.getBatchImg()));
+            if(batchCreateDTO.getBatchImg() != null && !batchCreateDTO.getBatchImg().isEmpty()) {
+                existedBatch.setBatchImg(firebaseService.uploadImage(batchCreateDTO.getBatchImg()));
+            } else {
+                existedBatch.setBatchImg(existedBatch.getBatchImg());
+            }
             existedBatch.setStatus(batchCreateDTO.getStatus());
             batchRepository.save(existedBatch);
             return "Update lô koi ID: " + batchId + " thành công";
