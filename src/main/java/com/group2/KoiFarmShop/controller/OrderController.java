@@ -13,6 +13,7 @@ import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.PaymentRepository;
 import com.group2.KoiFarmShop.service.EmailService;
 import com.group2.KoiFarmShop.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class OrderController {
     private EmailService emailService;
 
     @PostMapping("/saveOrder")
+    @Operation(summary = "Lưu order của customer", description = "API này sẽ lưu cái order vào trong hệ thống.-Trương Thiên Lộc")
     public ApiReponse<String> saveOrder(@RequestBody OrderRequest orderRequest, @RequestParam String transactionCode) throws MessagingException {
         ApiReponse<String> resp = new ApiReponse<>();
         Payment payment = paymentRepository.findPaymentByTransactionCode(transactionCode).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_FAILED));
@@ -52,6 +54,7 @@ public class OrderController {
     }
 
     @GetMapping("/getOrderHistory")
+    @Operation(summary = "Lấy ra cái order đã có theo koiId", description = "API này sẽ trả về lịch sử giao dịch trong hệ thống.-Trương Thiên Lộc")
     public ApiReponse<PaginReponse<OrderHistoryReponse>> getAllOrdersWithDetails(
             @RequestParam(required = false) String accountID,
             //@RequestParam(required = false) String type,
@@ -66,6 +69,7 @@ public class OrderController {
     }
 
     @GetMapping("/getOrderDetail")
+    @Operation(summary = "Lấy chi tiết đơn hàng theo orderID", description = "API này sẽ trả về chi tiết đơn hàng.-Trương Thiên Lộc")
     public ApiReponse<List<OrderDetailReponse>> getOrderDetail(@RequestParam int orderID) {
 
         ApiReponse<List<OrderDetailReponse>> resp = new ApiReponse<>();
