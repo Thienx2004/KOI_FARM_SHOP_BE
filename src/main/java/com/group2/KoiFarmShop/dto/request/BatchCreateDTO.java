@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.dto.request;
 
+import com.google.firebase.internal.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,8 @@ public class BatchCreateDTO {
     private String water;
     private String pH;
     private String food;
+
+    @Nullable
     private MultipartFile batchImg;
     private int status = 1;
 
