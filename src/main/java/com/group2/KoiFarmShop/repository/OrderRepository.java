@@ -46,4 +46,14 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             + "WHERE YEAR(o.order_date) = YEAR(CURRENT_DATE) "
             + "AND MONTH(o.order_date) = MONTH(CURRENT_DATE)")
     int countOrdersInCurrentMonth();
+
+    @Query("SELECT p.paymentID, p.amount, p.paymentDate, p.status, p.transactionCode, p.consignment.consignmentID, " +
+            "p.order.orderID, p.order.order_date, p.order.status, p.order.totalPrice, p.order.account.accountID " +
+            "FROM Payment p JOIN p.order o " +
+            "WHERE p.transactionCode LIKE :transactionCode")
+    Orders findPaymentByTransactionCode(@Param("transactionCode") String transactionCode);
+
+    Orders findByPaymentTransactionCode(String transactionCode);
+
+
 }

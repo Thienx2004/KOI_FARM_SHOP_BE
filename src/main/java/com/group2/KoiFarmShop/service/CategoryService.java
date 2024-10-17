@@ -191,4 +191,32 @@ public class CategoryService implements CategoryServiceImp{
                 .categoryReponses(categoryReponses)
                 .build();
     }
+    public List<CreateCategoryRespone> searchCategoryByName(String categoryName) {
+
+        // Tìm kiếm danh sách các danh mục dựa trên tên (không phân trang)
+        List<Category> categoryList = categoryRepository.findByCategoryNameContaining(categoryName);
+
+        // Chuyển đổi từ Category sang CreateCategoryRespone
+        List<CreateCategoryRespone> categoryResponeList = new ArrayList<>();
+        for (Category category : categoryList) {
+            CreateCategoryRespone categoryRespone = new CreateCategoryRespone();
+            categoryRespone.setCategoryId(category.getCategoryID());
+            categoryRespone.setCategoryName(category.getCategoryName());
+            categoryRespone.setCategoryDescription(category.getDescription());
+            categoryRespone.setCategoryImage(category.getCategoryImage());
+            categoryRespone.setStatus(category.isStatus());
+            categoryResponeList.add(categoryRespone);
+        }
+
+//        return CreateCategoryRespone.builder()
+//                .categoryId(categoryList.get(categoryList.size()-1).getCategoryID())
+//                .categoryName(categoryList.get(categoryList.size()-1).getCategoryName())
+//                .categoryImage(categoryList.get(categoryList.size()-1).getCategoryImage())
+//                .categoryDescription(categoryList.get(categoryList.size()-1).getDescription())
+//                .status(categoryList.get(categoryList.size()-1).isStatus())
+//                .build();
+        return categoryResponeList;
+    }
+
+
 }
