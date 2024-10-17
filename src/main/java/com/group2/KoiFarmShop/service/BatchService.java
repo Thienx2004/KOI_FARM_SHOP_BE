@@ -217,6 +217,15 @@ public class BatchService implements BatchServiceImp{
     }
 
     @Override
+    public String changeBatchStatus(int batchID, int status) {
+        Batch existedBatch = batchRepository.findByBatchID(batchID)
+                .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
+        existedBatch.setStatus(status);
+        batchRepository.save(existedBatch);
+        return "Cập nhật trạng thái thành công!";
+    }
+
+    @Override
     public BatchPageReponse getBatchByCategory(int categoryId, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         Category category = new Category();

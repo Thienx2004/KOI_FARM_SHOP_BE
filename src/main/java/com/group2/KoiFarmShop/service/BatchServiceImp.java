@@ -12,6 +12,7 @@ public interface BatchServiceImp {
     public String addBatch(BatchCreateDTO batch);
     public String updateBatch(int batchID, BatchCreateDTO batch);
     public String deleteBatch(String id);
+    public String changeBatchStatus(int batchID, int status);
     public BatchPageReponse getBatchByCategory(int categoryId, int pageNo, int pageSize);
 
     public BatchPageReponse getAllBatch(int pageNo, int pageSize);
