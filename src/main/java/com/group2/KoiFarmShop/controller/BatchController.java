@@ -81,4 +81,11 @@ public class BatchController {
 
         return apiReponse;
     }
+
+    @PutMapping("/changeStatus/{batchID}/{status}")
+    public ApiReponse<String> changeStatus(@PathVariable int batchID, @PathVariable int status) {
+        ApiReponse<String> apiReponse = new ApiReponse<>();
+        apiReponse.setData(batchService.changeBatchStatus(batchID, status));
+        return apiReponse;
+    }
 }
