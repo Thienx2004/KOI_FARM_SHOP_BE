@@ -3,6 +3,7 @@ package com.group2.KoiFarmShop;
 import com.group2.KoiFarmShop.dto.request.AccountCreationDTO;
 import com.group2.KoiFarmShop.dto.request.LoginGoogleRequest;
 import com.group2.KoiFarmShop.dto.request.LoginRequest;
+import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.entity.Account;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
@@ -64,19 +65,19 @@ class KoiFarmShopApplicationTests {
 		assertEquals("tìm cá koi với id không hợp lệ", ErrorCode.INVALIDNUMBER, exception.getErrorCode());
 	}
 
-//	@Test
-//	void testLoginWithValidUser() {
-//		LoginRequest loginRequest = new LoginRequest();
-//		loginRequest.setEmail("user1@example.com");
-//		loginRequest.setPassword("123456@");
-//
-//		// Mock the login method
-//		when(accountServiceImp.login(loginRequest)).thenReturn(new Account("Đăng nhập thành công"));
-//
-//		String result = accountServiceImp.login(loginRequest).getMessage();
-//
-//		assertEquals("Test đăng nhập với user hợp lệ", "Đăng nhập thành công", result);
-//	}
+	@Test
+	void testLoginWithValidUser() {
+		LoginRequest loginRequest = new LoginRequest();
+		loginRequest.setEmail("user1@example.com");
+		loginRequest.setPassword("123456@");
+
+		// Mock the login method
+		when(accountServiceImp.login(loginRequest)).thenReturn(ApiReponse.builder().message("Đăng nhập thành công").build());
+
+		String result = accountServiceImp.login(loginRequest).getMessage();
+
+		assertEquals("Test đăng nhập với user hợp lệ", "Đăng nhập thành công", result);
+	}
 
 	@Test
 	void testLoginWithInvalidEmail() {
@@ -126,18 +127,19 @@ class KoiFarmShopApplicationTests {
 		assertEquals("Test đăng nhập với tài khoản chưa xác minh", ErrorCode.NOTVERIFYACCOUNT, exception.getErrorCode());
 	}
 
-//	@Test
-//	void registerWithValidUser() {
-//		String fullname = "test";
-//		String email = "test@example.com";
-//		String password = "123456";
-//		AccountCreationDTO accountDTO = new AccountCreationDTO(fullname, email, password);
-//		Account expectedAccount = new Account(fullname, email, password);
-//
-//		// Mock the createAccount method
-//		when(accountServiceImp.createAccount(accountDTO)).thenReturn(expectedAccount);
-//
-//		Account actualAccount = accountServiceImp.createAccount(accountDTO);
-//		assertEquals("Thêm tài khoản thành công", expectedAccount, actualAccount);
-//	}
+	@Test
+	void registerWithValidUser() {
+		String fullname = "test";
+		String email = "test@example.com";
+		String password = "123456";
+		AccountCreationDTO accountDTO = new AccountCreationDTO(fullname, email, password);
+		Account expectedAccount = new Account(fullname, email, password);
+
+		// Mock the createAccount method
+		when(accountServiceImp.createAccount(accountDTO)).thenReturn(expectedAccount);
+
+		Account actualAccount = accountServiceImp.createAccount(accountDTO);
+		assertEquals("Thêm tài khoản thành công", expectedAccount, actualAccount);
+	}
+
 }

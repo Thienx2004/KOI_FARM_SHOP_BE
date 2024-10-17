@@ -55,4 +55,10 @@ import java.util.Set;
 
         private String avatar;
         private boolean status = true;
+
+    public Account(String fullname, String email, String password) {
+        this.fullName = fullname;
+        this.email = email;
+        this.password = password;
+    }
 }

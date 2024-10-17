@@ -202,6 +202,7 @@ public class KoiFishService implements KoiFishServiceImp{
 
     @Override
     public KoiFishDetailReponse updateKoiFish(int id, KoiRequest koiRequest) throws IOException {
+        KoiFish koiFish1=koiFishRepository.findById(id).get();
         KoiFish koiFish = new KoiFish();
         koiFish.setKoiID(id);
         koiFish.setOrigin(koiRequest.getOrigin());
@@ -218,6 +219,8 @@ public class KoiFishService implements KoiFishServiceImp{
         koiFish.setFood(koiRequest.getFood());
         if(koiRequest.getKoiImage()!=null&&!koiRequest.getKoiImage().isEmpty()) {
             koiFish.setKoiImage(firebaseService.uploadImage(koiRequest.getKoiImage()));
+        }else{
+            koiFish.setKoiImage(koiFish1.getKoiImage());
         }
         Category category = categoryRepository.findByCategoryID(koiRequest.getCategoryId());
         koiFish.setCategory(category);
