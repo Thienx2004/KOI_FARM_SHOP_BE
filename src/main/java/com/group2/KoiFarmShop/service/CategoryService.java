@@ -152,11 +152,16 @@ public class CategoryService implements CategoryServiceImp{
 //            throw new AppException(ErrorCode.CANNOTUPDATE);
 //        }
         Category category = new Category();
+        Category existedCategory = categoryRepository.findByCategoryID(id);
         category.setCategoryID(id);
         category.setCategoryName(createCategoryRequest.getCategoryName());
         category.setDescription(createCategoryRequest.getCategoryDescription());
         category.setStatus(createCategoryRequest.isStatus());
-        category.setCategoryImage(firebaseService.uploadImage(createCategoryRequest.getImgFile()));
+        if(createCategoryRequest.getImgFile() != null && !createCategoryRequest.getImgFile().isEmpty()) {
+            category.setCategoryImage(firebaseService.uploadImage(createCategoryRequest.getImgFile()));
+        } else {
+            category.setCategoryImage(existedCategory.getCategoryImage());
+        }
         categoryRepository.save(category);
         return CreateCategoryRespone.builder()
                 .categoryId(category.getCategoryID())

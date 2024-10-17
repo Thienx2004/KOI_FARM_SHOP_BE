@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.dto.request;
 
+import com.google.firebase.internal.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,6 @@ public class CreateCategoryRequest {
     String categoryDescription;
 //    String categoryImage;
     boolean status;
+    @Nullable
     MultipartFile imgFile;
 }
