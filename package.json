@@ -1,8 +1,11 @@
 {
   "devDependencies": {
-    "@types/node": "^22.7.4",
+    "@codeceptjs/allure-legacy": "^1.0.2",
+    "@types/node": "^22.7.6",
+    "allure-commandline": "^2.30.0",
+    "codeceptjs": "^3.6.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "dotenv": "^16.4.5"
