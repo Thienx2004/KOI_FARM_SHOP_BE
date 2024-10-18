@@ -86,7 +86,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
             koiFish.setTemperature(temperature);
             koiFish.setWater(water);
             koiFish.setPurebred(pureBred);
-            if(koiImg!=null&&koiImg.isEmpty()){
+            if(koiImg!=null&&!koiImg.isEmpty()){
                 koiFish.setKoiImage(firebaseService.uploadImage(koiImg));
             }else{
                 koiFish.setKoiImage(koiImgURL);
