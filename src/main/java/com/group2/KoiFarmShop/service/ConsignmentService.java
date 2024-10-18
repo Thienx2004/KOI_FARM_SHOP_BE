@@ -57,7 +57,12 @@ public class ConsignmentService implements ConsignmentServiceImp {
                                     String ph,
                                     String temperature,
                                     String water,
-                                    int pureBred, int categoryId, String name, MultipartFile certImg, String notes,
+                                    int pureBred,
+                                    int categoryId,
+                                    String name,
+                                    MultipartFile certImg,
+                                    String certImgURL,
+                                    String notes,
                                     String phoneNumber,
                                     boolean consignmentType,
                                     int duration,
@@ -96,9 +101,12 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
             Certificate certificate = new Certificate();
             certificate.setName(name);
-            certificate.setImage(firebaseService.uploadImage(certImg));
+            if(certImg!=null&&!certImg.isEmpty()){
+                certificate.setImage(firebaseService.uploadImage(certImg));
+            }else{
+                certificate.setImage(certImgURL);
+            }
             certificate.setCreatedDate(new Date());
-
             koiFish.setCertificate(certificate);
             certificate.setKoiFish(koiFish);
 
