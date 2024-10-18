@@ -52,7 +52,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
     private HealthcareRepository healthcareRepository;
 
     @Override
-    public int createConsignment(int accountId, MultipartFile koiImg, String origin, boolean gender, int age, double size, String personality, double price, String food,
+    public int createConsignment(int accountId, MultipartFile koiImg,String koiImgURL, String origin, boolean gender, int age, double size, String personality, double price, String food,
                                     String health,
                                     String ph,
                                     String temperature,
@@ -86,7 +86,11 @@ public class ConsignmentService implements ConsignmentServiceImp {
             koiFish.setTemperature(temperature);
             koiFish.setWater(water);
             koiFish.setPurebred(pureBred);
-            koiFish.setKoiImage(firebaseService.uploadImage(koiImg));
+            if(koiImg!=null&&!koiImg.isEmpty()){
+                koiFish.setKoiImage(firebaseService.uploadImage(koiImg));
+            }else{
+                koiFish.setKoiImage(koiImgURL);
+            }
             koiFish.setCategory(category);
             koiFish.setStatus(4);  // set status pending dang cho dc duyet
 
