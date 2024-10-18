@@ -73,7 +73,7 @@ public class CertificateService implements CertificateServiceImp {
     public CertificationReponse getCertificationReponse(int koiId) {
         KoiFish koiFish = koiFishRepository.findByKoiID(koiId);
         CertificationReponse certificationReponse = new CertificationReponse();
-        if(koiFish != null) {
+        if(koiFish != null&&koiFish.getCertificate() != null) {
             certificationReponse.setId(koiFish.getCertificate().getId());
             certificationReponse.setName(koiFish.getCertificate().getName());
             certificationReponse.setImage(koiFish.getCertificate().getImage());
