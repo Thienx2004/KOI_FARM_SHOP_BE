@@ -157,7 +157,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
         Consignment consignment = consignmentRepository.findById(consignmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
 
-        if (consignment.getStatus() == 1) {
+        if (consignment.getStatus() == 1 || consignment.getStatus() == 2) {
 
             KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
 
@@ -175,7 +175,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
                 koiFishRepository.delete(koiFish);
             }
-            emailService.sendEmailRejectToCustomer(consignment.getAccount().getEmail(), consignmentId);
+            emailService.sendEmailRejectToCustomer(consignment.getAccount().getEmail(), consignmentId, rejectionReason);
             return "Đã từ chốt đơn ký gửi!";
         } else {
             throw new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND);
