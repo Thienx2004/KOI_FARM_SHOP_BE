@@ -285,16 +285,16 @@ public class OrderService implements OrderServiceImp {
                 .build();
     }
 
-    public OrderHistoryReponse getOrderHistoryByTransactionCode(String transactionCode) {
-        Orders orders = orderRepository.findPaymentByTransactionCode(transactionCode);
-        return OrderHistoryReponse.builder()
-                .orderId(orders.getOrderID())
-                .accountId(orders.getAccount().getAccountID())
-                .createdDate(orders.getOrder_date())
-                .totalPrice(orders.getTotalPrice())
-                .status(orders.getStatus())
-                .build();
-    }
+//    public OrderHistoryReponse getOrderHistoryByTransactionCode(String transactionCode) {
+//        Orders orders = orderRepository.findPaymentByTransactionCode(transactionCode);
+//        return OrderHistoryReponse.builder()
+//                .orderId(orders.getOrderID())
+//                .accountId(orders.getAccount().getAccountID())
+//                .createdDate(orders.getOrder_date())
+//                .totalPrice(orders.getTotalPrice())
+//                .status(orders.getStatus())
+//                .build();
+//    }
     public OrderHistoryReponse getOrderDetailsByTransactionCode(String transactionCode) {
         Payment payment = paymentRepository.findByTransactionCode(transactionCode);
         if (payment != null) {
