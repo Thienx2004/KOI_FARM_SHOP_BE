@@ -50,7 +50,8 @@ public class ConsignmentController {
                                                 @RequestParam int pureBred,
                                                 @RequestParam int categoryId,
                                                 @RequestParam String name,
-                                                @RequestParam MultipartFile certImg,
+                                                @RequestParam(required = false) MultipartFile certImg,
+                                                @RequestParam(required = false) String certImgURL,
                                                 @RequestParam String notes,
                                                 @RequestParam String phoneNumber,
                                                 @RequestParam boolean consignmentType,
@@ -61,7 +62,7 @@ public class ConsignmentController {
 
         ApiReponse<Integer> apiReponse = new ApiReponse<>();
         apiReponse.setData(consignmentService.createConsignment(accountId, koiImg,koiImgURL, origin, gender, age, size, personality, price, food, health, ph, temperature, water,
-                pureBred, categoryId, name, certImg, notes, phoneNumber, consignmentType, duration, serviceFee, online));
+                pureBred, categoryId, name, certImg,certImgURL, notes, phoneNumber, consignmentType, duration, serviceFee, online));
 
         return apiReponse;
     }

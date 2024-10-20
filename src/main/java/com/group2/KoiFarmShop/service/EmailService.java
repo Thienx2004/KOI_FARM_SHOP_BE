@@ -111,7 +111,7 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    public void sendEmailRejectToCustomer(String toEmail, int consignmentID) throws MessagingException {
+    public void sendEmailRejectToCustomer(String toEmail, int consignmentID, String rejectReason) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -119,6 +119,7 @@ public class EmailService {
         String content = "<p>Xin chào,</p>"
                 + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Chúng tôi rất tiếc phải từ chốt đơn ký gửi của bạn!</p>"
                 + "<p>Mã đơn ký gửi: " + consignmentID + "</p>"
+                + "<p>Lý do từ chối đơn ký gửi: " + rejectReason + "</p>"
                 + "<p>Mọi thắc mắc xin liên hệ để biết thêm chi tiết.</p>"
                 + "<p>Trân trọng!</p>";
 

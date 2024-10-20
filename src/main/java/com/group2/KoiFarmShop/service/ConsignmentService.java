@@ -57,7 +57,12 @@ public class ConsignmentService implements ConsignmentServiceImp {
                                     String ph,
                                     String temperature,
                                     String water,
-                                    int pureBred, int categoryId, String name, MultipartFile certImg, String notes,
+                                    int pureBred,
+                                    int categoryId,
+                                    String name,
+                                    MultipartFile certImg,
+                                    String certImgURL,
+                                    String notes,
                                     String phoneNumber,
                                     boolean consignmentType,
                                     int duration,
@@ -86,7 +91,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
             koiFish.setTemperature(temperature);
             koiFish.setWater(water);
             koiFish.setPurebred(pureBred);
-            if(koiImg!=null&&koiImg.isEmpty()){
+            if(koiImg!=null&&!koiImg.isEmpty()){
                 koiFish.setKoiImage(firebaseService.uploadImage(koiImg));
             }else{
                 koiFish.setKoiImage(koiImgURL);
@@ -96,9 +101,12 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
             Certificate certificate = new Certificate();
             certificate.setName(name);
-            certificate.setImage(firebaseService.uploadImage(certImg));
+            if(certImg!=null&&!certImg.isEmpty()){
+                certificate.setImage(firebaseService.uploadImage(certImg));
+            }else{
+                certificate.setImage(certImgURL);
+            }
             certificate.setCreatedDate(new Date());
-
             koiFish.setCertificate(certificate);
             certificate.setKoiFish(koiFish);
 
@@ -157,7 +165,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
         Consignment consignment = consignmentRepository.findById(consignmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
 
-        if (consignment.getStatus() == 1) {
+        if (consignment.getStatus() == 1 || consignment.getStatus() == 2) {
 
             KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
 
@@ -175,7 +183,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
                 koiFishRepository.delete(koiFish);
             }
-            emailService.sendEmailRejectToCustomer(consignment.getAccount().getEmail(), consignmentId);
+            emailService.sendEmailRejectToCustomer(consignment.getAccount().getEmail(), consignmentId, rejectionReason);
             return "Đã từ chốt đơn ký gửi!";
         } else {
             throw new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND);

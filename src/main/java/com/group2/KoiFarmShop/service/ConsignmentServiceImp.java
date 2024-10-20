@@ -35,6 +35,7 @@ public interface ConsignmentServiceImp {
                                     int categoryId,
                                     String name,
                                     MultipartFile certImg,
+                                    String certImgURL,
                                     String notes,
                                     String phoneNumber,
                                     boolean consignmentType,
