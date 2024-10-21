@@ -22,10 +22,13 @@ import java.util.Random;
 @RestController
 @RequestMapping("/login")
 public class ForgotPasswordController {
-
+    @Autowired
     private final EmailService emailService;
+    @Autowired
     private final AccountRepository accountRepository;
+    @Autowired
     private final ForgotPasswordRepositoryI forgotPasswordRepository;
+    @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
