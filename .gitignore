@@ -50,3 +50,4 @@ codecept.conf.ts
 allure-results/d387306f-d9c2-49ad-b5b8-6be4e0e111b6-testsuite.xml
 package-lock.json
 package.json
+*.xml
