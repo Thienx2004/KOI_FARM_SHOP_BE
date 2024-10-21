@@ -47,6 +47,6 @@ codecept.conf.ts
 *.json
 .env
 *.env
-allure-results/d387306f-d9c2-49ad-b5b8-6be4e0e111b6-testsuite.xml
+allure-results/
 package-lock.json
 package.json

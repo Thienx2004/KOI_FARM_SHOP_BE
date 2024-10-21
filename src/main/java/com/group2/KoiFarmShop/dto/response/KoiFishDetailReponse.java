@@ -34,7 +34,6 @@ public class KoiFishDetailReponse {
     private String food;
     private int status;
     private List<KoiFishDetailReponse> list;
-  
-
+    private HealthcareResponse healthcare;
 
 }
