@@ -56,6 +56,7 @@ public interface ConsignmentServiceImp {
 
     public String deleteConsignment(int consignmentId);
     public ConsignmentDetailResponse updateConsignment(ConsignmentKoiRequest consignmentKoiRequest, int consignmentId, int koiId) throws IOException;
-    public HealthcareResponse updateHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException;
-    public HealthcareResponse addHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException;
+    public HealthcareResponse updateHealth( ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException;
+    public HealthcareResponse addHealth( ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException;
+    public PaginReponse<ConsignmentResponse> getAllConsignmentForCare(int pageNo, int pageSize);
 }

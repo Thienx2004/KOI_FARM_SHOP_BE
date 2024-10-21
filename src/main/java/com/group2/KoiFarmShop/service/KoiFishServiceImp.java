@@ -1,5 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.request.ConsignmentKoiCare;
+import com.group2.KoiFarmShop.dto.response.HealthcareResponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishDetailReponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishPageResponse;
 import com.group2.KoiFarmShop.dto.response.KoiFishReponse;
@@ -23,5 +25,6 @@ public interface KoiFishServiceImp {
     public KoiFishDetailReponse updateKoiImg(MultipartFile file, int id) throws IOException;
     public void changeKoiFishStatus(int id, int status);
     public KoiFishPageResponse getFishByStatus(int page, int pageSize,int status);
+    public KoiFishDetailReponse updateKoiCare(int id, ConsignmentKoiCare koiCare) throws IOException;
 
     }
