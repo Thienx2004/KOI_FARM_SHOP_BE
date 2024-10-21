@@ -171,11 +171,24 @@ public class ConsignmentController {
         return ApiReponse.<ConsignmentDetailResponse>builder().data(consignmentDetailResponse).build();
     }
 
-    @PutMapping("/update/{Id}")
-    public ApiReponse<HealthcareResponse> updateHealth(@PathVariable int Id, @RequestBody ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
+    @PutMapping("/updateHealth")
+    public ApiReponse<HealthcareResponse> updateHealth(@RequestBody ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
 
-        HealthcareResponse healthcareResponse = consignmentService.updateHealth(Id,consignmentKoiCare);
+        HealthcareResponse healthcareResponse = consignmentService.updateHealth(consignmentKoiCare);
         return ApiReponse.<HealthcareResponse>builder().data(healthcareResponse).build();
     }
 
+    @PostMapping("/addHealth")
+    public ApiReponse<HealthcareResponse> addHealth(@RequestBody ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
+    HealthcareResponse healthcareResponse = consignmentService.addHealth(consignmentKoiCare);
+    return ApiReponse.<HealthcareResponse>builder().data(healthcareResponse).build();
+    }
+
+    @GetMapping("/getAllConsignmentCare")
+    public ApiReponse<PaginReponse<ConsignmentResponse>> getAllConsignmentForCare(@RequestParam int pageNo, @RequestParam int pageSize) {
+        ApiReponse apiReponse = new ApiReponse();
+        PaginReponse<ConsignmentResponse> consignmentResponse = consignmentService.getAllConsignmentForCare(pageNo, pageSize);
+        apiReponse.setData(consignmentResponse);
+        return apiReponse;
+    }
 }

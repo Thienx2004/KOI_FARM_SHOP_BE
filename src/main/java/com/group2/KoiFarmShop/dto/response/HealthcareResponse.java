@@ -15,4 +15,5 @@ public class HealthcareResponse {
     private String careEnvironment;
     private String note;
     private long dayRemain;
+    private boolean checked;
 }

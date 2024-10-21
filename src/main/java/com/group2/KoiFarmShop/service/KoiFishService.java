@@ -1,6 +1,7 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
+import com.group2.KoiFarmShop.dto.request.ConsignmentKoiCare;
 import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
@@ -465,4 +466,31 @@ public class KoiFishService implements KoiFishServiceImp{
                 .build();
     }
 
+    @Override
+    public KoiFishDetailReponse updateKoiCare(int id, ConsignmentKoiCare koiCare) throws IOException {
+        KoiFish koiFish=koiFishRepository.findById(id).get();
+        koiFish.setHealth(koiCare.getHealthStatus());
+        koiFish.setSize(Double.parseDouble(koiCare.getGrowthStatus()));
+        KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
+
+        return KoiFishDetailReponse.builder()
+                .id(updateddKoiFish.getKoiID())
+                .age(updateddKoiFish.getAge())
+                .gender(updateddKoiFish.isGender())
+                .price(updateddKoiFish.getPrice())
+                .koiImage(updateddKoiFish.getKoiImage())
+                .size(updateddKoiFish.getSize())
+                .personality(updateddKoiFish.getPersonality())
+                .origin(updateddKoiFish.getOrigin())
+                .categoryId(updateddKoiFish.getCategory().getCategoryID())
+                .category(updateddKoiFish.getCategory().getCategoryName())
+                .purebred(updateddKoiFish.getPurebred())
+                .health(updateddKoiFish.getHealth())
+                .temperature(updateddKoiFish.getTemperature())
+                .water(updateddKoiFish.getWater())
+                .pH(updateddKoiFish.getPH())
+                .food(updateddKoiFish.getFood())
+                .status(updateddKoiFish.getStatus())
+                .build();
+    }
 }

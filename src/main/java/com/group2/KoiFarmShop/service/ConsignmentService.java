@@ -12,18 +12,22 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.*;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConsignmentService implements ConsignmentServiceImp {
@@ -316,6 +320,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     healthcareResponse.setGrowthStatus(healthcare.get().getGrowthStatus());
                     healthcareResponse.setCareEnvironment(healthcare.get().getCareEnvironment());
                     healthcareResponse.setNote(healthcare.get().getNote());
+                    healthcareResponse.setChecked(healthcare.get().isChecked());
                     LocalDate currentDate = LocalDate.now();
                     LocalDate futureDate = LocalDate.of(healthcare.get().getConsignmentDate().getYear(),healthcare.get().getConsignmentDate().getMonth(),healthcare.get().getConsignmentDate().getDay());
                     healthcareResponse.setDayRemain(ChronoUnit.DAYS.between(currentDate, futureDate));
@@ -438,29 +443,32 @@ public class ConsignmentService implements ConsignmentServiceImp {
     }
 
     @Override
-    public HealthcareResponse updateHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException {
-        Consignment consignment = consignmentRepository.findById(consignmentId).get();
+    public HealthcareResponse updateHealth( ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
+        Consignment consignment = consignmentRepository.findById(consignmentKoiCare.getConsignmentId()).get();
         Healthcare healthcare = healthcareRepository.findById(consignment.getKoiFish().getKoiID()).get();
         healthcare.setId(consignment.getKoiFish().getKoiID());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
         healthcare.setGrowthStatus(consignmentKoiCare.getGrowthStatus());
         healthcare.setCareEnvironment(consignmentKoiCare.getCareEnvironment());
         healthcare.setNote(consignmentKoiCare.getNote());
-        LocalDate currentDate = LocalDate.now();
-        LocalDate futureDate = LocalDate.of(healthcare.getConsignmentDate().getYear(),healthcare.getConsignmentDate().getMonth(),healthcare.getConsignmentDate().getDay());
-        healthcareRepository.save(healthcare);
-        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentId, consignmentKoiCare);
+        long differenceInMillis = Math.abs( new Date().getTime() - healthcare.getConsignmentDate().getTime());
+        // Chuyển đổi khoảng cách từ mili giây sang ngày
+        long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+        Healthcare healthcare1=healthcareRepository.save(healthcare);
+        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentKoiCare.getConsignmentId(), consignmentKoiCare);
+        KoiFishDetailReponse koiFishDetailReponse=koiFishService.updateKoiCare(consignment.getKoiFish().getKoiID(),consignmentKoiCare);
         return HealthcareResponse.builder()
-                .healthStatus(consignmentKoiCare.getHealthStatus())
-                .careEnvironment(consignmentKoiCare.getCareEnvironment())
-                .growthStatus(consignmentKoiCare.getGrowthStatus())
-                .note(consignmentKoiCare.getNote())
-                .dayRemain(ChronoUnit.DAYS.between(currentDate, futureDate))
+                .healthStatus(healthcare1.getHealthStatus())
+                .careEnvironment(healthcare1.getCareEnvironment())
+                .growthStatus(healthcare1.getGrowthStatus())
+                .note(healthcare1.getNote())
+                .dayRemain(differenceInDays)
+                .checked(healthcare1.isChecked())
                 .build();
     }
     @Override
-    public HealthcareResponse addHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException {
-        Consignment consignment = consignmentRepository.findById(consignmentId).get();
+    public HealthcareResponse addHealth(ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
+        Consignment consignment = consignmentRepository.findById(consignmentKoiCare.getConsignmentId()).get();
         Healthcare healthcare = new Healthcare();
         healthcare.setId(consignment.getKoiFish().getKoiID());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
@@ -471,19 +479,63 @@ public class ConsignmentService implements ConsignmentServiceImp {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate); // Cài đặt ngày cho Calendar
         calendar.add(Calendar.MONTH, consignment.getDuration());
+        healthcare.setConsignmentDate(calendar.getTime());
+        healthcare.setChecked(true);
         Healthcare healthcare1=healthcareRepository.save(healthcare);
-        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentId, consignmentKoiCare);
-        LocalDate date = LocalDate.now();
-        LocalDate futureDate = LocalDate.of(healthcare1.getConsignmentDate().getYear(),healthcare1.getConsignmentDate().getMonth(),healthcare1.getConsignmentDate().getDay());
+        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentKoiCare.getConsignmentId(), consignmentKoiCare);
+        long differenceInMillis = Math.abs( new Date().getTime() - healthcare1.getConsignmentDate().getTime());
+
+        // Chuyển đổi khoảng cách từ mili giây sang ngày
+        long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+        KoiFishDetailReponse koiFishDetailReponse=koiFishService.updateKoiCare(consignment.getKoiFish().getKoiID(),consignmentKoiCare);
         return HealthcareResponse.builder()
-                .healthStatus(consignmentKoiCare.getHealthStatus())
-                .careEnvironment(consignmentKoiCare.getCareEnvironment())
-                .growthStatus(consignmentKoiCare.getGrowthStatus())
-                .note(consignmentKoiCare.getNote())
-                .dayRemain(ChronoUnit.DAYS.between(date, futureDate))
+                .healthStatus(healthcare1.getHealthStatus())
+                .careEnvironment(healthcare1.getCareEnvironment())
+                .growthStatus(healthcare1.getGrowthStatus())
+                .note(healthcare1.getNote())
+                .dayRemain(differenceInDays)
+                .checked(healthcare1.isChecked())
                 .build();
     }
+    @Override
+    public PaginReponse<ConsignmentResponse> getAllConsignmentForCare(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate").descending());
+        Specification<Consignment> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
+
+                predicates.add(criteriaBuilder.equal(root.get("consignmentType"), false));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<Consignment> consignmentPage = consignmentRepository.findAll(spec,pageable);
+        List<ConsignmentResponse> consignmentResponses = new ArrayList<>();
+        for (Consignment consignment : consignmentPage.getContent()) {
+            ConsignmentResponse consignmentResponse = new ConsignmentResponse();
+            consignmentResponse.setConsignmentID(consignment.getConsignmentID());
+            consignmentResponse.setConsignmentDate(consignment.getConsignmentDate());
+            consignmentResponse.setConsignmentType(consignment.isConsignmentType());
+            consignmentResponse.setAgreedPrice(consignment.getAgreedPrice());
+            consignmentResponse.setNotes(consignment.getNotes());
+            consignmentResponse.setEmail(consignment.getAccount().getEmail());
+            consignmentResponse.setFullname(consignment.getAccount().getFullName());
+            consignmentResponse.setPhoneNumber(consignment.getPhoneNumber());
+            consignmentResponse.setDuration(consignment.getDuration());
+            consignmentResponse.setServiceFee(consignment.getServiceFee());
+            consignmentResponse.setStartDate(consignment.getStartDate());
+            consignmentResponse.setEndDate(consignment.getEndDate());
+            consignmentResponse.setStatus(consignment.getStatus());
+            consignmentResponse.setOnline(consignment.isOnline());
+            consignmentResponses.add(consignmentResponse);
+        }
+        PaginReponse<ConsignmentResponse> consignmentResponsePaginReponse = new PaginReponse<>();
+        consignmentResponsePaginReponse.setContent(consignmentResponses);
+        consignmentResponsePaginReponse.setPageSize(pageSize);
+        consignmentResponsePaginReponse.setPageNum(pageNo);
+        consignmentResponsePaginReponse.setTotalElements(consignmentPage.getContent().size());
+        consignmentResponsePaginReponse.setTotalPages(consignmentPage.getTotalPages());
+
+        return consignmentResponsePaginReponse;
+    }
 }
 
 
