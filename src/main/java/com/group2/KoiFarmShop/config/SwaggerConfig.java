@@ -28,7 +28,8 @@ public class SwaggerConfig {
                                 .url("http://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
                         .description("External Documentation")
-                        .url("https://yourdocurl.com"));
+                        .url("https://yourdocurl.com"))
+                ;
     }
 }
 

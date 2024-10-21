@@ -155,20 +155,22 @@ public class ManagementController {
 
     @GetMapping("/searchCategory")
     @Operation(summary = "Tìm kím category theo tên",description = "")
-    public ApiReponse<List<CreateCategoryRespone>> searchCategoryByName(@RequestParam String name){
-        List<CreateCategoryRespone> createCategoryRespone = categoryService.searchCategoryByName(name);
-        ApiReponse<List<CreateCategoryRespone>> resp = new ApiReponse<>();
-        resp.setData(createCategoryRespone);
-        resp.setStatusCode(200);
-        return resp;
+    public ApiReponse<CategoryPageResponse> searchCategoryByName(@RequestParam String name,@RequestParam int pageNum,@RequestParam int pageSize) {
+        CategoryPageResponse categoryReponseList = categoryService.searchCategoryByName(name,pageNum,pageSize);
+        ApiReponse apiReponse = new ApiReponse();
+        apiReponse.setData(categoryReponseList);
+        return apiReponse;
     }
 
     @GetMapping("/searchOrder")
     @Operation(summary = "Tìm kím order theo transaction code",description = "")
 
-    public ApiReponse<OrderHistoryReponse> searchOrdersByTransactionCode(@RequestParam String transactionCode){
-        OrderHistoryReponse reponse=orderService.getOrderDetailsByTransactionCode(transactionCode);
-        return ApiReponse.<OrderHistoryReponse>builder().data(reponse).build();
+    public ApiReponse<PaginReponse<OrderHistoryReponse>> searchOrdersByTransactionCode(@RequestParam String transactionCode,int pageNum,@RequestParam int pageSize) {
+        PaginReponse<OrderHistoryReponse> reponse=orderService.getPaginReponse(transactionCode,pageNum,pageSize);
+        ApiReponse<PaginReponse<OrderHistoryReponse>> historyReponse = new ApiReponse<>();
+        historyReponse.setData(reponse);
+
+        return historyReponse;
     }
 
 

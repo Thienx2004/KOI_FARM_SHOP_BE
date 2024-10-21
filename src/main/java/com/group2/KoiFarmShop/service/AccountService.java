@@ -14,7 +14,7 @@ import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
-import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
+//import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
 import com.group2.KoiFarmShop.repository.RoleRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
@@ -55,8 +55,8 @@ public class AccountService implements AccountServiceImp{
     private EmailService emailService;
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
-    @Autowired
-    private ForgotPasswordRepositoryI forgotPasswordRepository;
+//    @Autowired
+//    private ForgotPasswordRepositoryI forgotPasswordRepository;
     @Autowired
     private FirebaseService firebaseService;
 
