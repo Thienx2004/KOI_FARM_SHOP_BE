@@ -569,15 +569,19 @@ public class ConsignmentService implements ConsignmentServiceImp {
             koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponse.setStatus(koiFish.getStatus());
-            Healthcare healthcare=healthcareRepository.findById(koiFish.getKoiID()).get();
-            HealthcareResponse healthcareResponse = new HealthcareResponse();
-            healthcareResponse.setCareEnvironment(healthcare.getCareEnvironment());
-            healthcareResponse.setHealthStatus(healthcare.getHealthStatus());
-            healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
-            healthcareResponse.setNote(healthcare.getNote());
-            healthcareResponse.setChecked(healthcare.isChecked());
+            Optional<Healthcare> healthcareToCheck=healthcareRepository.findById(koiFish.getKoiID());
+            if(healthcareToCheck.isPresent()) {
+                Healthcare healthcare=healthcareToCheck.get();
+                HealthcareResponse healthcareResponse = new HealthcareResponse();
+                healthcareResponse.setCareEnvironment(healthcare.getCareEnvironment());
+                healthcareResponse.setHealthStatus(healthcare.getHealthStatus());
+                healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
+                healthcareResponse.setNote(healthcare.getNote());
+                healthcareResponse.setChecked(healthcare.isChecked());
+                koiFishReponse.setHealthcare(healthcareResponse);
+            }
 
-            koiFishReponse.setHealthcare(healthcareResponse);
+
             koiFishReponseList.add(koiFishReponse);
 
         }
