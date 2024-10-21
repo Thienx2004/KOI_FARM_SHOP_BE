@@ -53,7 +53,7 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             "WHERE p.transactionCode LIKE :transactionCode")
     Orders findPaymentByTransactionCode(@Param("transactionCode") String transactionCode);
 
-    Orders findByPaymentTransactionCode(String transactionCode);
+    Page<Orders> findByPaymentTransactionCodeContaining(String transactionCode,Pageable pageable);
 
 
 }

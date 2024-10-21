@@ -7,7 +7,7 @@ import com.group2.KoiFarmShop.entity.VerificationToken;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.AccountRepository;
-import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
+//import com.group2.KoiFarmShop.repository.ForgotPasswordRepositoryI;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.service.EmailService;
 import com.group2.KoiFarmShop.ultils.ChangePassword;
@@ -22,18 +22,21 @@ import java.util.Random;
 @RestController
 @RequestMapping("/login")
 public class ForgotPasswordController {
-
+    @Autowired
     private final EmailService emailService;
+    @Autowired
     private final AccountRepository accountRepository;
-    private final ForgotPasswordRepositoryI forgotPasswordRepository;
+//    @Autowired
+//    private final ForgotPasswordRepositoryI forgotPasswordRepository;
+    @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
 
-    public ForgotPasswordController(AccountRepository accountRepository, EmailService emailService, ForgotPasswordRepositoryI forgotPasswordRepository, PasswordEncoder passwordEncoder) {
+    public ForgotPasswordController(AccountRepository accountRepository, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.emailService = emailService;
-        this.forgotPasswordRepository = forgotPasswordRepository;
+//        this.forgotPasswordRepository = forgotPasswordRepository;
         this.passwordEncoder = passwordEncoder;
     }
 

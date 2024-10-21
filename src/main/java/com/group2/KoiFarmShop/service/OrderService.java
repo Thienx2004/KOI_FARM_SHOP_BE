@@ -285,31 +285,63 @@ public class OrderService implements OrderServiceImp {
                 .build();
     }
 
-    public OrderHistoryReponse getOrderHistoryByTransactionCode(String transactionCode) {
-        Orders orders = orderRepository.findPaymentByTransactionCode(transactionCode);
-        return OrderHistoryReponse.builder()
-                .orderId(orders.getOrderID())
-                .accountId(orders.getAccount().getAccountID())
-                .createdDate(orders.getOrder_date())
-                .totalPrice(orders.getTotalPrice())
-                .status(orders.getStatus())
-                .build();
-    }
-    public OrderHistoryReponse getOrderDetailsByTransactionCode(String transactionCode) {
-        Payment payment = paymentRepository.findByTransactionCode(transactionCode);
-        if (payment != null) {
-            Orders orders = orderRepository.findByPaymentTransactionCode(transactionCode);;
-            return OrderHistoryReponse.builder()
-                    .orderId(orders.getOrderID())
-                    .accountId(orders.getAccount().getAccountID())
-                    .createdDate(orders.getOrder_date())
-                    .totalPrice(orders.getTotalPrice())
-                    .status(orders.getStatus())
-                    .build();
-        }else {
+//    public OrderHistoryReponse getOrderHistoryByTransactionCode(String transactionCode) {
+//        Orders orders = orderRepository.findPaymentByTransactionCode(transactionCode);
+//        return OrderHistoryReponse.builder()
+//                .orderId(orders.getOrderID())
+//                .accountId(orders.getAccount().getAccountID())
+//                .createdDate(orders.getOrder_date())
+//                .totalPrice(orders.getTotalPrice())
+//                .status(orders.getStatus())
+//                .build();
+//    }
+//    public OrderHistoryReponse getOrderDetailsByTransactionCode(String transactionCode) {
+//        Payment payment = paymentRepository.findByTransactionCode(transactionCode);
+//        if (payment != null) {
+//            Page<Orders> orders = orderRepository.findByPaymentTransactionCode(transactionCode);;
+//            return OrderHistoryReponse.builder()
+//                    .orderId(orders.getOrderID())
+//                    .accountId(orders.getAccount().getAccountID())
+//                    .createdDate(orders.getOrder_date())
+//                    .totalPrice(orders.getTotalPrice())
+//                    .status(orders.getStatus())
+//                    .build();
+//        }else {
+//
+//        throw new AppException(ErrorCode.TRANSACTION_INVALID);
+//        }
+//
+//    }
+    public PaginReponse<OrderHistoryReponse> getPaginReponse(String transactionCode,int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("orderID").descending());
+        Page<Orders> orders = orderRepository.findByPaymentTransactionCodeContaining(transactionCode, pageable);
+        if(orders == null||orders.isEmpty()){
+            throw new AppException(ErrorCode.TRANSACTION_INVALID);
+        }
+        List<OrderHistoryReponse> orderHistoryReponses = new ArrayList<>();
 
-        throw new AppException(ErrorCode.TRANSACTION_INVALID);
+        for (Orders order : orders.getContent()) {
+            OrderHistoryReponse orderHistoryReponse = new OrderHistoryReponse();
+            orderHistoryReponse.setOrderId(order.getOrderID());
+            orderHistoryReponse.setAccountId(order.getAccount().getAccountID());
+            orderHistoryReponse.setFullName(order.getAccount().getFullName());
+            orderHistoryReponse.setTransactionCode(order.getPayment().getTransactionCode());
+            orderHistoryReponse.setCreatedDate(order.getOrder_date());
+            orderHistoryReponse.setTotalPrice(order.getTotalPrice());
+            orderHistoryReponse.setStatus(order.getStatus());
+            orderHistoryReponse.setPaymentId(order.getPayment().getPaymentID());
+
+
+            orderHistoryReponses.add(orderHistoryReponse);
         }
 
+        PaginReponse<OrderHistoryReponse> paginReponse = new PaginReponse<>();
+        paginReponse.setContent(orderHistoryReponses);
+        paginReponse.setPageNum(pageNo);
+        paginReponse.setPageSize(pageSize);
+        paginReponse.setTotalElements(orders.getTotalElements());
+        paginReponse.setTotalPages(orders.getTotalPages());
+
+        return paginReponse;
     }
 }
