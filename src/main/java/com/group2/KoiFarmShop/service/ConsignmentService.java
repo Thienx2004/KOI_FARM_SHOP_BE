@@ -196,7 +196,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public PaginReponse<ConsignmentResponse> getAllConsignmentForCustomer(int pageNo, int pageSize, int accountId) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate").descending());
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate", "consignmentID").descending());
         Page<Consignment> consignmentPage = consignmentRepository.findConsignmentsByAccount_AccountID(accountId, pageable);
         List<ConsignmentResponse> consignmentResponses = new ArrayList<>();
         for (Consignment consignment : consignmentPage.getContent()) {
@@ -229,7 +229,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public PaginReponse<ConsignmentResponse> getAllConsignmentForStaff(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate").descending());
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate", "consignmentID").descending());
         Page<Consignment> consignmentPage = consignmentRepository.findAll(pageable);
         List<ConsignmentResponse> consignmentResponses = new ArrayList<>();
         for (Consignment consignment : consignmentPage.getContent()) {

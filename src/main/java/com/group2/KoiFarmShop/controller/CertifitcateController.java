@@ -29,7 +29,7 @@ public class CertifitcateController {
         return apiReponse;
     }
 
-    @GetMapping("/getCertifate")
+    @GetMapping("/getCertificate")
     @Operation(summary = "Lấy certificate Koi theo koiId", description = "API này sẽ trả về certificate của koi trong hệ thống.-Trương Thiên Lộc")
     public ApiReponse getCertifate(@RequestParam int koiId) {
         ApiReponse apiReponse = new ApiReponse();
