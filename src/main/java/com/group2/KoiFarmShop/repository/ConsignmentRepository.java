@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ConsignmentRepository extends JpaRepository<Consignment, Integer> {
     Page<Consignment> findAll(Specification<Consignment> spec, Pageable pageable);
-
+    Optional<Consignment> findConsignmentByKoiFish_KoiID(int id);
     Page<Consignment> findConsignmentsByAccount_AccountID(int accountId, Pageable pageable);
     Optional<Consignment> findConsignmentByConsignmentID(int consignmentID);
 }

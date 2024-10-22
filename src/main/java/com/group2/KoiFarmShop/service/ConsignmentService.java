@@ -445,7 +445,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public HealthcareResponse updateHealth(ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
-        Consignment consignment = consignmentRepository.findById(consignmentKoiCare.getConsignmentId()).get();
+        Consignment consignment = consignmentRepository.findConsignmentByKoiFish_KoiID(consignmentKoiCare.getKoiCareId()).get();
         Healthcare healthcare = healthcareRepository.findById(consignment.getKoiFish().getKoiID()).get();
         healthcare.setId(consignment.getKoiFish().getKoiID());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
@@ -456,7 +456,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
         // Chuyển đổi khoảng cách từ mili giây sang ngày
         long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
         Healthcare healthcare1 = healthcareRepository.save(healthcare);
-        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentKoiCare.getConsignmentId(), consignmentKoiCare);
+        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignment.getConsignmentID(), consignmentKoiCare);
         KoiFishDetailReponse koiFishDetailReponse = koiFishService.updateKoiCare(consignment.getKoiFish().getKoiID(), consignmentKoiCare);
         return HealthcareResponse.builder()
                 .healthStatus(healthcare1.getHealthStatus())
@@ -470,7 +470,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public HealthcareResponse addHealth(ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
-        Consignment consignment = consignmentRepository.findById(consignmentKoiCare.getConsignmentId()).get();
+        Consignment consignment = consignmentRepository.findConsignmentByKoiFish_KoiID(consignmentKoiCare.getKoiCareId()).get();
         Healthcare healthcare = new Healthcare();
         healthcare.setId(consignment.getKoiFish().getKoiID());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
@@ -484,7 +484,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
         healthcare.setConsignmentDate(calendar.getTime());
         healthcare.setChecked(true);
         Healthcare healthcare1 = healthcareRepository.save(healthcare);
-        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentKoiCare.getConsignmentId(), consignmentKoiCare);
+        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignment.getConsignmentID(), consignmentKoiCare);
         long differenceInMillis = Math.abs(new Date().getTime() - healthcare1.getConsignmentDate().getTime());
 
         // Chuyển đổi khoảng cách từ mili giây sang ngày
