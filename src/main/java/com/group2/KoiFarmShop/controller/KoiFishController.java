@@ -57,7 +57,7 @@ public class KoiFishController {
     }
 
     // Thêm mới cá Koi
-    @PostMapping("/add")
+    @PostMapping(value = "/add",consumes = "multipart/form-data")
     @Operation(summary = "Thêm cá Koi", description = "-Nguyễn Hoàng Thiên")
 
     public ApiReponse<KoiFishDetailReponse> addKoiFish(@ModelAttribute KoiRequest koiRequest

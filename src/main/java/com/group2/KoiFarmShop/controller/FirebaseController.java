@@ -56,7 +56,7 @@ public class FirebaseController {
 //        }
 //    }
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload",consumes = "multipart/form-data")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             String imageUrl = firebaseService.uploadImage(file);

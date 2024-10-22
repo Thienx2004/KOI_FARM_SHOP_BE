@@ -33,7 +33,7 @@ public class ConsignmentController {
     @Autowired
     private EmailService emailService;
 
-    @PostMapping("/createConsignment")
+    @PostMapping(value = "/createConsignment",consumes = "multipart/form-data")
     public ApiReponse<Integer> createConsignment(@RequestParam int accountId, @RequestParam(required = false) MultipartFile koiImg,
                                                  @RequestParam(required = false) String koiImgURL,
                                                 @RequestParam String origin,
