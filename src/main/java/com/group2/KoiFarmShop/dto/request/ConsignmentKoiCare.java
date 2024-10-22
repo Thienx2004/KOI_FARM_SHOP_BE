@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConsignmentKoiCare {
-    private int consignmentId;
+    private int koiCareId;
     private String healthStatus;
     private String growthStatus;
     private String careEnvironment;

@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class KoiFishDetailReponse {
     private int id;
     private String origin;
@@ -34,7 +33,6 @@ public class KoiFishDetailReponse {
     private String food;
     private int status;
     private List<KoiFishDetailReponse> list;
-  
-
+    private HealthcareResponse healthcare;
 
 }

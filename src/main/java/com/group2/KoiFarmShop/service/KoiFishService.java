@@ -1,7 +1,11 @@
 package com.group2.KoiFarmShop.service;
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
+
 import com.group2.KoiFarmShop.dto.KoiFishSpecification;
+
+import com.group2.KoiFarmShop.dto.request.ConsignmentKoiCare;
+
 import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
@@ -42,7 +46,12 @@ public class KoiFishService implements KoiFishServiceImp{
     @Override
     public KoiFishPageResponse getAllKoiFish(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("koiID").descending());
-        Page<KoiFish> koiFishPage = koiFishRepository.findAll(pageable);
+        Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("status"), 3));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<KoiFish> koiFishPage = koiFishRepository.findAll(spec,pageable);
         List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiFishPage.getContent()) {
             KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
@@ -467,6 +476,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .build();
     }
 
+
     public KoiFishPageResponse searchKoiFish(String keyword, int pageNum,int pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
 
@@ -512,5 +522,34 @@ public class KoiFishService implements KoiFishServiceImp{
     }
 
 
+
+
+    @Override
+    public KoiFishDetailReponse updateKoiCare(int id, ConsignmentKoiCare koiCare) throws IOException {
+        KoiFish koiFish=koiFishRepository.findById(id).get();
+        koiFish.setHealth(koiCare.getHealthStatus());
+        koiFish.setSize(Double.parseDouble(koiCare.getGrowthStatus()));
+        KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
+
+        return KoiFishDetailReponse.builder()
+                .id(updateddKoiFish.getKoiID())
+                .age(updateddKoiFish.getAge())
+                .gender(updateddKoiFish.isGender())
+                .price(updateddKoiFish.getPrice())
+                .koiImage(updateddKoiFish.getKoiImage())
+                .size(updateddKoiFish.getSize())
+                .personality(updateddKoiFish.getPersonality())
+                .origin(updateddKoiFish.getOrigin())
+                .categoryId(updateddKoiFish.getCategory().getCategoryID())
+                .category(updateddKoiFish.getCategory().getCategoryName())
+                .purebred(updateddKoiFish.getPurebred())
+                .health(updateddKoiFish.getHealth())
+                .temperature(updateddKoiFish.getTemperature())
+                .water(updateddKoiFish.getWater())
+                .pH(updateddKoiFish.getPH())
+                .food(updateddKoiFish.getFood())
+                .status(updateddKoiFish.getStatus())
+                .build();
+    }
 
 }

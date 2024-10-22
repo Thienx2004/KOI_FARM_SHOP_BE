@@ -12,18 +12,22 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.*;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConsignmentService implements ConsignmentServiceImp {
@@ -51,23 +55,24 @@ public class ConsignmentService implements ConsignmentServiceImp {
     @Autowired
     private HealthcareRepository healthcareRepository;
 
+
     @Override
-    public int createConsignment(int accountId, MultipartFile koiImg,String koiImgURL, String origin, boolean gender, int age, double size, String personality, double price, String food,
-                                    String health,
-                                    String ph,
-                                    String temperature,
-                                    String water,
-                                    int pureBred,
-                                    int categoryId,
-                                    String name,
-                                    MultipartFile certImg,
-                                    String certImgURL,
-                                    String notes,
-                                    String phoneNumber,
-                                    boolean consignmentType,
-                                    int duration,
-                                    double serviceFee,
-                                    boolean online) {
+    public int createConsignment(int accountId, MultipartFile koiImg, String koiImgURL, String origin, boolean gender, int age, double size, String personality, double price, String food,
+                                 String health,
+                                 String ph,
+                                 String temperature,
+                                 String water,
+                                 int pureBred,
+                                 int categoryId,
+                                 String name,
+                                 MultipartFile certImg,
+                                 String certImgURL,
+                                 String notes,
+                                 String phoneNumber,
+                                 boolean consignmentType,
+                                 int duration,
+                                 double serviceFee,
+                                 boolean online) {
         try {
             Consignment consignment = new Consignment();
             Account account = new Account();
@@ -91,9 +96,9 @@ public class ConsignmentService implements ConsignmentServiceImp {
             koiFish.setTemperature(temperature);
             koiFish.setWater(water);
             koiFish.setPurebred(pureBred);
-            if(koiImg!=null&&!koiImg.isEmpty()){
+            if (koiImg != null && !koiImg.isEmpty()) {
                 koiFish.setKoiImage(firebaseService.uploadImage(koiImg));
-            }else{
+            } else {
                 koiFish.setKoiImage(koiImgURL);
             }
             koiFish.setCategory(category);
@@ -101,9 +106,9 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
             Certificate certificate = new Certificate();
             certificate.setName(name);
-            if(certImg!=null&&!certImg.isEmpty()){
+            if (certImg != null && !certImg.isEmpty()) {
                 certificate.setImage(firebaseService.uploadImage(certImg));
-            }else{
+            } else {
                 certificate.setImage(certImgURL);
             }
             certificate.setCreatedDate(new Date());
@@ -192,7 +197,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public PaginReponse<ConsignmentResponse> getAllConsignmentForCustomer(int pageNo, int pageSize, int accountId) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate").descending());
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate", "consignmentID").descending());
         Page<Consignment> consignmentPage = consignmentRepository.findConsignmentsByAccount_AccountID(accountId, pageable);
         List<ConsignmentResponse> consignmentResponses = new ArrayList<>();
         for (Consignment consignment : consignmentPage.getContent()) {
@@ -225,7 +230,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public PaginReponse<ConsignmentResponse> getAllConsignmentForStaff(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate").descending());
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate", "consignmentID").descending());
         Page<Consignment> consignmentPage = consignmentRepository.findAll(pageable);
         List<ConsignmentResponse> consignmentResponses = new ArrayList<>();
         for (Consignment consignment : consignmentPage.getContent()) {
@@ -308,7 +313,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
             }
 
             detailResponse.setKoiFish(koiFishResponse);
-            if (!consignment.isConsignmentType()&&koiFish.getStatus()==5) {
+            if (!consignment.isConsignmentType() && koiFish.getStatus() == 5) {
                 Optional<Healthcare> healthcare = healthcareRepository.findById(koiFish.getKoiID());
                 if (healthcare.isPresent()) {
                     HealthcareResponse healthcareResponse = new HealthcareResponse();
@@ -316,8 +321,9 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     healthcareResponse.setGrowthStatus(healthcare.get().getGrowthStatus());
                     healthcareResponse.setCareEnvironment(healthcare.get().getCareEnvironment());
                     healthcareResponse.setNote(healthcare.get().getNote());
+                    healthcareResponse.setChecked(healthcare.get().isChecked());
                     LocalDate currentDate = LocalDate.now();
-                    LocalDate futureDate = LocalDate.of(healthcare.get().getConsignmentDate().getYear(),healthcare.get().getConsignmentDate().getMonth(),healthcare.get().getConsignmentDate().getDay());
+                    LocalDate futureDate = LocalDate.of(healthcare.get().getConsignmentDate().getYear(), healthcare.get().getConsignmentDate().getMonth(), healthcare.get().getConsignmentDate().getDay());
                     healthcareResponse.setDayRemain(ChronoUnit.DAYS.between(currentDate, futureDate));
                     detailResponse.setHealthcare(healthcareResponse);
                 }
@@ -438,29 +444,33 @@ public class ConsignmentService implements ConsignmentServiceImp {
     }
 
     @Override
-    public HealthcareResponse updateHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException {
-        Consignment consignment = consignmentRepository.findById(consignmentId).get();
+    public HealthcareResponse updateHealth(ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
+        Consignment consignment = consignmentRepository.findConsignmentByKoiFish_KoiID(consignmentKoiCare.getKoiCareId()).get();
         Healthcare healthcare = healthcareRepository.findById(consignment.getKoiFish().getKoiID()).get();
         healthcare.setId(consignment.getKoiFish().getKoiID());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
         healthcare.setGrowthStatus(consignmentKoiCare.getGrowthStatus());
         healthcare.setCareEnvironment(consignmentKoiCare.getCareEnvironment());
         healthcare.setNote(consignmentKoiCare.getNote());
-        LocalDate currentDate = LocalDate.now();
-        LocalDate futureDate = LocalDate.of(healthcare.getConsignmentDate().getYear(),healthcare.getConsignmentDate().getMonth(),healthcare.getConsignmentDate().getDay());
-        healthcareRepository.save(healthcare);
-        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentId, consignmentKoiCare);
+        long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
+        // Chuyển đổi khoảng cách từ mili giây sang ngày
+        long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+        Healthcare healthcare1 = healthcareRepository.save(healthcare);
+        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignment.getConsignmentID(), consignmentKoiCare);
+        KoiFishDetailReponse koiFishDetailReponse = koiFishService.updateKoiCare(consignment.getKoiFish().getKoiID(), consignmentKoiCare);
         return HealthcareResponse.builder()
-                .healthStatus(consignmentKoiCare.getHealthStatus())
-                .careEnvironment(consignmentKoiCare.getCareEnvironment())
-                .growthStatus(consignmentKoiCare.getGrowthStatus())
-                .note(consignmentKoiCare.getNote())
-                .dayRemain(ChronoUnit.DAYS.between(currentDate, futureDate))
+                .healthStatus(healthcare1.getHealthStatus())
+                .careEnvironment(healthcare1.getCareEnvironment())
+                .growthStatus(healthcare1.getGrowthStatus())
+                .note(healthcare1.getNote())
+                .dayRemain(differenceInDays)
+                .checked(healthcare1.isChecked())
                 .build();
     }
+
     @Override
-    public HealthcareResponse addHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException {
-        Consignment consignment = consignmentRepository.findById(consignmentId).get();
+    public HealthcareResponse addHealth(ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
+        Consignment consignment = consignmentRepository.findConsignmentByKoiFish_KoiID(consignmentKoiCare.getKoiCareId()).get();
         Healthcare healthcare = new Healthcare();
         healthcare.setId(consignment.getKoiFish().getKoiID());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
@@ -471,20 +481,119 @@ public class ConsignmentService implements ConsignmentServiceImp {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate); // Cài đặt ngày cho Calendar
         calendar.add(Calendar.MONTH, consignment.getDuration());
-        Healthcare healthcare1=healthcareRepository.save(healthcare);
-        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignmentId, consignmentKoiCare);
-        LocalDate date = LocalDate.now();
-        LocalDate futureDate = LocalDate.of(healthcare1.getConsignmentDate().getYear(),healthcare1.getConsignmentDate().getMonth(),healthcare1.getConsignmentDate().getDay());
+        healthcare.setConsignmentDate(calendar.getTime());
+        healthcare.setChecked(true);
+        Healthcare healthcare1 = healthcareRepository.save(healthcare);
+        emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignment.getConsignmentID(), consignmentKoiCare);
+        long differenceInMillis = Math.abs(new Date().getTime() - healthcare1.getConsignmentDate().getTime());
+
+        // Chuyển đổi khoảng cách từ mili giây sang ngày
+        long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+        KoiFishDetailReponse koiFishDetailReponse = koiFishService.updateKoiCare(consignment.getKoiFish().getKoiID(), consignmentKoiCare);
         return HealthcareResponse.builder()
-                .healthStatus(consignmentKoiCare.getHealthStatus())
-                .careEnvironment(consignmentKoiCare.getCareEnvironment())
-                .growthStatus(consignmentKoiCare.getGrowthStatus())
-                .note(consignmentKoiCare.getNote())
-                .dayRemain(ChronoUnit.DAYS.between(date, futureDate))
+                .healthStatus(healthcare1.getHealthStatus())
+                .careEnvironment(healthcare1.getCareEnvironment())
+                .growthStatus(healthcare1.getGrowthStatus())
+                .note(healthcare1.getNote())
+                .dayRemain(differenceInDays)
+                .checked(healthcare1.isChecked())
                 .build();
     }
 
+    @Override
+    public PaginReponse<ConsignmentResponse> getAllConsignmentForCare(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate").descending());
+        Specification<Consignment> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+
+            predicates.add(criteriaBuilder.equal(root.get("consignmentType"), false));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<Consignment> consignmentPage = consignmentRepository.findAll(spec, pageable);
+        List<ConsignmentResponse> consignmentResponses = new ArrayList<>();
+        for (Consignment consignment : consignmentPage.getContent()) {
+            ConsignmentResponse consignmentResponse = new ConsignmentResponse();
+            consignmentResponse.setConsignmentID(consignment.getConsignmentID());
+            consignmentResponse.setConsignmentDate(consignment.getConsignmentDate());
+            consignmentResponse.setConsignmentType(consignment.isConsignmentType());
+            consignmentResponse.setAgreedPrice(consignment.getAgreedPrice());
+            consignmentResponse.setNotes(consignment.getNotes());
+            consignmentResponse.setEmail(consignment.getAccount().getEmail());
+            consignmentResponse.setFullname(consignment.getAccount().getFullName());
+            consignmentResponse.setPhoneNumber(consignment.getPhoneNumber());
+            consignmentResponse.setDuration(consignment.getDuration());
+            consignmentResponse.setServiceFee(consignment.getServiceFee());
+            consignmentResponse.setStartDate(consignment.getStartDate());
+            consignmentResponse.setEndDate(consignment.getEndDate());
+            consignmentResponse.setStatus(consignment.getStatus());
+            consignmentResponse.setOnline(consignment.isOnline());
+            consignmentResponses.add(consignmentResponse);
+        }
+        PaginReponse<ConsignmentResponse> consignmentResponsePaginReponse = new PaginReponse<>();
+        consignmentResponsePaginReponse.setContent(consignmentResponses);
+        consignmentResponsePaginReponse.setPageSize(pageSize);
+        consignmentResponsePaginReponse.setPageNum(pageNo);
+        consignmentResponsePaginReponse.setTotalElements(consignmentPage.getContent().size());
+        consignmentResponsePaginReponse.setTotalPages(consignmentPage.getTotalPages());
+
+        return consignmentResponsePaginReponse;
+    }
+
+    @Override
+    public KoiFishPageResponse getFishCare(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+        Specification<KoiFish> spec = (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("status"), 5);
+
+        Page<KoiFish> koiFishPage = koiFishRepository.findAll(spec, pageable);
+
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
+        for (KoiFish koiFish : koiFishPage.getContent()) {
+            KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
+            koiFishReponse.setOrigin(koiFish.getOrigin());
+            koiFishReponse.setAge(koiFish.getAge());
+            koiFishReponse.setSize(koiFish.getSize());
+            koiFishReponse.setGender(koiFish.isGender());
+            koiFishReponse.setPersonality(koiFish.getPersonality());
+            koiFishReponse.setPrice(koiFish.getPrice());
+            koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setFood(koiFish.getFood());
+            koiFishReponse.setHealth(koiFish.getHealth());
+            koiFishReponse.setPH(koiFish.getPH());
+            koiFishReponse.setTemperature(koiFish.getTemperature());
+            koiFishReponse.setWater(koiFish.getWater());
+            koiFishReponse.setPurebred(koiFish.getPurebred());
+            koiFishReponse.setStatus(koiFish.getStatus());
+            Optional<Healthcare> healthcareToCheck=healthcareRepository.findById(koiFish.getKoiID());
+            HealthcareResponse healthcareResponse = new HealthcareResponse();
+            if(healthcareToCheck.isPresent()) {
+                Healthcare healthcare=healthcareToCheck.get();
+                healthcareResponse.setCareEnvironment(healthcare.getCareEnvironment());
+                healthcareResponse.setHealthStatus(healthcare.getHealthStatus());
+                healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
+                healthcareResponse.setNote(healthcare.getNote());
+                healthcareResponse.setChecked(healthcare.isChecked());
+
+            }
+            koiFishReponse.setHealthcare(healthcareResponse);
+            koiFishReponseList.add(koiFishReponse);
+        }
+
+        return KoiFishPageResponse.builder()
+                .pageNum(koiFishPage.getNumber() + 1)
+                .totalPages(koiFishPage.getTotalPages())
+                .totalElements(koiFishPage.getTotalElements())
+                .pageSize(koiFishPage.getSize())
+                .koiFishReponseList(koiFishReponseList)
+                .build();
+    }
 }
+
 
 
 

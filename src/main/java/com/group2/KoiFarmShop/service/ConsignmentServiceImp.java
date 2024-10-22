@@ -4,10 +4,7 @@ import com.group2.KoiFarmShop.dto.request.ConsignmentKoiCare;
 import com.group2.KoiFarmShop.dto.request.ConsignmentKoiRequest;
 import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
-import com.group2.KoiFarmShop.dto.response.ConsignmentDetailResponse;
-import com.group2.KoiFarmShop.dto.response.ConsignmentResponse;
-import com.group2.KoiFarmShop.dto.response.HealthcareResponse;
-import com.group2.KoiFarmShop.dto.response.PaginReponse;
+import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.entity.Consignment;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import jakarta.mail.MessagingException;
@@ -56,6 +53,8 @@ public interface ConsignmentServiceImp {
 
     public String deleteConsignment(int consignmentId);
     public ConsignmentDetailResponse updateConsignment(ConsignmentKoiRequest consignmentKoiRequest, int consignmentId, int koiId) throws IOException;
-    public HealthcareResponse updateHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException;
-    public HealthcareResponse addHealth(int consignmentId, ConsignmentKoiCare consignmentKoiCare) throws MessagingException;
+    public HealthcareResponse updateHealth( ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException;
+    public HealthcareResponse addHealth( ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException;
+    public PaginReponse<ConsignmentResponse> getAllConsignmentForCare(int pageNo, int pageSize);
+    public KoiFishPageResponse getFishCare(int page, int pageSize);
 }

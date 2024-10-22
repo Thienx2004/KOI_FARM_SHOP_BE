@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class HealthcareResponse {
     private String healthStatus;
@@ -15,4 +14,14 @@ public class HealthcareResponse {
     private String careEnvironment;
     private String note;
     private long dayRemain;
+    private boolean checked;
+
+    public HealthcareResponse(){
+        this.checked = false;
+        this.dayRemain = 0;
+        this.growthStatus = "";
+        this.careEnvironment = "";
+        this.note = "";
+        this.healthStatus = "";
+    }
 }

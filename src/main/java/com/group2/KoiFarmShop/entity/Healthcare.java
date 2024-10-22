@@ -20,6 +20,7 @@ public class Healthcare {
     @Column(name = "koi_ID")
     private int id;
 
+    private boolean checked=false;//đã thêm status hay chưa
     private String healthStatus;
     private String growthStatus;
     private String careEnvironment;
@@ -27,7 +28,6 @@ public class Healthcare {
     @Temporal(TemporalType.DATE)
     private Date consignmentDate;
     @OneToOne()
-    @MapsId
     @JoinColumn(name = "koi_ID")
     private KoiFish koiFish;
 

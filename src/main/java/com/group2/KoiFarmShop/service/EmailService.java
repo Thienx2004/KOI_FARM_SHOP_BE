@@ -137,7 +137,7 @@ public class EmailService {
 
         String subject = "Thông báo đơn ký gửi";
         String content = "<p>Xin chào,</p>"
-                + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Đơn ký gửi của bạn đã được chúng tôi xem xét và chờ mong muốn được kiểm tra trực tiếp Koi của bạn.</p>"
+                + "<p>Cảm ơn bạn đã tin tưởng dùng dịch vụ ký gửi Koi của chúng tôi. Đơn ký gửi của bạn đã được chúng tôi xem xét và mong muốn được kiểm tra trực tiếp Koi của bạn.</p>"
                 + "<p>Mã đơn ký gửi: " + consignmentID + "</p>"
                 + "<p>Chúng tôi sẽ sớm liên hệ với bạn qua thông tin bạn đã cung cấp.</p>"
                 + "<p>Mọi thắc mắc xin liên hệ để biết thêm chi tiết.</p>"
