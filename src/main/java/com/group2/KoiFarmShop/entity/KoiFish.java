@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,7 +52,7 @@ public class KoiFish {
 
     @ManyToOne
     @JoinColumn(name = "categoryid")
-
+    @JsonManagedReference
     private Category category;
 
     @OneToMany(mappedBy = "koiFish")
