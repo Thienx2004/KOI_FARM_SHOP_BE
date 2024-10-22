@@ -23,7 +23,8 @@ public enum ErrorCode {
     PROMOTION_DATE_OVERLAP(5015, "Đã có mã khuyến mãi trong thời gian này"),
     CONSIGNMENT_OUT_OF_DATE(5016, "Đơn ký gửi đã quá hạn do không thanh toán."),
     CANNOTUPDATE(5017,"Không thể cập nhập"),
-    CERTIFICATE_NOT_FOUND(5018, "Không tìm thấy chứng chỉ của Koi này");
+    CERTIFICATE_NOT_FOUND(5018, "Không tìm thấy chứng chỉ của Koi này"),
+    BLOG_NOT_FOUND(5019, "Không tìm thấy bài blog này");
     ;
 
 

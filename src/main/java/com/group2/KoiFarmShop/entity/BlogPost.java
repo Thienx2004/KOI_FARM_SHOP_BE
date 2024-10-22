@@ -18,8 +18,8 @@ public class BlogPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int blogPostID;
 
-    @Column(nullable = false)
     private String title;
+    private String subTitle;
 
     private String content;
 
@@ -27,5 +27,11 @@ public class BlogPost {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date postDate;
+
+    @ManyToOne
+    @JoinColumn(name = "accountID")
+    private Account account;
+
+    private Boolean status;     //true = public, false = private
 
 }
