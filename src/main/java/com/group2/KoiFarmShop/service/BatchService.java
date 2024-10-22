@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.BatchSpec;
 import com.group2.KoiFarmShop.dto.response.BatchPageReponse;
 import com.group2.KoiFarmShop.dto.response.BatchReponse;
 import com.group2.KoiFarmShop.dto.request.BatchCreateDTO;
@@ -301,5 +302,38 @@ public class BatchService implements BatchServiceImp{
 
         return batchPageReponse;
     }
+    public BatchPageReponse searchBatch(String keyword, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
 
-}
+
+        Page<Batch> batchPage = batchRepository.findAll(Specification.where(BatchSpec.hasKeyword(keyword)), pageable);
+
+        List<BatchReponse> batchReponseList = new ArrayList<>();
+        BatchPageReponse batchPageReponse = new BatchPageReponse();
+        for(Batch batch : batchPage.getContent()) {
+            BatchReponse batchReponse = new BatchReponse();
+            batchReponse.setBatchID(batch.getBatchID());
+            batchReponse.setAge(batch.getAge());
+            batchReponse.setOrigin(batch.getOrigin());
+            batchReponse.setQuantity(batch.getQuantity());
+            batchReponse.setPrice(batch.getPrice());
+            batchReponse.setCategoryID(batch.getCategory().getCategoryID());
+            batchReponse.setCategoryName(batch.getCategory().getCategoryName());
+            batchReponse.setBatchImg(batch.getBatchImg());
+
+            batchReponse.setStatus(batch.getStatus());
+
+            batchReponseList.add(batchReponse);
+        }
+
+        batchPageReponse.setBatchReponses(batchReponseList);
+        batchPageReponse.setPageNum(pageNum);
+        batchPageReponse.setPageSize(batchPage.getSize());
+        batchPageReponse.setTotalElements(batchPage.getTotalElements());
+        batchPageReponse.setTotalPages(batchPage.getTotalPages());
+
+
+        return batchPageReponse;
+    }
+    }
+
