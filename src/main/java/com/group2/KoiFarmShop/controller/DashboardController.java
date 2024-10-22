@@ -60,4 +60,20 @@ public class DashboardController {
         response.setData(dashboardService.getTotalBatch());
         return response;
     }
+
+    @GetMapping("/consignmentRevenue/years")
+    public ApiReponse<List<Object[]>> getTotalConsignmentsRevenueByYear() {
+        ApiReponse<List<Object[]>> response = new ApiReponse<>();
+        List<Object[]> list = dashboardService.getTotalRevenueConsignmentsByYear();
+        response.setData(list);
+        return response;
+    }
+
+    @GetMapping("/consignmentRevenue/months")
+    public ApiReponse<List<Object[]>> getTotalRevenueConsignmentsByMonth() {
+        ApiReponse<List<Object[]>> response = new ApiReponse<>();
+        List<Object[]> list = dashboardService.getTotalRevenueConsignmentsByMonth();
+        response.setData(list);
+        return response;
+    }
 }
