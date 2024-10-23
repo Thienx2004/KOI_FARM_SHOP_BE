@@ -21,6 +21,7 @@ public class BlogPost {
     private String title;
     private String subTitle;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private String blogImg;
