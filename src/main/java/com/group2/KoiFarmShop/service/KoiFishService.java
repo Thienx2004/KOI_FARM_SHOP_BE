@@ -132,6 +132,10 @@ public class KoiFishService implements KoiFishServiceImp{
             throw new AppException(ErrorCode.KOINOTFOUND);
         }
         List<KoiFishDetailReponse> koiList = getKoiByCategory(koiFish.getCategory(),1,3).getKoiFishReponseList();
+        CertificateResponse certificationReponse = new CertificateResponse();
+        certificationReponse.setCreatedDate(koiFish.getCertificate().getCreatedDate());
+        certificationReponse.setName(koiFish.getCertificate().getName());
+        certificationReponse.setImage(koiFish.getCertificate().getImage());
 
         return KoiFishDetailReponse.builder()
                 .id(koiFish.getKoiID())
@@ -151,6 +155,7 @@ public class KoiFishService implements KoiFishServiceImp{
                 .water(koiFish.getWater())
                 .pH(koiFish.getPH())
                 .food(koiFish.getFood())
+                .certificate(certificationReponse)
                 .list(koiList)
                 .build();
     }
