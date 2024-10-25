@@ -47,6 +47,21 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
             + "AND MONTH(o.order_date) = MONTH(CURRENT_DATE)")
     int countOrdersInCurrentMonth();
 
+    @Query("SELECT DAY(o.order_date) as day, SUM(o.totalPrice) as totalRevenue "
+            + "FROM Orders o "
+            + "WHERE YEAR(o.order_date) = YEAR(CURRENT_DATE) AND MONTH(o.order_date) = :month "
+            + "GROUP BY DAY(o.order_date) "
+            + "ORDER BY DAY(o.order_date)")
+    List<Object[]> findTotalRevenueByDay(@Param("month") int month);
+    @Query("SELECT WEEK(o.order_date) as week, SUM(o.totalPrice) as totalRevenue "
+            + "FROM Orders o "
+            + "WHERE YEAR(o.order_date) = YEAR(CURRENT_DATE) "
+            + "GROUP BY WEEK(o.order_date) "
+            + "ORDER BY WEEK(o.order_date)")
+    List<Object[]> findTotalRevenueByWeek();
+
+
+
     @Query("SELECT p.paymentID, p.amount, p.paymentDate, p.status, p.transactionCode, p.consignment.consignmentID, " +
             "p.order.orderID, p.order.order_date, p.order.status, p.order.totalPrice, p.order.account.accountID " +
             "FROM Payment p JOIN p.order o " +

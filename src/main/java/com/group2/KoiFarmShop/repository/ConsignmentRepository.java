@@ -37,4 +37,18 @@ public interface ConsignmentRepository extends JpaRepository<Consignment, Intege
             + "GROUP BY MONTH(c.consignmentDate) "
             + "ORDER BY MONTH(c.consignmentDate)")
     List<Object[]> findTotalRevenueByMonth();
+
+    @Query("SELECT DAY(c.consignmentDate) as day, SUM(c.serviceFee) as totalRevenue "
+            + "FROM Consignment c "
+            + "WHERE YEAR(c.consignmentDate) = YEAR(CURRENT_DATE) AND MONTH(c.consignmentDate) = :month "
+            + "GROUP BY DAY(c.consignmentDate) "
+            + "ORDER BY DAY(c.consignmentDate)")
+    List<Object[]> findConsignmentRevenueByDay(@Param("month") int month);
+
+    @Query("SELECT WEEK(c.consignmentDate) as week, SUM(c.serviceFee) as totalRevenue "
+            + "FROM Consignment c "
+            + "WHERE YEAR(c.consignmentDate) = YEAR(CURRENT_DATE) "
+            + "GROUP BY WEEK(c.consignmentDate) "
+            + "ORDER BY WEEK(c.consignmentDate)")
+    List<Object[]> findConsignmentRevenueByWeek();
 }
