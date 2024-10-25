@@ -172,22 +172,22 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
         if (consignment.getStatus() == 1 || consignment.getStatus() == 2) {
 
-            KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
+            //KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
 
             consignment.setStatus(3); //status don bi tu choi
             consignment.setNotes(rejectionReason);
-            consignment.setKoiFish(null);
+            //consignment.setKoiFish(null);
             consignmentRepository.save(consignment);
 
-            if (koiFish != null) {
-
-                Certificate certificate = koiFish.getCertificate();
-                if (certificate != null) {
-                    certificateRepository.delete(certificate);
-                }
-
-                koiFishRepository.delete(koiFish);
-            }
+//            if (koiFish != null) {
+//
+//                Certificate certificate = koiFish.getCertificate();
+//                if (certificate != null) {
+//                    certificateRepository.delete(certificate);
+//                }
+//
+//                koiFishRepository.delete(koiFish);
+//            }
             emailService.sendEmailRejectToCustomer(consignment.getAccount().getEmail(), consignmentId, rejectionReason);
             return "Đã từ chốt đơn ký gửi!";
         } else {
