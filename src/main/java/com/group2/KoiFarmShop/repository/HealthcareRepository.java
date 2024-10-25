@@ -19,6 +19,8 @@ import java.util.Optional;
 
 public interface HealthcareRepository extends JpaRepository<Healthcare, Integer> {
     Optional<Healthcare> findHealthcareByKoiFish(KoiFish koiFish);
+
     @Query("SELECT  h FROM Healthcare h WHERE h.koiFish = :koiFish ORDER BY h.createdDate DESC LIMIT 1")
     Optional<Healthcare> findLatestHealthcareByKoiFish(@Param("koiFish") KoiFish koiFish);
+}
 
