@@ -246,6 +246,7 @@ public class KoiFishService implements KoiFishServiceImp{
             }
             Certificate newCertificate = certificateRepository.save(
                     Certificate.builder()
+                            .id(updateddKoiFish.getKoiID())
                             .koiFish(updateddKoiFish)
                             .name(koiRequest.getName())
                             .createdDate(koiRequest.getCreatedDate())
