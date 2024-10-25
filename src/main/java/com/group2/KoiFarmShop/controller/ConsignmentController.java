@@ -108,8 +108,8 @@ public class ConsignmentController {
     }
 
     @GetMapping("/checkDate/{consignmentId}")
-    public ApiReponse<Consignment> checkPaymentDate(@PathVariable int consignmentId) {
-        ApiReponse<Consignment> apiReponse = new ApiReponse<>();
+    public ApiReponse<ConsignmentResponse> checkPaymentDate(@PathVariable int consignmentId) {
+        ApiReponse<ConsignmentResponse> apiReponse = new ApiReponse<>();
         apiReponse.setData(consignmentService.processPayment(consignmentId, false));
         return apiReponse;
 
@@ -120,11 +120,12 @@ public class ConsignmentController {
         ApiReponse<String> resp = new ApiReponse<>();
         Payment payment = paymentRepository.findPaymentByTransactionCode(transactionCode).orElseThrow(() -> new AppException(ErrorCode.PAYMENT_FAILED));
         if (!payment.isStatus()) {
-            Consignment success = consignmentService.processPayment(consignmentId, true);
+            ConsignmentResponse success = consignmentService.processPayment(consignmentId, true);
+            Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(success.getConsignmentID()).orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
             if (success == null) {
                 throw new AppException(ErrorCode.PAYMENT_FAILED);
             }
-            payment.setConsignment(success);
+            payment.setConsignment(consignment);
             payment.setStatus(true);
             paymentRepository.save(payment);
             // Gửi email xác nhận sau khi đơn hàng đã lưu thành công
