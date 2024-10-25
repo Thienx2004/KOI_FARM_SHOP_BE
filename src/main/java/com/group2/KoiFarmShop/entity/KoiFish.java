@@ -54,7 +54,8 @@ public class KoiFish {
     @JoinColumn(name = "categoryid")
     @JsonManagedReference
     private Category category;
-
+    @OneToMany(mappedBy = "koiFish")
+    private List<Healthcare> healthcare;
     @OneToMany(mappedBy = "koiFish")
     private List<OrderDetail> orderDetail;
 

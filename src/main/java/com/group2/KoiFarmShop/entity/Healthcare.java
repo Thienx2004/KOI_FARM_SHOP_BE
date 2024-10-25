@@ -17,9 +17,11 @@ import java.util.Date;
 public class Healthcare {
 
     @Id
-    @Column(name = "koi_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    @ManyToOne()
+    @JoinColumn(name = "koi_ID")
+    private KoiFish koiFish;
     private boolean checked=false;//đã thêm status hay chưa
     private String healthStatus;
     private String growthStatus;
@@ -27,8 +29,6 @@ public class Healthcare {
     private String note;
     @Temporal(TemporalType.DATE)
     private Date consignmentDate;
-    @OneToOne()
-    @JoinColumn(name = "koi_ID")
-    private KoiFish koiFish;
+    private Date createdDate=new Date();
 
 }
