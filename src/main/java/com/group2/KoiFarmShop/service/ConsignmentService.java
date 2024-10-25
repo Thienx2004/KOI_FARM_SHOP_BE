@@ -334,9 +334,11 @@ public class ConsignmentService implements ConsignmentServiceImp {
     }
 
     @Override
-    public Consignment processPayment(int consignmentId, boolean isPaid) {
+    public ConsignmentResponse processPayment(int consignmentId, boolean isPaid) {
         Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(consignmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
+
+        ConsignmentResponse consignmentResponse = new ConsignmentResponse();
 
         // Kiểm tra nếu đơn ký gửi đang ở trạng thái chờ thanh toán
         if (consignment.getStatus() == 4) { // Pending Payment
@@ -356,12 +358,25 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 } else throw new AppException(ErrorCode.KOINOTFOUND);
 
                 consignmentRepository.save(consignment);
-                return consignment;
+                //return consignmentResponse;
             }
-
         }
+        consignmentResponse.setConsignmentID(consignment.getConsignmentID());
+        consignmentResponse.setConsignmentDate(consignment.getConsignmentDate());
+        consignmentResponse.setConsignmentType(consignment.isConsignmentType());
+        consignmentResponse.setAgreedPrice(consignment.getAgreedPrice());
+        consignmentResponse.setNotes(consignment.getNotes());
+        consignmentResponse.setEmail(consignment.getAccount().getEmail());
+        consignmentResponse.setFullname(consignment.getAccount().getFullName());
+        consignmentResponse.setPhoneNumber(consignment.getPhoneNumber());
+        consignmentResponse.setDuration(consignment.getDuration());
+        consignmentResponse.setServiceFee(consignment.getServiceFee());
+        consignmentResponse.setStartDate(consignment.getStartDate());
+        consignmentResponse.setEndDate(consignment.getEndDate());
+        consignmentResponse.setStatus(consignment.getStatus());
+        consignmentResponse.setOnline(consignment.isOnline());
 
-        return consignment;
+        return consignmentResponse;
     }
 
     public boolean isPaymentOverdue(Consignment consignment) {
