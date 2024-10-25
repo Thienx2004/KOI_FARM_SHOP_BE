@@ -17,7 +17,6 @@ import java.util.List;
 @Repository
 public interface KoiFishRepository extends JpaRepository<KoiFish, Integer> , JpaSpecificationExecutor<KoiFish> {
     public List<KoiFish> getAllByCategory(Category category);
-    Page<KoiFish> findByCategory(Category category, Pageable pageable);
     public KoiFish findByKoiID(int koiId);
     Page<KoiFish> findAll(Specification<KoiFish> spec, Pageable pageable);
 

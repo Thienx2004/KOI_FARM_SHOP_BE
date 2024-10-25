@@ -222,7 +222,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
         consignmentResponsePaginReponse.setContent(consignmentResponses);
         consignmentResponsePaginReponse.setPageSize(pageSize);
         consignmentResponsePaginReponse.setPageNum(pageNo);
-        consignmentResponsePaginReponse.setTotalElements(consignmentPage.getContent().size());
+        consignmentResponsePaginReponse.setTotalElements(consignmentPage.getTotalElements());
         consignmentResponsePaginReponse.setTotalPages(consignmentPage.getTotalPages());
 
         return consignmentResponsePaginReponse;
@@ -255,7 +255,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
         consignmentResponsePaginReponse.setContent(consignmentResponses);
         consignmentResponsePaginReponse.setPageSize(pageSize);
         consignmentResponsePaginReponse.setPageNum(pageNo);
-        consignmentResponsePaginReponse.setTotalElements(consignmentPage.getContent().size());
+        consignmentResponsePaginReponse.setTotalElements(consignmentPage.getTotalElements());
         consignmentResponsePaginReponse.setTotalPages(consignmentPage.getTotalPages());
 
         return consignmentResponsePaginReponse;

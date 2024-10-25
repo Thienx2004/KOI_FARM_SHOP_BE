@@ -52,6 +52,9 @@ import java.util.Set;
         @JoinColumn(name = "promotionID")
         private Promotion promotion;
 
+        @OneToMany(mappedBy = "account")
+        private List<BlogPost> blogPosts;
+
         private String avatar;
         private boolean status = true;
 

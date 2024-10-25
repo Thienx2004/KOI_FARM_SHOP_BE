@@ -18,14 +18,21 @@ public class BlogPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int blogPostID;
 
-    @Column(nullable = false)
     private String title;
+    private String subTitle;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private String blogImg;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date postDate;
+
+    @ManyToOne
+    @JoinColumn(name = "accountID")
+    private Account account;
+
+    private Boolean status;     //true = public, false = private
 
 }
