@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.service;
 
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
+import com.group2.KoiFarmShop.dto.KoiFishSpecification;
 import com.group2.KoiFarmShop.dto.request.ConsignmentKoiCare;
 import com.group2.KoiFarmShop.dto.request.ConsignmentKoiRequest;
 import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
@@ -592,6 +593,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .koiFishReponseList(koiFishReponseList)
                 .build();
     }
+
 }
 
 

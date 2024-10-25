@@ -9,8 +9,10 @@ import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.entity.*;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
+import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.service.*;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.util.List;
 
 @RestController
@@ -38,6 +41,12 @@ public class ManagementController {
     KoiFishService koiFishService;
     @Autowired
     BatchService batchService;
+    @Autowired
+    AuthenticationService authenticationService;
+    @Autowired
+    AccountRepository accountRepository;
+    @Autowired
+    private ConsignmentService consignmentService;
 
 
     @GetMapping("/allAcount")
@@ -54,7 +63,14 @@ public class ManagementController {
     @PutMapping("/updateStatus/{id}")
     @Operation(summary = "Cập nhật trạng thái tài khoản", description = "")
 
-    public ApiReponse<AccountDTO> changeStatus(@PathVariable int id) {
+    public ApiReponse<AccountDTO> changeStatus(@PathVariable int id, HttpServletRequest request) {
+//        String token = authenticationService.extractTokenFromRequest(request);
+//        Account account = accountRepository.findById(id)
+//                .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+//        String emailFromToken = authenticationService.validateTokenByEmail(token);
+//        if (account.getEmail().equals(emailFromToken)) {
+//            throw new AppException(ErrorCode.POWERLESS);
+//        }
         AccountDTO accountDTO = accountService.updateAccountStatus(id);
         return ApiReponse.<AccountDTO>builder().data(accountDTO).statusCode(200).build();
     }
@@ -188,5 +204,13 @@ public class ManagementController {
         BatchPageReponse batchPageReponse = batchService.searchBatch(keyword, pageNum, pageSize);
         apiReponse.setData(batchPageReponse);
         return apiReponse;
+    }
+
+    @GetMapping("/searchKoiByHealthCare")
+    @Operation(summary = "Tìm kiếm Koi theo health care", description ="healthStatus,growthStatus,careEnvironment,note")
+
+    public ApiReponse<KoiFishPageResponse> searchKoiByHealthCare(@RequestParam String keyword, @RequestParam int pageNum, @RequestParam int pageSize){
+        KoiFishPageResponse resp = koiFishService.searchKoiFishByHealthCare(keyword, pageNum, pageSize);
+        return ApiReponse.<KoiFishPageResponse>builder().data(resp).build();
     }
 }

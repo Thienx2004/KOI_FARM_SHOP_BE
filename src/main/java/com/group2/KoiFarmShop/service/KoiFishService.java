@@ -10,11 +10,13 @@ import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.dto.request.KoiRequest;
 import com.group2.KoiFarmShop.entity.Category;
 import com.group2.KoiFarmShop.entity.Certificate;
+import com.group2.KoiFarmShop.entity.Healthcare;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.CategoryRepository;
 import com.group2.KoiFarmShop.repository.CertificateRepository;
+import com.group2.KoiFarmShop.repository.HealthcareRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ public class KoiFishService implements KoiFishServiceImp{
     private CategoryRepository categoryRepository;
     @Autowired
     private CertificateRepository certificateRepository;
+    @Autowired
+    private HealthcareRepository healthcareRepository;
     @Override
     public KoiFishPageResponse getAllKoiFish(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("koiID").descending());
@@ -500,11 +504,7 @@ public class KoiFishService implements KoiFishServiceImp{
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
 
         Page<KoiFish> koiFishPage = koiFishRepository.findAll(
-                Specification.where(KoiFishSpecification.hasKeyword(keyword))
-
-                        ,
-                pageable
-        );
+                Specification.where(KoiFishSpecification.hasKeyword(keyword)), pageable);
 
 
         List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
@@ -568,6 +568,54 @@ public class KoiFishService implements KoiFishServiceImp{
                 .pH(updateddKoiFish.getPH())
                 .food(updateddKoiFish.getFood())
                 .status(updateddKoiFish.getStatus())
+                .build();
+    }
+
+    public KoiFishPageResponse searchKoiFishByHealthCare(String keyword, int pageNum,int pageSize){
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        Page<KoiFish> koiFishPage = koiFishRepository.findAll(
+                Specification.where(KoiFishSpecification.hasDescription(keyword)), pageable);
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
+        for (KoiFish koiFish : koiFishPage.getContent()) {
+            KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
+            koiFishReponse.setOrigin(koiFish.getOrigin());
+            koiFishReponse.setAge(koiFish.getAge());
+            koiFishReponse.setSize(koiFish.getSize());
+            koiFishReponse.setGender(koiFish.isGender());
+            koiFishReponse.setPersonality(koiFish.getPersonality());
+            koiFishReponse.setPrice(koiFish.getPrice());
+            koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setFood(koiFish.getFood());
+            koiFishReponse.setHealth(koiFish.getHealth());
+            koiFishReponse.setPH(koiFish.getPH());
+            koiFishReponse.setTemperature(koiFish.getTemperature());
+            koiFishReponse.setWater(koiFish.getWater());
+            koiFishReponse.setPurebred(koiFish.getPurebred());
+            koiFishReponse.setStatus(koiFish.getStatus());
+            Optional<Healthcare> healthcareToCheck = healthcareRepository.findById(koiFish.getKoiID());
+            HealthcareResponse healthcareResponse = new HealthcareResponse();
+            if (healthcareToCheck.isPresent()) {
+                Healthcare healthcare = healthcareToCheck.get();
+                healthcareResponse.setCareEnvironment(healthcare.getCareEnvironment());
+                healthcareResponse.setHealthStatus(healthcare.getHealthStatus());
+                healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
+                healthcareResponse.setNote(healthcare.getNote());
+                healthcareResponse.setChecked(healthcare.isChecked());
+
+            }
+            koiFishReponse.setHealthcare(healthcareResponse);
+            koiFishReponseList.add(koiFishReponse);
+        }
+
+        return KoiFishPageResponse.builder()
+                .pageNum(koiFishPage.getNumber() + 1)
+                .totalPages(koiFishPage.getTotalPages())
+                .totalElements(koiFishPage.getTotalElements())
+                .pageSize(koiFishPage.getSize())
+                .koiFishReponseList(koiFishReponseList)
                 .build();
     }
 
