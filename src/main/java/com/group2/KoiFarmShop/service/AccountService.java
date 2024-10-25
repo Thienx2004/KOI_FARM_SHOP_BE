@@ -407,10 +407,8 @@ public class AccountService implements AccountServiceImp {
         // Cập nhật status
 
 
-
-
         if (account.getRole().getRoleID()==1) {
-            throw new AppException(ErrorCode.CANNOTUPDATE);
+            throw new AppException(ErrorCode.CANCHANGESTATUS);
         }
 
         if(account.isStatus()){

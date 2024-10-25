@@ -25,7 +25,8 @@ public enum ErrorCode {
     CANNOTUPDATE(5017,"Không thể cập nhập"),
     CERTIFICATE_NOT_FOUND(5018, "Không tìm thấy chứng chỉ của Koi này"),
     BLOG_NOT_FOUND(5019, "Không tìm thấy bài blog này"),
-    BANNEDACCOUNT(5020,"Tài khoản đã bị chặn")
+    BANNEDACCOUNT(5020,"Tài khoản đã bị chặn"),
+    CANCHANGESTATUS(5021,"Không đủ quyền để cập nhật")
     ;
 
 

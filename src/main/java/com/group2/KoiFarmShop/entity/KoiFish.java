@@ -57,6 +57,7 @@ public class KoiFish {
 
     @OneToMany(mappedBy = "koiFish")
     private List<OrderDetail> orderDetail;
-
+    @OneToOne(mappedBy = "koiFish", fetch = FetchType.LAZY) // Tạo mối quan hệ một chiều với Healthcare
+    private Healthcare healthcare;
 }
 
