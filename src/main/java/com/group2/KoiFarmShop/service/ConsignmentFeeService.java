@@ -60,7 +60,7 @@ public class ConsignmentFeeService implements ConsignmentFeeServiceImp {
         consignmentFee.setRate(consignmentFeeDTO.getRate() / 100);
         consignmentFee.setSale(consignmentFeeDTO.isSale());
         consignmentFee.setCreatedDate(new Date());
-        consignmentFee.setStatus(consignmentFee.isStatus());
+        consignmentFee.setStatus(consignmentFeeDTO.isStatus());
         repository.save(consignmentFee);
 
         return consignmentFeeDTO;
