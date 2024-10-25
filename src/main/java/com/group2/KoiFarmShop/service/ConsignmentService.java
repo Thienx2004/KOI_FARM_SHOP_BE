@@ -462,14 +462,17 @@ public class ConsignmentService implements ConsignmentServiceImp {
     @Override
     public HealthcareResponse updateHealth(ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
         Consignment consignment = consignmentRepository.findConsignmentByKoiFish_KoiID(consignmentKoiCare.getKoiCareId()).get();
-        Healthcare healthcare = healthcareRepository.findById(consignment.getKoiFish().getKoiID()).get();
-        healthcare.setId(consignment.getKoiFish().getKoiID());
+        Optional<KoiFish> koiFish = koiFishRepository.findById(consignmentKoiCare.getKoiCareId());
+        Optional<Healthcare> healthcareToCheck = healthcareRepository.findLatestHealthcareByKoiFish(koiFish.get());
+        Healthcare healthcare = new Healthcare();
+        healthcare.setKoiFish(consignment.getKoiFish());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
         healthcare.setGrowthStatus(consignmentKoiCare.getGrowthStatus());
         healthcare.setCareEnvironment(consignmentKoiCare.getCareEnvironment());
         healthcare.setNote(consignmentKoiCare.getNote());
-        long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
-        // Chuyển đổi khoảng cách từ mili giây sang ngày
+        healthcare.setChecked(true);
+        healthcare.setConsignmentDate(healthcareToCheck.get().getConsignmentDate());
+        long differenceInMillis = Math.abs(new Date().getTime() - healthcareToCheck.get().getConsignmentDate().getTime());
         long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
         Healthcare healthcare1 = healthcareRepository.save(healthcare);
         emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignment.getConsignmentID(), consignmentKoiCare);
@@ -488,22 +491,20 @@ public class ConsignmentService implements ConsignmentServiceImp {
     public HealthcareResponse addHealth(ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException {
         Consignment consignment = consignmentRepository.findConsignmentByKoiFish_KoiID(consignmentKoiCare.getKoiCareId()).get();
         Healthcare healthcare = new Healthcare();
-        healthcare.setId(consignment.getKoiFish().getKoiID());
+        healthcare.setKoiFish(consignment.getKoiFish());
         healthcare.setHealthStatus(consignmentKoiCare.getHealthStatus());
         healthcare.setGrowthStatus(consignmentKoiCare.getGrowthStatus());
         healthcare.setCareEnvironment(consignmentKoiCare.getCareEnvironment());
         healthcare.setNote(consignmentKoiCare.getNote());
-        Date currentDate = new Date(); // Ngày hiện tại
+        Date currentDate = new Date();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate); // Cài đặt ngày cho Calendar
+        calendar.setTime(currentDate);
         calendar.add(Calendar.MONTH, consignment.getDuration());
         healthcare.setConsignmentDate(calendar.getTime());
         healthcare.setChecked(true);
         Healthcare healthcare1 = healthcareRepository.save(healthcare);
         emailService.sendEmailForCareFish(consignment.getAccount().getEmail(), consignment.getConsignmentID(), consignmentKoiCare);
         long differenceInMillis = Math.abs(new Date().getTime() - healthcare1.getConsignmentDate().getTime());
-
-        // Chuyển đổi khoảng cách từ mili giây sang ngày
         long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
         KoiFishDetailReponse koiFishDetailReponse = koiFishService.updateKoiCare(consignment.getKoiFish().getKoiID(), consignmentKoiCare);
         return HealthcareResponse.builder()
@@ -585,7 +586,9 @@ public class ConsignmentService implements ConsignmentServiceImp {
             koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponse.setStatus(koiFish.getStatus());
-            Optional<Healthcare> healthcareToCheck = healthcareRepository.findById(koiFish.getKoiID());
+
+            Optional<Healthcare> healthcareToCheck = healthcareRepository.findLatestHealthcareByKoiFish(koiFish);
+
             HealthcareResponse healthcareResponse = new HealthcareResponse();
             if (healthcareToCheck.isPresent()) {
                 Healthcare healthcare = healthcareToCheck.get();
@@ -594,7 +597,9 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
                 healthcareResponse.setNote(healthcare.getNote());
                 healthcareResponse.setChecked(healthcare.isChecked());
-
+                long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
+                long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+                healthcareResponse.setDayRemain(differenceInDays);
             }
             koiFishReponse.setHealthcare(healthcareResponse);
             koiFishReponseList.add(koiFishReponse);
@@ -608,6 +613,56 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .koiFishReponseList(koiFishReponseList)
                 .build();
     }
+
+
+    public KoiFishPageResponse getAllFishCareForCustomer(int pageNo, int pageSize, int accountId) {
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+        Page<KoiFish> koiList=consignmentRepository.findKoiFishByAccountIdAndStatus(accountId,pageable);
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
+        for (KoiFish koiFish : koiList) {
+                KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
+                koiFishReponse.setId(koiFish.getKoiID());
+                koiFishReponse.setOrigin(koiFish.getOrigin());
+                koiFishReponse.setAge(koiFish.getAge());
+                koiFishReponse.setSize(koiFish.getSize());
+                koiFishReponse.setGender(koiFish.isGender());
+                koiFishReponse.setPersonality(koiFish.getPersonality());
+                koiFishReponse.setPrice(koiFish.getPrice());
+                koiFishReponse.setKoiImage(koiFish.getKoiImage());
+                koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+                koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+                koiFishReponse.setFood(koiFish.getFood());
+                koiFishReponse.setHealth(koiFish.getHealth());
+                koiFishReponse.setPH(koiFish.getPH());
+                koiFishReponse.setTemperature(koiFish.getTemperature());
+                koiFishReponse.setWater(koiFish.getWater());
+                koiFishReponse.setPurebred(koiFish.getPurebred());
+                koiFishReponse.setStatus(koiFish.getStatus());
+                Optional<Healthcare> healthcareToCheck=healthcareRepository.findById(koiFish.getKoiID());
+
+                HealthcareResponse healthcareResponse = new HealthcareResponse();
+                if(healthcareToCheck.isPresent()) {
+                    Healthcare healthcare=healthcareToCheck.get();
+                    healthcareResponse.setCareEnvironment(healthcare.getCareEnvironment());
+                    healthcareResponse.setHealthStatus(healthcare.getHealthStatus());
+                    healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
+                    healthcareResponse.setNote(healthcare.getNote());
+                    healthcareResponse.setChecked(healthcare.isChecked());
+                }
+                koiFishReponse.setHealthcare(healthcareResponse);
+                koiFishReponseList.add(koiFishReponse);
+        }
+
+
+        return KoiFishPageResponse.builder()
+                .koiFishReponseList(koiFishReponseList)
+                .pageNum(koiList.getNumber() + 1)
+                .totalPages(koiList.getTotalPages())
+                .totalElements(koiList.getTotalElements())
+                .pageSize(koiList.getSize())
+                .build();
+    }
+
 
 }
 

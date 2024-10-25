@@ -198,4 +198,11 @@ public class ConsignmentController {
         KoiFishPageResponse koiFishPageResponse = consignmentService.getFishCare(pageNo, pageSize);
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishPageResponse).build();
     }
+    @GetMapping("/getAllFishCareForCustomer")
+    public ApiReponse<KoiFishPageResponse> getAllFishCareForCustomer(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam int accountId) {
+
+        KoiFishPageResponse koiFishPageResponse = consignmentService.getAllFishCareForCustomer(pageNo, pageSize, accountId);
+
+        return ApiReponse.<KoiFishPageResponse>builder().data(koiFishPageResponse).build();
+    }
 }

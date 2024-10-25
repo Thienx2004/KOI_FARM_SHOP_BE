@@ -18,6 +18,7 @@ import com.group2.KoiFarmShop.repository.CategoryRepository;
 import com.group2.KoiFarmShop.repository.CertificateRepository;
 import com.group2.KoiFarmShop.repository.HealthcareRepository;
 import com.group2.KoiFarmShop.repository.KoiFishRepository;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,10 +47,24 @@ public class KoiFishService implements KoiFishServiceImp{
     private HealthcareRepository healthcareRepository;
     @Override
     public KoiFishPageResponse getAllKoiFish(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("koiID").descending());
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
         Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("status"), 3));
+
+            Order orderByStatus = criteriaBuilder.asc(
+                    criteriaBuilder.selectCase()
+                            .when(criteriaBuilder.equal(root.get("status"), 3), 1)
+                            .when(criteriaBuilder.equal(root.get("status"), 1), 2)
+                            .when(criteriaBuilder.equal(root.get("status"), 2), 3)
+                            .otherwise(4)
+            );
+
+            Order orderByField;
+                orderByField = criteriaBuilder.desc(root.get("koiID"));
+
+
+            query.orderBy(orderByStatus, orderByField);
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
         Page<KoiFish> koiFishPage = koiFishRepository.findAll(spec,pageable);
@@ -296,45 +311,16 @@ public class KoiFishService implements KoiFishServiceImp{
                 .build();
     }
 
-    public KoiFishPageResponse filterKoiFish(String categoryID,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection,String sortField2,String sortDirection2,String purebred) {
-        // Xử lý sortField1 và sortDirection1
+    public KoiFishPageResponse filterKoiFish(String categoryID,String status,String maxSize,String minSize, String gender, String age, String minPrice, String maxPrice, String origin, int page, int pageSize,String sortField, String sortDirection,String purebred) {
         if (sortField == null || sortField.isEmpty()) {
             sortField = "koiID";
         }
         if (sortDirection == null || sortDirection.isEmpty()) {
-            sortDirection = "asc";
+            sortDirection = "1";
         }
-        if (sortDirection.equals("1")) {
-            sortDirection = "asc";
-        } else if (sortDirection.equals("2")) {
-            sortDirection = "desc";
-        } else {
-            sortDirection = "asc";
-        }
-
-        // Tạo danh sách các điều kiện sắp xếp
-        List<Sort.Order> orders = new ArrayList<>();
-        orders.add(new Sort.Order(Sort.Direction.fromString(sortDirection), sortField)); // Điều kiện sort chính
-
-        // Xử lý sortField2 và sortDirection2 (nếu có)
-        if (sortField2 != null && !sortField2.isEmpty()) {
-            if (sortDirection2 == null || sortDirection2.isEmpty()) {
-                sortDirection2 = "asc";
-            }
-            if (sortDirection2.equals("1")) {
-                sortDirection2 = "asc";
-            } else if (sortDirection2.equals("2")) {
-                sortDirection2 = "desc";
-            } else {
-                sortDirection2 = "asc";
-            }
-            // Thêm điều kiện sort thứ hai
-            orders.add(new Sort.Order(Sort.Direction.fromString(sortDirection2), sortField2));
-        }
-
-        // Áp dụng danh sách sắp xếp vào Sort
-        Sort sort = Sort.by(orders);
-        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        String finalSortDirection = sortDirection;
+        String finalSortField = sortField;
         Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -364,7 +350,9 @@ public class KoiFishService implements KoiFishServiceImp{
             if (age != null && !age.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("age"), Integer.parseInt(age)));
             }
-            // Lọc theo minPrice và maxPrice
+            if (status != null && !status.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), Integer.parseInt(status)));
+            }
             if (minPrice != null&& !minPrice.isEmpty()) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), Double.parseDouble(minPrice)));
             }
@@ -377,8 +365,25 @@ public class KoiFishService implements KoiFishServiceImp{
             if(purebred != null && !purebred.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("purebred"),  Integer.parseInt(purebred)));
             }
-
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("status"), 3));
+            Order orderByStatus = criteriaBuilder.asc(
+                    criteriaBuilder.selectCase()
+                            .when(criteriaBuilder.equal(root.get("status"), 3), 1)
+                            .when(criteriaBuilder.equal(root.get("status"), 1), 2)
+                            .when(criteriaBuilder.equal(root.get("status"), 2), 3)
+                            .otherwise(4)
+            );
+
+            // Sắp xếp theo trường khác (sortField)
+            Order orderByField;
+            if (finalSortDirection.equals("1")) {
+                orderByField = criteriaBuilder.desc(root.get(finalSortField));
+            } else {
+                orderByField = criteriaBuilder.asc(root.get(finalSortField));
+            }
+
+            // Kết hợp cả hai sắp xếp
+            query.orderBy(orderByStatus, orderByField);
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };

@@ -85,6 +85,7 @@ public class KoiFishController {
     @Operation(summary = "Lọc cá Koi", description = "-Nguyễn Hoàng Thiên")
     public ApiReponse<KoiFishPageResponse> filterKoiFish(
             @RequestParam(required = false) String categoryID,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) String minSize,
             @RequestParam(required = false) String maxSize,
@@ -92,17 +93,14 @@ public class KoiFishController {
             @RequestParam(required = false) String minPrice,
             @RequestParam(required = false) String maxPrice,
             @RequestParam(required = false) String origin,
-            @RequestParam(required = false) String sortField1,
-            @RequestParam(required = false) String sortDirection1,
-            @RequestParam(required = false) String sortField2,
-            @RequestParam(required = false) String sortDirection2,
+            @RequestParam(required = false) String sortField,
+            @RequestParam(required = false) String sortDirection,
             @RequestParam(required = false) String purebred,
-            @RequestParam(defaultValue = "1") int page,      // Thêm tham số page với giá trị mặc định là 1
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "6") int pageSize
-            // Thêm tham số pageSize với giá trị mặc định là 6
     ) {
 
-        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID, maxSize, minSize, gender, age, minPrice, maxPrice, origin, page, pageSize, sortField1, sortDirection1, sortField2, sortDirection2, purebred); // Truyền thêm page và pageSize vào filter
+        KoiFishPageResponse koiFishReponses = koiFishService.filterKoiFish(categoryID,status, maxSize, minSize, gender, age, minPrice, maxPrice, origin, page, pageSize, sortField, sortDirection, purebred); // Truyền thêm page và pageSize vào filter
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishReponses).build();
     }
 
