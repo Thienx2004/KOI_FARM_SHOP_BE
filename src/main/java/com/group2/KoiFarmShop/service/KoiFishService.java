@@ -27,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,7 +69,11 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponse.setStatus(koiFish.getStatus());
-
+            CertificateResponse certificationReponse = new CertificateResponse();
+            certificationReponse.setCreatedDate(koiFish.getCertificate().getCreatedDate());
+            certificationReponse.setName(koiFish.getCertificate().getName());
+            certificationReponse.setImage(koiFish.getCertificate().getImage());
+            koiFishReponse.setCertificate(certificationReponse);
             koiFishReponseList.add(koiFishReponse);
         }
         return KoiFishPageResponse.builder()
@@ -89,7 +90,15 @@ public class KoiFishService implements KoiFishServiceImp{
     @Override
     public KoiFishPageResponse getKoiByCategory(Category category, int page,int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<KoiFish> koiFishList = koiFishRepository.findByCategory(category, pageable);
+        Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("status"), 3));
+
+            predicates.add(criteriaBuilder.equal(root.get("category").get("categoryID"), category.getCategoryID()));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<KoiFish> koiFishList = koiFishRepository.findAll(spec, pageable);
         List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiFishList) {
             KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
@@ -131,7 +140,11 @@ public class KoiFishService implements KoiFishServiceImp{
         if(koiFish==null) {
             throw new AppException(ErrorCode.KOINOTFOUND);
         }
-        List<KoiFishDetailReponse> koiList = getKoiByCategory(koiFish.getCategory(),1,3).getKoiFishReponseList();
+        List<KoiFishDetailReponse> koiList = getKoiByCategory(koiFish.getCategory(),1,4).getKoiFishReponseList().stream()
+                .filter(koi -> koi.getId()!=(koiFish.getKoiID()))
+                .limit(3)
+                .collect(Collectors.toList());;
+
         CertificateResponse certificationReponse = new CertificateResponse();
         certificationReponse.setCreatedDate(koiFish.getCertificate().getCreatedDate());
         certificationReponse.setName(koiFish.getCertificate().getName());
