@@ -69,6 +69,14 @@ public class OrderService implements OrderServiceImp {
                 for (int i = 0; i < order.getKoiFishs().length; i++) {
                     KoiFish koiFish = new KoiFish();
                     koiFish.setKoiID(order.getKoiFishs()[i]);
+                    KoiFish existed = koiFishRepository.findByKoiID(order.getKoiFishs()[i]);
+                    if(existed.getConsignment() != null) {
+                        for (Consignment consignment : existed.getConsignment()) {
+                            if(consignment.getStatus() == 2) {
+                                emailService.sendEmailSaleConsignKoiToCustomer(consignment.getAccount().getEmail(), consignment.getConsignmentID(), account.getEmail());
+                            }
+                        }
+                    }
 
                     OrderDetail orderDetail = new OrderDetail();
                     orderDetail.setOrders(orders);
