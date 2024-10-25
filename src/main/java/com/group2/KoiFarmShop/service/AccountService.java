@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class AccountService implements AccountServiceImp{
+public class AccountService implements AccountServiceImp {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -55,13 +55,13 @@ public class AccountService implements AccountServiceImp{
     private EmailService emailService;
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
-//    @Autowired
+    //    @Autowired
 //    private ForgotPasswordRepositoryI forgotPasswordRepository;
     @Autowired
     private FirebaseService firebaseService;
 
     @Override
-        public ApiReponse login(LoginRequest loginRequest) {
+    public ApiReponse login(LoginRequest loginRequest) {
         // Tìm kiếm tài khoản dựa trên email
         Optional<Account> optionalAccount = accountRepository.findByEmail(loginRequest.getEmail());
         ApiReponse apiReponse = new ApiReponse();
@@ -71,29 +71,33 @@ public class AccountService implements AccountServiceImp{
             // Kiểm tra mật khẩu
             if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
                 // Kiểm tra trạng thái xác thực
-                if(account.isVerified() && account.isStatus()){
-                    String Token=jwtUltilsHelper.generateToken(account);
-                    Content content = new Content();
-                    content.setId(account.getAccountID());
-                    content.setEmail(account.getEmail());
-                    content.setPhone(account.getPhone());
-                    content.setFullName(account.getFullName());
-                    content.setRole(account.getRole().getRoleName());
-                    content.setPhone(account.getPhone());
-                    content.setAddress(account.getAddress());
-                    content.setAvatar(account.getAvatar());
-                    content.setAccessToken(Token);
+                if (account.isStatus()) {
 
-                    apiReponse.setData(content);
-                    apiReponse.setMessage("Đăng nhập thành công");
-                    // Tài khoản đăng nhập thành công
-                }else {
-                    throw new AppException(ErrorCode.NOTVERIFYACCOUNT);
-                }
+
+                    if (account.isVerified()) {
+                        String Token = jwtUltilsHelper.generateToken(account);
+                        Content content = new Content();
+                        content.setId(account.getAccountID());
+                        content.setEmail(account.getEmail());
+                        content.setPhone(account.getPhone());
+                        content.setFullName(account.getFullName());
+                        content.setRole(account.getRole().getRoleName());
+                        content.setPhone(account.getPhone());
+                        content.setAddress(account.getAddress());
+                        content.setAvatar(account.getAvatar());
+                        content.setAccessToken(Token);
+
+                        apiReponse.setData(content);
+                        apiReponse.setMessage("Đăng nhập thành công");
+                        // Tài khoản đăng nhập thành công
+                    } else {
+                        throw new AppException(ErrorCode.NOTVERIFYACCOUNT);
+                    }
+                } else throw new AppException(ErrorCode.BANNEDACCOUNT);
             } else {
                 throw new AppException(ErrorCode.WRONGPASSWORD);
             }
-        }else{
+        } else {
             throw new AppException(ErrorCode.INVALIDACCOUNT);
         }
 
@@ -120,9 +124,13 @@ public class AccountService implements AccountServiceImp{
                 account.setRole(role);
                 accountRepository.save(account);
             }
-            if (!account.isVerified()) {
-                account.setVerified(true);
-                accountRepository.updateVerify(loginGoogleRequest.getEmail(),true);
+            if (account.isStatus()) {
+                if (!account.isVerified()) {
+                    account.setVerified(true);
+                    accountRepository.updateVerify(loginGoogleRequest.getEmail(), true);
+                }
+            } else {
+                throw new AppException(ErrorCode.BANNEDACCOUNT);
             }
             String newToken = jwtUltilsHelper.generateToken(account);
 
@@ -158,34 +166,30 @@ public class AccountService implements AccountServiceImp{
         account.setEmail(accountCreationDTO.getEmail());
         account.setFullName(accountCreationDTO.getFullName());
         account.setRole(role);
-        if(accountCreationDTO.getPassword()!=null) {
+        if (accountCreationDTO.getPassword() != null) {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             account.setPassword(passwordEncoder.encode(accountCreationDTO.getPassword()));
         }
         accountRepository.save(account);
 
-        if(!account.isVerified()) {
-        // Tạo mã OTP
-        String otp = generateOTP();
+        if (!account.isVerified()) {
+            // Tạo mã OTP
+            String otp = generateOTP();
 
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(otp); // Lưu OTP trong trường token
-        verificationToken.setAccount(account);
-        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2)); // OTP hết hạn sau 2 phút
+            VerificationToken verificationToken = new VerificationToken();
+            verificationToken.setToken(otp); // Lưu OTP trong trường token
+            verificationToken.setAccount(account);
+            verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2)); // OTP hết hạn sau 2 phút
 
-        verificationTokenRepository.save(verificationToken);
+            verificationTokenRepository.save(verificationToken);
 
-        // Gửi OTP qua email
-        emailService.sendVerificationEmail(accountCreationDTO.getEmail(), otp);
+            // Gửi OTP qua email
+            emailService.sendVerificationEmail(accountCreationDTO.getEmail(), otp);
         }
-
-
-
 
 
         return account;
     }
-
 
 
 //    @Override
@@ -245,12 +249,12 @@ public class AccountService implements AccountServiceImp{
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
-        if(account.isVerified()) {
+        if (account.isVerified()) {
             List<VerificationToken> verificationTokenList = verificationTokenRepository.findByAccount_AccountID(account.getAccountID());
-            if(!verificationTokenList.isEmpty()) {
+            if (!verificationTokenList.isEmpty()) {
                 VerificationToken tmp = new VerificationToken();
-                for(VerificationToken verificationToken : verificationTokenList) {
-                    if(verificationToken.getToken().equals(otp)) {
+                for (VerificationToken verificationToken : verificationTokenList) {
+                    if (verificationToken.getToken().equals(otp)) {
                         tmp = verificationToken;
                         apiReponse.setMessage("OTP hợp lệ");
                         String tokenOTP = jwtUltilsHelper.generateTokenForOTP(account);
@@ -258,15 +262,14 @@ public class AccountService implements AccountServiceImp{
 
                     }
                 }
-                if(tmp.getToken() != null) {
+                if (tmp.getToken() != null) {
                     for (VerificationToken verificationToken : verificationTokenList) {
                         verificationTokenRepository.delete(verificationToken);
                     }
                 } else throw new AppException(ErrorCode.INVALIDOTP);
             }
 
-        }
-        else {
+        } else {
             // Tìm mã OTP trong bảng VerificationToken
             VerificationToken verificationToken = verificationTokenRepository.findByToken(otp)
                     .orElseThrow(() -> new AppException(ErrorCode.INVALIDOTP));
@@ -292,7 +295,7 @@ public class AccountService implements AccountServiceImp{
         return apiReponse;
     }
 
-   public ProfileRespone getProfile (String email) {
+    public ProfileRespone getProfile(String email) {
         Optional<Account> account = accountRepository.findByEmail(email);
         if (account.isEmpty()) {
             throw new AppException(ErrorCode.INVALIDACCOUNT);
@@ -307,12 +310,12 @@ public class AccountService implements AccountServiceImp{
                 .isVerified(account.get().isVerified())
                 .avatar(account.get().getAvatar())
                 .build();
-   }
+    }
 
 
-    public ProfileRespone updateProfile (ProfileRequest profileRequest, int id) throws IOException {
+    public ProfileRespone updateProfile(ProfileRequest profileRequest, int id) throws IOException {
         Account account = new Account();
-        Optional<Account>account1 = accountRepository.findById(id);
+        Optional<Account> account1 = accountRepository.findById(id);
         account.setAccountID(id);
         account.setEmail(account1.get().getEmail());
         account.setFullName(profileRequest.getFullName());
@@ -338,10 +341,10 @@ public class AccountService implements AccountServiceImp{
     }
 
 
-    public ProfileRespone updatePassword (PasswordRequest passwordRequest, int id) {
-        Optional<Account>account1 = accountRepository.findById(id);
-        Account account=(Account) account1.get();
-        if(passwordEncoder.matches(passwordRequest.getPassword(), account1.get().getPassword())){
+    public ProfileRespone updatePassword(PasswordRequest passwordRequest, int id) {
+        Optional<Account> account1 = accountRepository.findById(id);
+        Account account = (Account) account1.get();
+        if (passwordEncoder.matches(passwordRequest.getPassword(), account1.get().getPassword())) {
             throw new AppException(ErrorCode.PASSWORDINVALID);
         }
         account.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
@@ -374,7 +377,7 @@ public class AccountService implements AccountServiceImp{
         }
 
         return AccountPageRespone.builder()
-                .pageNum(accountList.getNumber()+1)
+                .pageNum(accountList.getNumber() + 1)
                 .totalPages(accountList.getTotalPages())
                 .totalElements(accountList.getTotalElements())
                 .pageSize(accountList.getSize())
@@ -382,15 +385,15 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
-     public ProfileRespone updateAvatar(MultipartFile file, int id) throws IOException {
-         Optional<Account>account1 = accountRepository.findById(id);
-         Account account=(Account) account1.get();
-         account.setAvatar(firebaseService.uploadImage(file));
-         Account accSave = accountRepository.save(account);
-         return ProfileRespone.builder()
-                 .avatar(accSave.getAvatar())
-                 .build();
-     }
+    public ProfileRespone updateAvatar(MultipartFile file, int id) throws IOException {
+        Optional<Account> account1 = accountRepository.findById(id);
+        Account account = (Account) account1.get();
+        account.setAvatar(firebaseService.uploadImage(file));
+        Account accSave = accountRepository.save(account);
+        return ProfileRespone.builder()
+                .avatar(accSave.getAvatar())
+                .build();
+    }
 
     public AccountDTO updateAccountStatus(int accountId) {
         // Tìm theo ID
@@ -402,9 +405,9 @@ public class AccountService implements AccountServiceImp{
 
         Account account = optionalAccount.get();
         // Cập nhật status
-        if(account.isStatus()){
+        if (account.isStatus()) {
             account.setStatus(false);
-        }else{
+        } else {
             account.setStatus(true);
         }
 
@@ -438,7 +441,7 @@ public class AccountService implements AccountServiceImp{
         account.setAddress(accountRequest.getAddress());
         account.setPhone(accountRequest.getPhone());
         account.setEmail(accountRequest.getEmail());
-        if(accountRequest.getPassword()!=null) {
+        if (accountRequest.getPassword() != null) {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             account.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
         }
@@ -461,7 +464,7 @@ public class AccountService implements AccountServiceImp{
     }
 
     public AccountDTO searchByEmail(String email) {
-        Account optionalAccount = accountRepository.findByEmailContains(email).orElseThrow(()-> new AppException(ErrorCode.INVALIDACCOUNT));
+        Account optionalAccount = accountRepository.findByEmailContains(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
         return AccountDTO.builder()
                 .fullName(optionalAccount.getFullName())
                 .email(optionalAccount.getEmail())
@@ -475,10 +478,10 @@ public class AccountService implements AccountServiceImp{
                 .build();
     }
 
-    public AccountPageRespone searchAccountByEmail(String email,int page, int pageSize) {
+    public AccountPageRespone searchAccountByEmail(String email, int page, int pageSize) {
 
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("accountID").descending());
-        Page<Account> accountList = accountRepository.findByEmailContaining(email,pageable);
+        Page<Account> accountList = accountRepository.findByEmailContaining(email, pageable);
         List<AccountDTO> accountDTOList = new ArrayList<>();
         for (Account account : accountList) {
             AccountDTO accountDTO = new AccountDTO();
@@ -495,7 +498,7 @@ public class AccountService implements AccountServiceImp{
         }
 
         return AccountPageRespone.builder()
-                .pageNum(accountList.getNumber()+1)
+                .pageNum(accountList.getNumber() + 1)
                 .totalPages(accountList.getTotalPages())
                 .totalElements(accountList.getTotalElements())
                 .pageSize(accountList.getSize())
