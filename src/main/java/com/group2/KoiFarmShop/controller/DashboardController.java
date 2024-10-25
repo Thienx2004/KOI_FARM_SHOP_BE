@@ -2,9 +2,11 @@ package com.group2.KoiFarmShop.controller;
 
 import com.group2.KoiFarmShop.dto.response.ApiReponse;
 import com.group2.KoiFarmShop.service.DashboardService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -73,6 +75,25 @@ public class DashboardController {
     public ApiReponse<List<Object[]>> getTotalRevenueConsignmentsByMonth() {
         ApiReponse<List<Object[]>> response = new ApiReponse<>();
         List<Object[]> list = dashboardService.getTotalRevenueConsignmentsByMonth();
+        response.setData(list);
+        return response;
+    }
+
+    @GetMapping("/revenue/days/")
+    @Operation(summary = "Lấy doanh thu theo ngày trong 1 tháng",description = "Nhập tháng để lấy doanh thu trong ngày theo tháng đó")
+    public ApiReponse<List<Object[]>> getTotalRevenueByDay(@RequestParam int month) {
+        ApiReponse<List<Object[]>> response = new ApiReponse<>();
+        List<Object[]> list = dashboardService.getTotalRevenueByDay(month);
+        response.setData(list);
+        return response;
+    }
+
+    @GetMapping("/revenue/weeks")
+    @Operation(summary = "Lấy doanh thu theo tuần trong năm hiện tại",description = "Chia làm 52 tuần")
+
+    public ApiReponse<List<Object[]>> getTotalRevenueByWeek() {
+        ApiReponse<List<Object[]>> response = new ApiReponse<>();
+        List<Object[]> list = dashboardService.getTotalRevenueByWeek();
         response.setData(list);
         return response;
     }

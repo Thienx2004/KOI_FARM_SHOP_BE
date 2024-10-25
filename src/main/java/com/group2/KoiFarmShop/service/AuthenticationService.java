@@ -31,6 +31,9 @@ public class AuthenticationService {
                 .getBody();
         return claims.getSubject();
     }
+
+
+
     public String extractTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

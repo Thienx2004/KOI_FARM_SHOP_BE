@@ -37,7 +37,6 @@ import java.util.Set;
         @ManyToOne
         @JoinColumn(name = "roleID")
         @JsonManagedReference
-
         private Role role;
 
         @OneToMany(mappedBy = "account")

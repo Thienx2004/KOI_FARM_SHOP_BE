@@ -2,6 +2,7 @@ package com.group2.KoiFarmShop.service;
 
 
 import com.group2.KoiFarmShop.dto.CertificateRequest;
+import com.group2.KoiFarmShop.dto.KoiFishSpecification;
 import com.group2.KoiFarmShop.dto.request.ConsignmentKoiCare;
 import com.group2.KoiFarmShop.dto.request.ConsignmentKoiRequest;
 import com.group2.KoiFarmShop.dto.request.ConsignmentRequest;
@@ -172,22 +173,22 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
         if (consignment.getStatus() == 1 || consignment.getStatus() == 2) {
 
-            KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
+            //KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
 
             consignment.setStatus(3); //status don bi tu choi
             consignment.setNotes(rejectionReason);
-            consignment.setKoiFish(null);
+            //consignment.setKoiFish(null);
             consignmentRepository.save(consignment);
 
-            if (koiFish != null) {
-
-                Certificate certificate = koiFish.getCertificate();
-                if (certificate != null) {
-                    certificateRepository.delete(certificate);
-                }
-
-                koiFishRepository.delete(koiFish);
-            }
+//            if (koiFish != null) {
+//
+//                Certificate certificate = koiFish.getCertificate();
+//                if (certificate != null) {
+//                    certificateRepository.delete(certificate);
+//                }
+//
+//                koiFishRepository.delete(koiFish);
+//            }
             emailService.sendEmailRejectToCustomer(consignment.getAccount().getEmail(), consignmentId, rejectionReason);
             return "Đã từ chốt đơn ký gửi!";
         } else {
@@ -334,9 +335,11 @@ public class ConsignmentService implements ConsignmentServiceImp {
     }
 
     @Override
-    public Consignment processPayment(int consignmentId, boolean isPaid) {
+    public ConsignmentResponse processPayment(int consignmentId, boolean isPaid) {
         Consignment consignment = consignmentRepository.findConsignmentByConsignmentID(consignmentId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONSIGNMENT_NOT_FOUND));
+
+        ConsignmentResponse consignmentResponse = new ConsignmentResponse();
 
         // Kiểm tra nếu đơn ký gửi đang ở trạng thái chờ thanh toán
         if (consignment.getStatus() == 4) { // Pending Payment
@@ -356,12 +359,25 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 } else throw new AppException(ErrorCode.KOINOTFOUND);
 
                 consignmentRepository.save(consignment);
-                return consignment;
+                //return consignmentResponse;
             }
-
         }
+        consignmentResponse.setConsignmentID(consignment.getConsignmentID());
+        consignmentResponse.setConsignmentDate(consignment.getConsignmentDate());
+        consignmentResponse.setConsignmentType(consignment.isConsignmentType());
+        consignmentResponse.setAgreedPrice(consignment.getAgreedPrice());
+        consignmentResponse.setNotes(consignment.getNotes());
+        consignmentResponse.setEmail(consignment.getAccount().getEmail());
+        consignmentResponse.setFullname(consignment.getAccount().getFullName());
+        consignmentResponse.setPhoneNumber(consignment.getPhoneNumber());
+        consignmentResponse.setDuration(consignment.getDuration());
+        consignmentResponse.setServiceFee(consignment.getServiceFee());
+        consignmentResponse.setStartDate(consignment.getStartDate());
+        consignmentResponse.setEndDate(consignment.getEndDate());
+        consignmentResponse.setStatus(consignment.getStatus());
+        consignmentResponse.setOnline(consignment.isOnline());
 
-        return consignment;
+        return consignmentResponse;
     }
 
     public boolean isPaymentOverdue(Consignment consignment) {
@@ -570,10 +586,12 @@ public class ConsignmentService implements ConsignmentServiceImp {
             koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponse.setStatus(koiFish.getStatus());
+
             Optional<Healthcare> healthcareToCheck = healthcareRepository.findLatestHealthcareByKoiFish(koiFish);
+
             HealthcareResponse healthcareResponse = new HealthcareResponse();
-            if(healthcareToCheck.isPresent()) {
-                Healthcare healthcare=healthcareToCheck.get();
+            if (healthcareToCheck.isPresent()) {
+                Healthcare healthcare = healthcareToCheck.get();
                 healthcareResponse.setCareEnvironment(healthcare.getCareEnvironment());
                 healthcareResponse.setHealthStatus(healthcare.getHealthStatus());
                 healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
@@ -644,6 +662,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .pageSize(koiList.getSize())
                 .build();
     }
+
 
 }
 

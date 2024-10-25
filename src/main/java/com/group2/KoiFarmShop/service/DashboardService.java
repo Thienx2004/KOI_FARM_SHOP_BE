@@ -161,4 +161,70 @@ public class DashboardService {
         return result;
     }
 
+    public List<Object[]> getTotalRevenueByDay(int month) {
+
+        // Lấy kết quả doanh thu từ database
+        List<Object[]> orderRevenueList = orderRepository.findTotalRevenueByDay(month);
+        List<Object[]> consignmentRevenueList = consignmentRepository.findConsignmentRevenueByDay(month);
+
+        System.out.println("Order Revenue: " + orderRevenueList); // Debug log
+        System.out.println("Consignment Revenue: " + consignmentRevenueList); // Debug log
+
+        Map<Integer, Double> revenueMap = new HashMap<>();
+        for (Object[] obj : orderRevenueList) {
+            Integer day = (Integer) obj[0];
+            Double totalRevenue = (Double) obj[1];
+            revenueMap.put(day, totalRevenue);
+        }
+
+        // Cộng doanh thu từ Consignments vào map
+        for (Object[] obj : consignmentRevenueList) {
+            Integer day = (Integer) obj[0];
+            Double totalRevenue = (Double) obj[1];
+            revenueMap.put(day, revenueMap.getOrDefault(day, 0.0) + totalRevenue);
+        }
+
+        // Tạo danh sách 31 ngày trong tháng
+        List<Object[]> result = new ArrayList<>();
+        for (int day = 1; day <= 31; day++) {
+            Double totalRevenue = revenueMap.getOrDefault(day, 0.0);
+            result.add(new Object[]{day, totalRevenue});
+        }
+
+        return result;
+    }
+
+    public List<Object[]> getTotalRevenueByWeek() {
+
+        // Lấy kết quả doanh thu từ database
+        List<Object[]> orderRevenueList = orderRepository.findTotalRevenueByWeek();
+        List<Object[]> consignmentRevenueList = consignmentRepository.findConsignmentRevenueByWeek();
+
+        System.out.println("Order Revenue: " + orderRevenueList); // Debug log
+        System.out.println("Consignment Revenue: " + consignmentRevenueList); // Debug log
+
+        Map<Integer, Double> revenueMap = new HashMap<>();
+        for (Object[] obj : orderRevenueList) {
+            Integer week = (Integer) obj[0];
+            Double totalRevenue = (Double) obj[1];
+            revenueMap.put(week, totalRevenue);
+        }
+
+        // Cộng doanh thu từ Consignments vào map
+        for (Object[] obj : consignmentRevenueList) {
+            Integer week = (Integer) obj[0];
+            Double totalRevenue = (Double) obj[1];
+            revenueMap.put(week, revenueMap.getOrDefault(week, 0.0) + totalRevenue);
+        }
+
+        // Tạo danh sách kết quả cho 52 tuần trong năm
+        List<Object[]> result = new ArrayList<>();
+        for (int week = 1; week <= 52; week++) {
+            Double totalRevenue = revenueMap.getOrDefault(week, 0.0);
+            result.add(new Object[]{week, totalRevenue});
+        }
+
+        return result;
+    }
+
 }

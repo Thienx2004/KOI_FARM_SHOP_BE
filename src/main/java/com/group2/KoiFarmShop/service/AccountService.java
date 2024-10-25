@@ -405,14 +405,20 @@ public class AccountService implements AccountServiceImp {
 
         Account account = optionalAccount.get();
         // Cập nhật status
-        if (account.isStatus()) {
+
+
+        if (account.getRole().getRoleID()==1) {
+            throw new AppException(ErrorCode.CANCHANGESTATUS);
+        }
+
+        if(account.isStatus()){
             account.setStatus(false);
-        } else {
+        }else{
             account.setStatus(true);
         }
 
 
-        accountRepository.save(account);// Lưu thay đổi vào DB
+        accountRepository.save(account);// Lưu vào DB
 
 
         AccountDTO accountDTO = new AccountDTO();

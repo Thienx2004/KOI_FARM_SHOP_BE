@@ -49,7 +49,7 @@ public interface ConsignmentServiceImp {
 
     public ConsignmentDetailResponse getConsignmentDetail(int consignmentId);
 
-    public Consignment processPayment(int consignmentId, boolean isPay);
+    public ConsignmentResponse processPayment(int consignmentId, boolean isPay);
 
     public String deleteConsignment(int consignmentId);
     public ConsignmentDetailResponse updateConsignment(ConsignmentKoiRequest consignmentKoiRequest, int consignmentId, int koiId) throws IOException;
