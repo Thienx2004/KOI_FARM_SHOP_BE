@@ -212,4 +212,11 @@ public class ConsignmentController {
 
         return ApiReponse.<FishCareDetailResponse>builder().data(fishCareDetailResponse).build();
     }
+    @GetMapping("/getAllFishSellForCustomer")
+    public ApiReponse<KoiFishPageResponse> getAllFishSellForCustomer(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam int accountId) {
+
+        KoiFishPageResponse koiFishPageResponse = consignmentService.getAllFishSellForCustomer(pageNo, pageSize, accountId);
+
+        return ApiReponse.<KoiFishPageResponse>builder().data(koiFishPageResponse).build();
+    }
 }

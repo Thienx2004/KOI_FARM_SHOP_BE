@@ -26,6 +26,10 @@ public interface ConsignmentRepository extends JpaRepository<Consignment, Intege
             "JOIN k.consignment c " +
             "WHERE c.account.accountID = :accountId AND k.status = 5")
     Page<KoiFish> findKoiFishByAccountIdAndStatus(int accountId,Pageable pageable);
+    @Query("SELECT k FROM KoiFish k " +
+            "JOIN k.consignment c " +
+            "WHERE c.account.accountID = :accountId AND k.status = 3")
+    Page<KoiFish> findKoiFishByAccountIdAndStatusSell(int accountId,Pageable pageable);
     // Tổng doanh thu 7 năm gần nhất theo năm
     @Query("SELECT YEAR(c.consignmentDate) as year, SUM(c.serviceFee) as totalRevenue "
             + "FROM Consignment c "
