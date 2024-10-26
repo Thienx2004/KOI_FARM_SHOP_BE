@@ -323,6 +323,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     healthcareResponse.setCareEnvironment(healthcare.get().getCareEnvironment());
                     healthcareResponse.setNote(healthcare.get().getNote());
                     healthcareResponse.setChecked(healthcare.get().isChecked());
+                    healthcareResponse.setDate(healthcare.get().getCreatedDate());
                     LocalDate currentDate = LocalDate.now();
                     LocalDate futureDate = LocalDate.of(healthcare.get().getConsignmentDate().getYear(), healthcare.get().getConsignmentDate().getMonth(), healthcare.get().getConsignmentDate().getDay());
                     healthcareResponse.setDayRemain(ChronoUnit.DAYS.between(currentDate, futureDate));
@@ -484,6 +485,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .note(healthcare1.getNote())
                 .dayRemain(differenceInDays)
                 .checked(healthcare1.isChecked())
+                .date(healthcare1.getCreatedDate())
                 .build();
     }
 
@@ -514,6 +516,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .note(healthcare1.getNote())
                 .dayRemain(differenceInDays)
                 .checked(healthcare1.isChecked())
+                .date(healthcare1.getCreatedDate())
                 .build();
     }
 
@@ -597,6 +600,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
                 healthcareResponse.setNote(healthcare.getNote());
                 healthcareResponse.setChecked(healthcare.isChecked());
+                healthcareResponse.setDate(healthcare.getCreatedDate());
                 long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
                 long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
                 healthcareResponse.setDayRemain(differenceInDays);
@@ -614,7 +618,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .build();
     }
 
-
+    @Override
     public KoiFishPageResponse getAllFishCareForCustomer(int pageNo, int pageSize, int accountId) {
         Pageable pageable = PageRequest.of(pageNo-1, pageSize);
         Page<KoiFish> koiList=consignmentRepository.findKoiFishByAccountIdAndStatus(accountId,pageable);
@@ -648,12 +652,11 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
                     healthcareResponse.setNote(healthcare.getNote());
                     healthcareResponse.setChecked(healthcare.isChecked());
+                    healthcareResponse.setDate(healthcare.getCreatedDate());
                 }
                 koiFishReponse.setHealthcare(healthcareResponse);
                 koiFishReponseList.add(koiFishReponse);
         }
-
-
         return KoiFishPageResponse.builder()
                 .koiFishReponseList(koiFishReponseList)
                 .pageNum(koiList.getNumber() + 1)
@@ -663,7 +666,56 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .build();
     }
 
+    public FishCareDetailResponse getFishCareDetail(int koiId) {
+        Optional<KoiFish> koiFish=koiFishRepository.findById(koiId);
+        KoiFish koiFishFound= new KoiFish();
+        if(koiFish.isPresent()) {
+            koiFishFound=koiFish.get();
+        }else {
+            throw new AppException(ErrorCode.KOINOTFOUND);
+        }
+        List<Healthcare> healthcareList=healthcareRepository.findAllByKoiFish(koiFish.get())
+                .stream()
+                .sorted(Comparator.comparing(Healthcare::getCreatedDate).reversed()) // Sắp xếp theo ngày mới nhất
+                .toList();
+        List<HealthcareResponse> healthcareResponseList=new ArrayList<>();
 
+
+        for(Healthcare healthcare:healthcareList) {
+            HealthcareResponse healthcareResponse=new HealthcareResponse();
+            healthcareResponse.setCareEnvironment(healthcare.getCareEnvironment());
+            healthcareResponse.setHealthStatus(healthcare.getHealthStatus());
+            healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
+            healthcareResponse.setNote(healthcare.getNote());
+            healthcareResponse.setChecked(healthcare.isChecked());
+            healthcareResponse.setDate(healthcare.getCreatedDate());
+            long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
+            long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+            healthcareResponse.setDayRemain(differenceInDays);
+            healthcareResponseList.add(healthcareResponse);
+        }
+        return FishCareDetailResponse.builder()
+                .id(koiFishFound.getKoiID())
+                .pH(koiFishFound.getPH())
+                .food(koiFishFound.getFood())
+                .gender(koiFishFound.isGender())
+                .categoryId(koiFishFound.getCategory().getCategoryID())
+                .koiImage(koiFishFound.getKoiImage())
+                .category(koiFishFound.getCategory().getCategoryName())
+                .origin(koiFishFound.getOrigin())
+                .personality(koiFishFound.getPersonality())
+                .price(koiFishFound.getPrice())
+                .status(koiFishFound.getStatus())
+                .purebred(koiFishFound.getPurebred())
+                .water(koiFishFound.getWater())
+                .age(koiFishFound.getAge())
+                .health(koiFishFound.getHealth())
+                .temperature(koiFishFound.getTemperature())
+                .size(koiFishFound.getSize())
+                .healthcare(healthcareResponseList)
+                .age(koiFishFound.getAge())
+                .build();
+    }
 }
 
 

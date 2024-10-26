@@ -58,4 +58,5 @@ public interface ConsignmentServiceImp {
     public PaginReponse<ConsignmentResponse> getAllConsignmentForCare(int pageNo, int pageSize);
     public KoiFishPageResponse getFishCare(int page, int pageSize);
     public KoiFishPageResponse getAllFishCareForCustomer(int pageNo, int pageSize, int accountId);
+    public FishCareDetailResponse getFishCareDetail(int koiId);
 }
