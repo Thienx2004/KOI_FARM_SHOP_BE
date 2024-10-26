@@ -719,6 +719,40 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .age(koiFishFound.getAge())
                 .build();
     }
+    @Override
+    public KoiFishPageResponse getAllFishSellForCustomer(int pageNo, int pageSize, int accountId) {
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+        Page<KoiFish> koiList=consignmentRepository.findKoiFishByAccountIdAndStatusSell(accountId,pageable);
+        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
+        for (KoiFish koiFish : koiList) {
+            KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
+            koiFishReponse.setId(koiFish.getKoiID());
+            koiFishReponse.setOrigin(koiFish.getOrigin());
+            koiFishReponse.setAge(koiFish.getAge());
+            koiFishReponse.setSize(koiFish.getSize());
+            koiFishReponse.setGender(koiFish.isGender());
+            koiFishReponse.setPersonality(koiFish.getPersonality());
+            koiFishReponse.setPrice(koiFish.getPrice());
+            koiFishReponse.setKoiImage(koiFish.getKoiImage());
+            koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
+            koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
+            koiFishReponse.setFood(koiFish.getFood());
+            koiFishReponse.setHealth(koiFish.getHealth());
+            koiFishReponse.setPH(koiFish.getPH());
+            koiFishReponse.setTemperature(koiFish.getTemperature());
+            koiFishReponse.setWater(koiFish.getWater());
+            koiFishReponse.setPurebred(koiFish.getPurebred());
+            koiFishReponse.setStatus(koiFish.getStatus());
+            koiFishReponseList.add(koiFishReponse);
+        }
+        return KoiFishPageResponse.builder()
+                .koiFishReponseList(koiFishReponseList)
+                .pageNum(koiList.getNumber() + 1)
+                .totalPages(koiList.getTotalPages())
+                .totalElements(koiList.getTotalElements())
+                .pageSize(koiList.getSize())
+                .build();
+    }
 }
 
 

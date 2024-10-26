@@ -59,4 +59,5 @@ public interface ConsignmentServiceImp {
     public KoiFishPageResponse getFishCare(int page, int pageSize);
     public KoiFishPageResponse getAllFishCareForCustomer(int pageNo, int pageSize, int accountId);
     public FishCareDetailResponse getFishCareDetail(int koiId);
+    public KoiFishPageResponse getAllFishSellForCustomer(int pageNo, int pageSize, int accountId);
 }
