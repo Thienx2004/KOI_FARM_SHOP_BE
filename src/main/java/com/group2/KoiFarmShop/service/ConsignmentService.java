@@ -653,6 +653,9 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     healthcareResponse.setNote(healthcare.getNote());
                     healthcareResponse.setChecked(healthcare.isChecked());
                     healthcareResponse.setDate(healthcare.getCreatedDate());
+                    long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
+                    long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+                    healthcareResponse.setDayRemain(differenceInDays);
                 }
                 koiFishReponse.setHealthcare(healthcareResponse);
                 koiFishReponseList.add(koiFishReponse);
