@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class ConsignmentKoiCare {
     private int koiCareId;
     private String healthStatus;
-    private String growthStatus;
+    private Double growthStatus;
     private String careEnvironment;
     private String note;
 }

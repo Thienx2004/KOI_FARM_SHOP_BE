@@ -552,7 +552,7 @@ public class KoiFishService implements KoiFishServiceImp{
     public KoiFishDetailReponse updateKoiCare(int id, ConsignmentKoiCare koiCare) throws IOException {
         KoiFish koiFish=koiFishRepository.findById(id).get();
         koiFish.setHealth(koiCare.getHealthStatus());
-        koiFish.setSize(Double.parseDouble(koiCare.getGrowthStatus()));
+        koiFish.setSize(koiCare.getGrowthStatus());
         KoiFish updateddKoiFish= koiFishRepository.save(koiFish);
 
         return KoiFishDetailReponse.builder()

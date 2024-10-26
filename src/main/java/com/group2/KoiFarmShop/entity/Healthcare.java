@@ -24,7 +24,7 @@ public class Healthcare {
     private KoiFish koiFish;
     private boolean checked=false;//đã thêm status hay chưa
     private String healthStatus;
-    private String growthStatus;
+    private Double growthStatus;
     private String careEnvironment;
     private String note;
     @Temporal(TemporalType.DATE)
