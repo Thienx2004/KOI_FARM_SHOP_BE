@@ -112,7 +112,7 @@ public class KoiFishService implements KoiFishServiceImp{
         Specification<KoiFish> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("status"), 3));
-
+            predicates.add(criteriaBuilder.notEqual(root.get("status"), 2));
             predicates.add(criteriaBuilder.equal(root.get("category").get("categoryID"), category.getCategoryID()));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
