@@ -721,7 +721,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
     }
     @Override
     public KoiFishPageResponse getAllFishSellForCustomer(int pageNo, int pageSize, int accountId) {
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize,Sort.by("koiID").descending());
         Page<KoiFish> koiList=consignmentRepository.findKoiFishByAccountIdAndStatusSell(accountId,pageable);
         List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
         for (KoiFish koiFish : koiList) {
