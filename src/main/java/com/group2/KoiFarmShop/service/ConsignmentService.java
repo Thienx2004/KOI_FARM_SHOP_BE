@@ -352,6 +352,14 @@ public class ConsignmentService implements ConsignmentServiceImp {
             } // Nếu đơn đang ở trạng thái Pending Payment
             if (isPaid) {
                 consignment.setStatus(2); // Đơn đã được thanh toán, chờ bán
+                Date paymentDate = new Date();
+                consignment.setStartDate(paymentDate);
+
+                // Tính ngày kết thúc ký gửi dựa trên duration (theo tháng)
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(paymentDate);
+                calendar.add(Calendar.MONTH, consignment.getDuration());
+                consignment.setEndDate(calendar.getTime());
                 KoiFish koiFish = koiFishRepository.findByKoiID(consignment.getKoiFish().getKoiID());
                 if (koiFish != null) {
                     if (consignment.isConsignmentType())
@@ -756,6 +764,65 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 .totalElements(koiList.getTotalElements())
                 .pageSize(koiList.getSize())
                 .build();
+    }
+
+    @Override
+    public PaginReponse<ConsignmentDetailResponse> getConsignmentsForSale(int accountId, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentID").descending());
+        Page<Consignment> consignmentsPage = consignmentRepository.findConsignmentByAccount_AccountIDAndStatusAndConsignmentType(accountId, 2, true, pageable);
+        List<ConsignmentDetailResponse> consignmentDetailResponseList = new ArrayList<>();
+        for (Consignment consignment : consignmentsPage.getContent()) {
+            ConsignmentDetailResponse consignmentDetailResponse = new ConsignmentDetailResponse();
+            consignmentDetailResponse.setConsignmentID(consignment.getConsignmentID());
+            consignmentDetailResponse.setConsignmentDate(consignment.getConsignmentDate());
+            consignmentDetailResponse.setConsignmentType(consignment.isConsignmentType());
+            consignmentDetailResponse.setAgreedPrice(consignment.getAgreedPrice());
+            consignmentDetailResponse.setNotes(consignment.getNotes());
+            consignmentDetailResponse.setEmail(consignment.getAccount().getEmail());
+            consignmentDetailResponse.setFullname(consignment.getAccount().getFullName());
+            consignmentDetailResponse.setPhoneNumber(consignment.getPhoneNumber());
+            consignmentDetailResponse.setDuration(consignment.getDuration());
+            consignmentDetailResponse.setServiceFee(consignment.getServiceFee());
+            consignmentDetailResponse.setStartDate(consignment.getStartDate());
+            consignmentDetailResponse.setEndDate(consignment.getEndDate());
+            consignmentDetailResponse.setStatus(consignment.getStatus());
+            consignmentDetailResponse.setOnline(consignment.isOnline());
+
+            long remainingDays = ChronoUnit.DAYS.between(LocalDate.now(),
+                    consignment.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            consignmentDetailResponse.setRemainingDays(remainingDays);
+
+
+            if(consignment.getKoiFish() != null) {
+                KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
+                koiFishReponse.setId(consignment.getKoiFish().getKoiID());
+                koiFishReponse.setOrigin(consignment.getKoiFish().getOrigin());
+                koiFishReponse.setAge(consignment.getKoiFish().getAge());
+                koiFishReponse.setSize(consignment.getKoiFish().getSize());
+                koiFishReponse.setGender(consignment.getKoiFish().isGender());
+                koiFishReponse.setPersonality(consignment.getKoiFish().getPersonality());
+                koiFishReponse.setPrice(consignment.getKoiFish().getPrice());
+                koiFishReponse.setKoiImage(consignment.getKoiFish().getKoiImage());
+                koiFishReponse.setCategoryId(consignment.getKoiFish().getCategory().getCategoryID());
+                koiFishReponse.setCategory(consignment.getKoiFish().getCategory().getCategoryName());
+                koiFishReponse.setFood(consignment.getKoiFish().getFood());
+                koiFishReponse.setHealth(consignment.getKoiFish().getHealth());
+                koiFishReponse.setPH(consignment.getKoiFish().getPH());
+                koiFishReponse.setTemperature(consignment.getKoiFish().getTemperature());
+                koiFishReponse.setWater(consignment.getKoiFish().getWater());
+                koiFishReponse.setPurebred(consignment.getKoiFish().getPurebred());
+                koiFishReponse.setStatus(consignment.getKoiFish().getStatus());
+                consignmentDetailResponse.setKoiFish(koiFishReponse);
+            }
+            consignmentDetailResponseList.add(consignmentDetailResponse);
+        }
+        PaginReponse<ConsignmentDetailResponse> consignmentDetailReponse = new PaginReponse<>();
+        consignmentDetailReponse.setContent(consignmentDetailResponseList);
+        consignmentDetailReponse.setPageSize(pageSize);
+        consignmentDetailReponse.setPageNum(pageNo);
+        consignmentDetailReponse.setTotalElements(consignmentsPage.getTotalElements());
+        consignmentDetailReponse.setTotalPages(consignmentsPage.getTotalPages());
+        return consignmentDetailReponse;
     }
 }
 

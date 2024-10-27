@@ -30,6 +30,7 @@ public class ConsignmentDetailResponse {
     private Date endDate;
     private int status;
     private boolean online;
+    private long remainingDays;
 
     private KoiFishDetailReponse koiFish;
     private HealthcareResponse healthcare;

@@ -60,4 +60,6 @@ public interface ConsignmentRepository extends JpaRepository<Consignment, Intege
             + "GROUP BY WEEK(c.consignmentDate) "
             + "ORDER BY WEEK(c.consignmentDate)")
     List<Object[]> findConsignmentRevenueByWeek();
+
+    Page<Consignment> findConsignmentByAccount_AccountIDAndStatusAndConsignmentType(int accountId, int status, boolean consignmentType, Pageable pageable);
 }

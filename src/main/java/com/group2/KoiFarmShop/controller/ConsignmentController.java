@@ -219,4 +219,13 @@ public class ConsignmentController {
 
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishPageResponse).build();
     }
+
+    @GetMapping("/consignments/for-sale")
+    public ApiReponse<PaginReponse<ConsignmentDetailResponse>> getConsignmentForSale(@RequestParam int accountId,
+                                                                                     @RequestParam(defaultValue = "1") int pageNo,
+                                                                                     @RequestParam(defaultValue = "10") int pageSize) {
+        ApiReponse<PaginReponse<ConsignmentDetailResponse>> apiReponse = new ApiReponse<>();
+        apiReponse.setData(consignmentService.getConsignmentsForSale(accountId, pageNo, pageSize));
+        return apiReponse;
+    }
 }

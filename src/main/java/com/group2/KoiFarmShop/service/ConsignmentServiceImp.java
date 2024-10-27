@@ -8,6 +8,7 @@ import com.group2.KoiFarmShop.dto.response.*;
 import com.group2.KoiFarmShop.entity.Consignment;
 import com.group2.KoiFarmShop.entity.KoiFish;
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,4 +61,5 @@ public interface ConsignmentServiceImp {
     public KoiFishPageResponse getAllFishCareForCustomer(int pageNo, int pageSize, int accountId);
     public FishCareDetailResponse getFishCareDetail(int koiId);
     public KoiFishPageResponse getAllFishSellForCustomer(int pageNo, int pageSize, int accountId);
+    public PaginReponse<ConsignmentDetailResponse> getConsignmentsForSale(int accountId, int pageNo, int pageSize);
 }
