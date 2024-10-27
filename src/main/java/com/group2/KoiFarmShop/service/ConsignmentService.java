@@ -562,7 +562,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public KoiFishPageResponse getFishCare(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, pageSize,Sort.by("koiID").descending());
 
         Specification<KoiFish> spec = (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("status"), 5);
