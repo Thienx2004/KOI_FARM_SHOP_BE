@@ -119,6 +119,9 @@ public class OrderService implements OrderServiceImp {
                     if (remainingQuantity == 0) {
                         batch.setStatus(2);  // Giả định "2" là trạng thái "hết hàng"
                     }
+                    else if(remainingQuantity < 0){
+                        throw new AppException(ErrorCode.BATCH_OUT_OF_QUANTITY);
+                    }
                     batchRepository.save(batch);
                 }
                 orderDetails.get(i).setQuantity(order.getQuantity()[i]);
