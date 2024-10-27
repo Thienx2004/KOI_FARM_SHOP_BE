@@ -643,7 +643,7 @@ public class ConsignmentService implements ConsignmentServiceImp {
                 koiFishReponse.setPurebred(koiFish.getPurebred());
                 koiFishReponse.setStatus(koiFish.getStatus());
                 Optional<Healthcare> healthcareToCheck=healthcareRepository.findLatestHealthcareByKoiFish(koiFish);
-
+                Optional<Healthcare> healthcareToCompare=healthcareRepository.findAllHealthcareByKoiFish(koiFish).stream().skip(1).findFirst();
                 HealthcareResponse healthcareResponse = new HealthcareResponse();
                 if(healthcareToCheck.isPresent()) {
                     Healthcare healthcare=healthcareToCheck.get();
@@ -656,6 +656,10 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
                     long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
                     healthcareResponse.setDayRemain(differenceInDays);
+                    if(healthcareToCompare.isPresent()) {
+                        Healthcare healthcareToCompare1=healthcareToCompare.get();
+                        healthcareResponse.setLastGrowth(healthcareToCompare1.getGrowthStatus());
+                    }
                 }
                 koiFishReponse.setHealthcare(healthcareResponse);
                 koiFishReponseList.add(koiFishReponse);

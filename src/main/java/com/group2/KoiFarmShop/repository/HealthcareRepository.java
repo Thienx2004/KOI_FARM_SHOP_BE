@@ -23,6 +23,9 @@ public interface HealthcareRepository extends JpaRepository<Healthcare, Integer>
 
     @Query("SELECT  h FROM Healthcare h WHERE h.koiFish = :koiFish ORDER BY h.createdDate DESC LIMIT 1")
     Optional<Healthcare> findLatestHealthcareByKoiFish(@Param("koiFish") KoiFish koiFish);
+    @Query("SELECT h FROM Healthcare h WHERE h.koiFish = :koiFish ORDER BY h.createdDate DESC")
+    List<Healthcare> findAllHealthcareByKoiFish(@Param("koiFish") KoiFish koiFish);
+
     List<Healthcare> findAllByKoiFish(KoiFish koiFish);
 }
 

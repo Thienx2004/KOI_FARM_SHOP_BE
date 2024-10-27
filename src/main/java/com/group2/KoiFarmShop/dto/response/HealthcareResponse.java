@@ -18,6 +18,7 @@ public class HealthcareResponse {
     private Date date;
     private long dayRemain;
     private boolean checked;
+    private Double lastGrowth;
 
     public HealthcareResponse(){
         this.checked = false;
@@ -26,5 +27,6 @@ public class HealthcareResponse {
         this.careEnvironment = "";
         this.note = "";
         this.healthStatus = "";
+        this.lastGrowth = 0.0;
     }
 }
