@@ -154,6 +154,30 @@ public class OrderService implements OrderServiceImp {
 
     }
 
+    @Override
+    public String validateOrder(OrderRequest orderRequest) {
+        accountRepository.findByAccountID(orderRequest.getAccountID())
+                .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
+
+        // Kiểm tra mã khuyến mãi
+        if (orderRequest.getPromoCode() != null) {
+            promotionRepository.findByPromoCode(orderRequest.getPromoCode())
+                    .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
+        }
+
+        // Kiểm tra số lượng cá trong lô
+        if (orderRequest.getBatchs() != null) {
+            for (int i = 0; i < orderRequest.getBatchs().length; i++) {
+                Batch batch = batchRepository.findByBatchID(orderRequest.getBatchs()[i])
+                        .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
+                if (batch.getQuantity() < orderRequest.getQuantity()[i]) {
+                    throw new AppException(ErrorCode.BATCH_OUT_OF_QUANTITY);
+                }
+            }
+        }
+        return "Thông tin hợp lệ, tiếp tục thanh toán!";
+    }
+
 
 //    @Override
 //    public PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId, String type) {
