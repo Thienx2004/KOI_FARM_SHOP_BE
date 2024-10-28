@@ -156,6 +156,7 @@ public class OrderService implements OrderServiceImp {
 
     @Override
     public String validateOrder(OrderRequest orderRequest) {
+        // Kiểm tra tài khoản
         accountRepository.findByAccountID(orderRequest.getAccountID())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
@@ -165,16 +166,33 @@ public class OrderService implements OrderServiceImp {
                     .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
         }
 
-        // Kiểm tra số lượng cá trong lô
+        int koiQuantityIndex = 0;  // Biến đếm cho quantity của KoiFishs
+        int batchQuantityIndex = 0;  // Biến đếm cho quantity của Batchs
+
+        // Kiểm tra số lượng cá thể KoiFish
+        if (orderRequest.getKoiFishs() != null) {
+            for (int i = 0; i < orderRequest.getKoiFishs().length; i++) {
+                KoiFish koiFish = koiFishRepository.findByKoiID(orderRequest.getKoiFishs()[i]);
+                if (koiFish == null ) {
+                    throw new AppException(ErrorCode.KOINOTFOUND);
+                }
+                koiQuantityIndex++;  // Tăng biến đếm sau khi xử lý từng cá thể Koi
+            }
+        }
+
+        // Kiểm tra số lượng trong từng Batch
         if (orderRequest.getBatchs() != null) {
             for (int i = 0; i < orderRequest.getBatchs().length; i++) {
                 Batch batch = batchRepository.findByBatchID(orderRequest.getBatchs()[i])
                         .orElseThrow(() -> new AppException(ErrorCode.BATCH_NOT_EXISTED));
-                if (batch.getQuantity() < orderRequest.getQuantity()[i]) {
+
+                if (batch.getQuantity() < orderRequest.getQuantity()[koiQuantityIndex + batchQuantityIndex]) {
                     throw new AppException(ErrorCode.BATCH_OUT_OF_QUANTITY);
                 }
+                batchQuantityIndex++;
             }
         }
+
         return "Thông tin hợp lệ, tiếp tục thanh toán!";
     }
 
