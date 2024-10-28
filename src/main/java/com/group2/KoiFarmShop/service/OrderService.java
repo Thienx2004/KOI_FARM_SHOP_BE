@@ -166,8 +166,8 @@ public class OrderService implements OrderServiceImp {
                     .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_INVALID));
         }
 
-        int koiQuantityIndex = 0;  // Biến đếm cho quantity của KoiFishs
-        int batchQuantityIndex = 0;  // Biến đếm cho quantity của Batchs
+        int koiQuantityIndex = 0;
+        int batchQuantityIndex = 0;
 
         // Kiểm tra số lượng cá thể KoiFish
         if (orderRequest.getKoiFishs() != null) {
