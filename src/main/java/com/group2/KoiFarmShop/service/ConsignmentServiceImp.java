@@ -58,7 +58,7 @@ public interface ConsignmentServiceImp {
     public HealthcareResponse addHealth( ConsignmentKoiCare consignmentKoiCare) throws MessagingException, IOException;
     public PaginReponse<ConsignmentResponse> getAllConsignmentForCare(int pageNo, int pageSize);
     public KoiFishPageResponse getFishCare(int page, int pageSize);
-    public KoiFishPageResponse getAllFishCareForCustomer(int pageNo, int pageSize, int accountId);
+    public PaginReponse<ConsignmentDetailResponse> getAllFishCareForCustomer(int pageNo, int pageSize, int accountId);
     public FishCareDetailResponse getFishCareDetail(int koiId);
     public KoiFishPageResponse getAllFishSellForCustomer(int pageNo, int pageSize, int accountId);
     public PaginReponse<ConsignmentDetailResponse> getConsignmentsForSale(int accountId, int pageNo, int pageSize);

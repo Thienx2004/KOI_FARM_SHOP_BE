@@ -199,11 +199,11 @@ public class ConsignmentController {
         return ApiReponse.<KoiFishPageResponse>builder().data(koiFishPageResponse).build();
     }
     @GetMapping("/getAllFishCareForCustomer")
-    public ApiReponse<KoiFishPageResponse> getAllFishCareForCustomer(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam int accountId) {
+    public ApiReponse<PaginReponse<ConsignmentDetailResponse>> getAllFishCareForCustomer(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam int accountId) {
 
-        KoiFishPageResponse koiFishPageResponse = consignmentService.getAllFishCareForCustomer(pageNo, pageSize, accountId);
-
-        return ApiReponse.<KoiFishPageResponse>builder().data(koiFishPageResponse).build();
+        ApiReponse<PaginReponse<ConsignmentDetailResponse>> apiReponse = new ApiReponse<>();
+        apiReponse.setData(consignmentService.getAllFishCareForCustomer(pageNo, pageSize,accountId));
+        return apiReponse;
     }
     @GetMapping("/getFishCareDetail")
     public ApiReponse<FishCareDetailResponse> getAllFishCareForCustomer(@RequestParam int koiId) {

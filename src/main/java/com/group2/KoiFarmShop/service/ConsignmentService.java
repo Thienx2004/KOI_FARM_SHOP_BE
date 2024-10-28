@@ -627,31 +627,53 @@ public class ConsignmentService implements ConsignmentServiceImp {
     }
 
     @Override
-    public KoiFishPageResponse getAllFishCareForCustomer(int pageNo, int pageSize, int accountId) {
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
-        Page<KoiFish> koiList=consignmentRepository.findKoiFishByAccountIdAndStatus(accountId,pageable);
-        List<KoiFishDetailReponse> koiFishReponseList = new ArrayList<>();
-        for (KoiFish koiFish : koiList) {
+    public PaginReponse<ConsignmentDetailResponse> getAllFishCareForCustomer(int pageNo, int pageSize, int accountId) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentID").descending());
+        Page<Consignment> consignmentsPage = consignmentRepository.findConsignmentByAccount_AccountIDAndStatusAndConsignmentType(accountId, 2, false, pageable);
+        List<ConsignmentDetailResponse> consignmentDetailResponseList = new ArrayList<>();
+        for (Consignment consignment : consignmentsPage.getContent()) {
+            ConsignmentDetailResponse consignmentDetailResponse = new ConsignmentDetailResponse();
+            consignmentDetailResponse.setConsignmentID(consignment.getConsignmentID());
+            consignmentDetailResponse.setConsignmentDate(consignment.getConsignmentDate());
+            consignmentDetailResponse.setConsignmentType(consignment.isConsignmentType());
+            consignmentDetailResponse.setAgreedPrice(consignment.getAgreedPrice());
+            consignmentDetailResponse.setNotes(consignment.getNotes());
+            consignmentDetailResponse.setEmail(consignment.getAccount().getEmail());
+            consignmentDetailResponse.setFullname(consignment.getAccount().getFullName());
+            consignmentDetailResponse.setPhoneNumber(consignment.getPhoneNumber());
+            consignmentDetailResponse.setDuration(consignment.getDuration());
+            consignmentDetailResponse.setServiceFee(consignment.getServiceFee());
+            consignmentDetailResponse.setStartDate(consignment.getStartDate());
+            consignmentDetailResponse.setEndDate(consignment.getEndDate());
+            consignmentDetailResponse.setStatus(consignment.getStatus());
+            consignmentDetailResponse.setOnline(consignment.isOnline());
+
+            long differenceInMillis = Math.abs(new Date().getTime() - consignment.getEndDate().getTime());
+            long remainingDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+            consignmentDetailResponse.setRemainingDays(remainingDays);
+
+
+            if(consignment.getKoiFish() != null) {
                 KoiFishDetailReponse koiFishReponse = new KoiFishDetailReponse();
-                koiFishReponse.setId(koiFish.getKoiID());
-                koiFishReponse.setOrigin(koiFish.getOrigin());
-                koiFishReponse.setAge(koiFish.getAge());
-                koiFishReponse.setSize(koiFish.getSize());
-                koiFishReponse.setGender(koiFish.isGender());
-                koiFishReponse.setPersonality(koiFish.getPersonality());
-                koiFishReponse.setPrice(koiFish.getPrice());
-                koiFishReponse.setKoiImage(koiFish.getKoiImage());
-                koiFishReponse.setCategoryId(koiFish.getCategory().getCategoryID());
-                koiFishReponse.setCategory(koiFish.getCategory().getCategoryName());
-                koiFishReponse.setFood(koiFish.getFood());
-                koiFishReponse.setHealth(koiFish.getHealth());
-                koiFishReponse.setPH(koiFish.getPH());
-                koiFishReponse.setTemperature(koiFish.getTemperature());
-                koiFishReponse.setWater(koiFish.getWater());
-                koiFishReponse.setPurebred(koiFish.getPurebred());
-                koiFishReponse.setStatus(koiFish.getStatus());
-                Optional<Healthcare> healthcareToCheck=healthcareRepository.findLatestHealthcareByKoiFish(koiFish);
-                Optional<Healthcare> healthcareToCompare=healthcareRepository.findAllHealthcareByKoiFish(koiFish).stream().skip(1).findFirst();
+                koiFishReponse.setId(consignment.getKoiFish().getKoiID());
+                koiFishReponse.setOrigin(consignment.getKoiFish().getOrigin());
+                koiFishReponse.setAge(consignment.getKoiFish().getAge());
+                koiFishReponse.setSize(consignment.getKoiFish().getSize());
+                koiFishReponse.setGender(consignment.getKoiFish().isGender());
+                koiFishReponse.setPersonality(consignment.getKoiFish().getPersonality());
+                koiFishReponse.setPrice(consignment.getKoiFish().getPrice());
+                koiFishReponse.setKoiImage(consignment.getKoiFish().getKoiImage());
+                koiFishReponse.setCategoryId(consignment.getKoiFish().getCategory().getCategoryID());
+                koiFishReponse.setCategory(consignment.getKoiFish().getCategory().getCategoryName());
+                koiFishReponse.setFood(consignment.getKoiFish().getFood());
+                koiFishReponse.setHealth(consignment.getKoiFish().getHealth());
+                koiFishReponse.setPH(consignment.getKoiFish().getPH());
+                koiFishReponse.setTemperature(consignment.getKoiFish().getTemperature());
+                koiFishReponse.setWater(consignment.getKoiFish().getWater());
+                koiFishReponse.setPurebred(consignment.getKoiFish().getPurebred());
+                koiFishReponse.setStatus(consignment.getKoiFish().getStatus());
+                Optional<Healthcare> healthcareToCheck=healthcareRepository.findLatestHealthcareByKoiFish(consignment.getKoiFish());
+                Optional<Healthcare> healthcareToCompare=healthcareRepository.findAllHealthcareByKoiFish(consignment.getKoiFish()).stream().skip(1).findFirst();
                 HealthcareResponse healthcareResponse = new HealthcareResponse();
                 if(healthcareToCheck.isPresent()) {
                     Healthcare healthcare=healthcareToCheck.get();
@@ -661,8 +683,8 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     healthcareResponse.setNote(healthcare.getNote());
                     healthcareResponse.setChecked(healthcare.isChecked());
                     healthcareResponse.setDate(healthcare.getCreatedDate());
-                    long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
-                    long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+                    long differenceInMilliss = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
+                    long differenceInDays = TimeUnit.DAYS.convert(differenceInMilliss, TimeUnit.MILLISECONDS);
                     healthcareResponse.setDayRemain(differenceInDays);
                     if(healthcareToCompare.isPresent()) {
                         Healthcare healthcareToCompare1=healthcareToCompare.get();
@@ -670,15 +692,18 @@ public class ConsignmentService implements ConsignmentServiceImp {
                     }
                 }
                 koiFishReponse.setHealthcare(healthcareResponse);
-                koiFishReponseList.add(koiFishReponse);
+                consignmentDetailResponse.setKoiFish(koiFishReponse);
+            }
+            consignmentDetailResponseList.add(consignmentDetailResponse);
         }
-        return KoiFishPageResponse.builder()
-                .koiFishReponseList(koiFishReponseList)
-                .pageNum(koiList.getNumber() + 1)
-                .totalPages(koiList.getTotalPages())
-                .totalElements(koiList.getTotalElements())
-                .pageSize(koiList.getSize())
-                .build();
+        PaginReponse<ConsignmentDetailResponse> consignmentDetailReponse = new PaginReponse<>();
+        consignmentDetailReponse.setContent(consignmentDetailResponseList);
+        consignmentDetailReponse.setPageSize(pageSize);
+        consignmentDetailReponse.setPageNum(pageNo);
+        consignmentDetailReponse.setTotalElements(consignmentsPage.getTotalElements());
+        consignmentDetailReponse.setTotalPages(consignmentsPage.getTotalPages());
+        return consignmentDetailReponse;
+
     }
 
     public FishCareDetailResponse getFishCareDetail(int koiId) {
