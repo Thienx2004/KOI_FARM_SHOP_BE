@@ -53,6 +53,13 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/validateOrder")
+    public ApiReponse<String> validateOrder(@RequestBody OrderRequest orderRequest) {
+        ApiReponse<String> resp = new ApiReponse<>();
+        resp.setData(orderService.validateOrder(orderRequest));
+        return resp;
+    }
+
     @GetMapping("/getOrderHistory")
     @Operation(summary = "Lấy ra cái order đã có theo koiId", description = "API này sẽ trả về lịch sử giao dịch trong hệ thống.-Trương Thiên Lộc")
     public ApiReponse<PaginReponse<OrderHistoryReponse>> getAllOrdersWithDetails(

@@ -12,6 +12,7 @@ import java.util.List;
 public interface OrderServiceImp {
 
     public Orders addOrder(OrderRequest order) throws MessagingException;
+    public String validateOrder(OrderRequest order);
     public PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId);
 
     //PaginReponse<OrderHistoryReponse> getOrdersHistory(int pageNo, int pageSize, String accountId, String type);
