@@ -788,8 +788,8 @@ public class ConsignmentService implements ConsignmentServiceImp {
             consignmentDetailResponse.setStatus(consignment.getStatus());
             consignmentDetailResponse.setOnline(consignment.isOnline());
 
-            long remainingDays = ChronoUnit.DAYS.between(LocalDate.now(),
-                    consignment.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            long differenceInMillis = Math.abs(new Date().getTime() - consignment.getEndDate().getTime());
+            long remainingDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
             consignmentDetailResponse.setRemainingDays(remainingDays);
 
 
