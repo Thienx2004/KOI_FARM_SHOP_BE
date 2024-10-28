@@ -8,6 +8,7 @@ import com.group2.KoiFarmShop.entity.*;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.*;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,8 @@ public class OrderService implements OrderServiceImp {
 
     @Transactional
     @Override
-    public Orders addOrder(OrderRequest order) {
-        try {
+    public Orders addOrder(OrderRequest order) throws MessagingException {
+        //try {
             Account account = accountRepository.findByAccountID(order.getAccountID())
                     .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
             if (order.getPromoCode() != null) {
@@ -146,10 +147,11 @@ public class OrderService implements OrderServiceImp {
             //emailService.sendOrderConfirmationEmail(account.getEmail(), orders.getOrderID());
 
             return orders;
-        } catch (Exception e) {
-            System.out.println("Error insert order: " + e.getMessage());
-            throw new RuntimeException(e.getMessage());  // Ném lại ngoại lệ
-        }
+//        } catch (Exception e) {
+//            System.out.println("Error insert order: " + e.getMessage());
+//            throw e;  // Ném lại ngoại lệ
+//        }
+
     }
 
 
