@@ -109,7 +109,7 @@ public class AccountService implements AccountServiceImp {
         ApiReponse apiReponse = new ApiReponse();
 
         try {
-            // Tìm kiếm tài khoản dựa trên email
+
             Optional<Account> optionalAccount = accountRepository.findByEmail(loginGoogleRequest.getEmail());
             Account account;
 
@@ -173,11 +173,11 @@ public class AccountService implements AccountServiceImp {
         accountRepository.save(account);
 
         if (!account.isVerified()) {
-            // Tạo mã OTP
+
             String otp = generateOTP();
 
             VerificationToken verificationToken = new VerificationToken();
-            verificationToken.setToken(otp); // Lưu OTP trong trường token
+            verificationToken.setToken(otp);
             verificationToken.setAccount(account);
             verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2)); // OTP hết hạn sau 2 phút
 
@@ -200,7 +200,7 @@ public class AccountService implements AccountServiceImp {
     @Override
     public String generateOTP() {
         Random random = new Random();
-        int otp = 100000 + random.nextInt(900000); // Tạo mã OTP 6 chữ số
+        int otp = 100000 + random.nextInt(900000);
         return String.valueOf(otp);
     }
 
@@ -227,7 +227,7 @@ public class AccountService implements AccountServiceImp {
         // Tạo đối tượng VerificationToken mới
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(newOtp);
-        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(10)); // Hết hạn sau 10 phút
+        verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2));
         verificationToken.setAccount(account);
 
         // Lưu mã OTP mới vào cơ sở dữ liệu
