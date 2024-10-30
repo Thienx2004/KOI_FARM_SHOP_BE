@@ -123,7 +123,7 @@ public class CategoryService implements CategoryServiceImp{
         }
         categoryHomeReponse.setCategoryReponses(categoryReponses);
         categoryHomeReponse.setPageNum(pageNum);
-        categoryHomeReponse.setPageSize(categories.getSize());
+        categoryHomeReponse.setPageSize(pageSize);
         categoryHomeReponse.setTotalElements(categories.getNumberOfElements());
         categoryHomeReponse.setTotalPages(categories.getTotalPages());
 
