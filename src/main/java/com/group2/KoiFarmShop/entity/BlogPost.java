@@ -19,6 +19,8 @@ public class BlogPost {
     private int blogPostID;
 
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String subTitle;
 
     @Column(columnDefinition = "LONGTEXT")
