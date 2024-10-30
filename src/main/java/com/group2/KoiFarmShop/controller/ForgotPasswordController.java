@@ -93,11 +93,11 @@ public class ForgotPasswordController {
                                                     @PathVariable String email) {
         ApiReponse apiReponse = new ApiReponse();
 
-        if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
+        if (!Objects.equals(changePassword.getPassword(), changePassword.getRepeatPassword())) {
             throw new AppException(ErrorCode.PASSWORDINVALID);
         }
 
-        String encodedPassword = passwordEncoder.encode(changePassword.password());
+        String encodedPassword = passwordEncoder.encode(changePassword.getPassword());
         accountRepository.updatePassword(email, encodedPassword);
         apiReponse.setData("Đổi mật khẩu thành công!");
         return apiReponse;

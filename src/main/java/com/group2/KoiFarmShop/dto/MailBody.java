@@ -1,8 +1,14 @@
 package com.group2.KoiFarmShop.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 
+@Data
+@AllArgsConstructor
 @Builder
-public record MailBody(String to, String subject, String text) {
-
+public class MailBody {
+    String to;
+    String subject;
+    String text;
 }

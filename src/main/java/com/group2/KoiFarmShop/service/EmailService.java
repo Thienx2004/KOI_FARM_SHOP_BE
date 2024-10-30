@@ -20,10 +20,10 @@ public class EmailService {
     }
     public void sendSimpleMess(MailBody mailBody){
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mailBody.to());
+        message.setTo(mailBody.getTo());
         message.setFrom("locttse182329@fpt.edu.vn");
-        message.setSubject(mailBody.subject());
-        message.setText(mailBody.text());
+        message.setSubject(mailBody.getSubject());
+        message.setText(mailBody.getText());
 
         javaMailSender.send(message);
     }
