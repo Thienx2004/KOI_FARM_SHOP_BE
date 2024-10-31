@@ -88,7 +88,7 @@ public class CategoryService implements CategoryServiceImp{
         List<Category> categoryHome = categories.getContent();
         List<CategoryReponse> categoryReponses = new ArrayList<>();
         CategoryHomeReponse categoryHomeReponse = new CategoryHomeReponse();
-        int count = 0;
+
 
         for(Category category : categoryHome){
             CategoryReponse categoryReponse = new CategoryReponse();
@@ -98,6 +98,7 @@ public class CategoryService implements CategoryServiceImp{
             categoryReponse.setCateImg(category.getCategoryImage());
 
             List<KoiFishReponse> koiFishList = new ArrayList<>();
+            int count = 0;
             //for(KoiFish koiFish : category.getKoiFish()){
             for(int i = 0; i < category.getKoiFish().size(); i++){
                 if(category.getKoiFish().get(i).getStatus() <= 3 && count < 3){
@@ -123,7 +124,7 @@ public class CategoryService implements CategoryServiceImp{
         }
         categoryHomeReponse.setCategoryReponses(categoryReponses);
         categoryHomeReponse.setPageNum(pageNum);
-        categoryHomeReponse.setPageSize(categories.getSize());
+        categoryHomeReponse.setPageSize(pageSize);
         categoryHomeReponse.setTotalElements(categories.getNumberOfElements());
         categoryHomeReponse.setTotalPages(categories.getTotalPages());
 
