@@ -100,7 +100,7 @@ public class CategoryService implements CategoryServiceImp{
             List<KoiFishReponse> koiFishList = new ArrayList<>();
             //for(KoiFish koiFish : category.getKoiFish()){
             for(int i = 0; i < category.getKoiFish().size(); i++){
-                if(category.getKoiFish().get(i).getStatus() <= 3 && count <= 3){
+                if(category.getKoiFish().get(i).getStatus() <= 3 && count < 3){
                 KoiFishReponse koiFishReponse = new KoiFishReponse();
                 koiFishReponse.setId(category.getKoiFish().get(i).getKoiID());
                 koiFishReponse.setOrigin(category.getKoiFish().get(i).getOrigin());
