@@ -17,9 +17,20 @@ else
 fi
 cd /var/www/be
 # Chạy ứng dụng Java với file .env
-export \$(cat .env | xargs) # Nạp biến từ .env
-
-
+#export \$(cat .env | xargs) # Nạp biến từ .env
+# Nạp biến từ .env và in giá trị của từng biến
+while IFS='=' read -r key value; do
+    # Bỏ qua dòng trống hoặc dòng bắt đầu bằng dấu '#'
+    if [[ -z "\$key" || "\$key" == \#* ]]; then
+        continue
+    fi
+    # Bỏ qua dòng không có dấu '='
+    if [[ "\$key" != *[=]* ]]; then
+        continue
+    fi
+    export "\$key=\$value"
+    echo "\$key=\$value"
+done < .env
 java -jar be.jar
 EOF
 exit
