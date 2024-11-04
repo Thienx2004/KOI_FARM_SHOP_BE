@@ -85,7 +85,7 @@ public class ConsignmentFeeService implements ConsignmentFeeServiceImp {
 
     @Override
     public PaginReponse<ConsignmentFeeDTO> getAllConsignmentFees(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentFeeId").descending());
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("duration", "consignmentFeeId").descending());
         Page<ConsignmentFee> consignmentFeePage = repository.findAll(pageable);
         List<ConsignmentFeeDTO> list = new ArrayList<>();
         for (ConsignmentFee consignmentFee : consignmentFeePage.getContent()) {
