@@ -108,8 +108,6 @@ public class AccountService implements AccountServiceImp {
     public ApiReponse logingg(LoginGoogleRequest loginGoogleRequest) {
         ApiReponse apiReponse = new ApiReponse();
 
-        try {
-
             Optional<Account> optionalAccount = accountRepository.findByEmail(loginGoogleRequest.getEmail());
             Account account;
 
@@ -145,10 +143,7 @@ public class AccountService implements AccountServiceImp {
             content.setAccessToken(newToken);
             apiReponse.setData(content);
             apiReponse.setMessage("Đăng nhập thành công");
-        } catch (Exception e) {
-            apiReponse.setMessage("Đã xảy ra lỗi: " + e.getMessage());
-            apiReponse.setData(null);
-        }
+
         return apiReponse;
     }
 
