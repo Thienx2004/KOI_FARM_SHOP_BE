@@ -6,6 +6,7 @@ import com.group2.KoiFarmShop.entity.ConsignmentFee;
 import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.ConsignmentFeeRepository;
+import org.hibernate.query.SortDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -85,7 +86,7 @@ public class ConsignmentFeeService implements ConsignmentFeeServiceImp {
 
     @Override
     public PaginReponse<ConsignmentFeeDTO> getAllConsignmentFees(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentFeeId").descending());
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("duration").ascending().and(Sort.by("consignmentFeeId").descending()));
         Page<ConsignmentFee> consignmentFeePage = repository.findAll(pageable);
         List<ConsignmentFeeDTO> list = new ArrayList<>();
         for (ConsignmentFee consignmentFee : consignmentFeePage.getContent()) {
