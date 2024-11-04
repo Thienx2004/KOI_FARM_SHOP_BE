@@ -32,16 +32,15 @@ public class CategoryService implements CategoryServiceImp{
         List<Category> categories = categoryRepository.findAll();
         List<CategoryReponse> categoryReponses = new ArrayList<>();
         for (Category c : categories) {
-
+            if(c.isStatus()&&!c.getKoiFish().isEmpty()){
             CategoryReponse categoryReponse = new CategoryReponse();
             categoryReponse.setId(c.getCategoryID());
             categoryReponse.setDescription(c.getDescription());
             categoryReponse.setCategoryName(c.getCategoryName());
             categoryReponse.setCateImg(c.getCategoryImage());
             categoryReponse.setStatus(c.isStatus());
-
-
             categoryReponses.add(categoryReponse);
+            }
         }
         return categoryReponses;
     }
