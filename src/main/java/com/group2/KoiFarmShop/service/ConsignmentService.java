@@ -13,6 +13,7 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.repository.*;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -231,8 +232,28 @@ public class ConsignmentService implements ConsignmentServiceImp {
 
     @Override
     public PaginReponse<ConsignmentResponse> getAllConsignmentForStaff(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("consignmentDate", "consignmentID").descending());
-        Page<Consignment> consignmentPage = consignmentRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Specification<Consignment> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Order orderByStatus = criteriaBuilder.asc(
+                    criteriaBuilder.selectCase()
+                            .when(criteriaBuilder.equal(root.get("status"), 1), 1)
+                            .when(criteriaBuilder.equal(root.get("status"), 4), 2)
+                            .when(criteriaBuilder.equal(root.get("status"), 2), 3)
+                            .otherwise(4)
+            );
+            Order orderByField;
+                orderByField = criteriaBuilder.desc(root.get("consignmentID"));
+
+
+
+            // Kết hợp cả hai sắp xếp
+            query.orderBy(orderByStatus, orderByField);
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+
+        };
+        Page<Consignment> consignmentPage = consignmentRepository.findAll(spec,pageable);
         List<ConsignmentResponse> consignmentResponses = new ArrayList<>();
         for (Consignment consignment : consignmentPage.getContent()) {
             ConsignmentResponse consignmentResponse = new ConsignmentResponse();
