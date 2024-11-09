@@ -5,6 +5,7 @@ import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.service.AccountService;
 import com.group2.KoiFarmShop.service.AuthenticationService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class VerificationController {
     }
 
     @PostMapping("/resend-otp")
-    public ApiReponse<String> resendOtp(@RequestParam String email) {
+    public ApiReponse<String> resendOtp(@RequestParam String email) throws MessagingException {
         ApiReponse apiReponse = accountService.resendOTP(email);
 
 

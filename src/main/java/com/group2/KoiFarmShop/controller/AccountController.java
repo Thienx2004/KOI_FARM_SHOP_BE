@@ -15,6 +15,7 @@ import com.group2.KoiFarmShop.service.AccountServiceImp;
 import com.group2.KoiFarmShop.service.AuthenticationService;
 import com.group2.KoiFarmShop.service.FileServiceImp;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -46,7 +47,7 @@ public class AccountController {
 
 
     @PostMapping("/register")
-    public ApiReponse<AccountReponse> createAccount(@RequestBody AccountCreationDTO accountCreationDTO) {
+    public ApiReponse<AccountReponse> createAccount(@RequestBody AccountCreationDTO accountCreationDTO) throws MessagingException {
 
         ApiReponse<AccountReponse> reponse = new ApiReponse<>();
         Account account = new Account();
