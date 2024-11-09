@@ -31,7 +31,6 @@ public class CategoryService implements CategoryServiceImp{
     public List<CategoryReponse> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         List<CategoryReponse> categoryReponses = new ArrayList<>();
-        System.out.println(categories.size());
         for (Category c : categories) {
             if(c.isStatus()){
             CategoryReponse categoryReponse = new CategoryReponse();

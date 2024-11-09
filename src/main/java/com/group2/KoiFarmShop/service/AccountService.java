@@ -513,6 +513,9 @@ public class AccountService implements AccountServiceImp {
     public String checkRole(String token){
         String emailFromToken = authenticationService.validateTokenByEmail(token);
         Optional<Account> account = accountRepository.findByEmail(emailFromToken);
+        if(!account.isPresent()){
+            throw new AppException(ErrorCode.INVALIDACCOUNT);
+        }
         String role = account.get().getRole().getRoleName();
         return role;
     }

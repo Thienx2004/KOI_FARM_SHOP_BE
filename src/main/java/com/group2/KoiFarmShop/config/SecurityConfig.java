@@ -50,7 +50,7 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(ADMIN_URLS).hasAuthority("SCOPE_manager")
+//                        .requestMatchers(ADMIN_URLS).hasAuthority("SCOPE_manager")
 //                        .requestMatchers(USER_URLS).hasAuthority("SCOPE_customer")
                         .requestMatchers(OTP_CHECK).hasAuthority("SCOPE_true")
                         .anyRequest().permitAll()  // All other requests require authentication

@@ -21,7 +21,6 @@ public class JWTUltilsHelper {
                 .subject(data.getEmail())
                 .issuedAt(new Date())
                 .claim("accountId", data.getAccountID()) // Account ID ở đây là int hoặc Integer
-                .claim("scope",data.getRole().getRoleName())
                 .signWith(key)
                 .compact();
 
