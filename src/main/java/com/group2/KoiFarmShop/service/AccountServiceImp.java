@@ -18,5 +18,6 @@ public interface AccountServiceImp {
     public String generateOTP();
     public ApiReponse<String> resendOTP(String email);
     ApiReponse<String> verifyOTP(String email, String otp);
+    public String checkRole(String token);
 
 }
