@@ -9,6 +9,7 @@ import com.group2.KoiFarmShop.exception.AppException;
 import com.group2.KoiFarmShop.exception.ErrorCode;
 import com.group2.KoiFarmShop.service.AccountServiceImp;
 import com.group2.KoiFarmShop.service.KoiFishService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -128,7 +129,7 @@ class KoiFarmShopApplicationTests {
 	}
 
 	@Test
-	void registerWithValidUser() {
+	void registerWithValidUser() throws MessagingException {
 		String fullname = "test";
 		String email = "test@example.com";
 		String password = "123456";
