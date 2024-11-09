@@ -19,6 +19,7 @@ import com.group2.KoiFarmShop.repository.RoleRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.ultils.JWTUltilsHelper;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -148,7 +149,7 @@ public class AccountService implements AccountServiceImp {
     }
 
     @Override
-    public Account createAccount(AccountCreationDTO accountCreationDTO) {
+    public Account createAccount(AccountCreationDTO accountCreationDTO) throws MessagingException {
 
         if (accountRepository.existsByEmail(accountCreationDTO.getEmail())) {
             throw new AppException(ErrorCode.USER_EXISTED);
@@ -201,7 +202,7 @@ public class AccountService implements AccountServiceImp {
 
     @Transactional
     @Override
-    public ApiReponse<String> resendOTP(String email) {
+    public ApiReponse<String> resendOTP(String email) throws MessagingException {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
