@@ -172,7 +172,7 @@ public class AccountController {
                 .statusCode(200)
                 .build();
     }
-    @PostMapping("profile/checkRole/")
+    @GetMapping("profile/checkRole/")
     public ApiReponse<String> updateAvatar(HttpServletRequest request) {
         String token = authenticationService.extractTokenFromRequest(request);
         String role = accountServiceImp.checkRole(token);
