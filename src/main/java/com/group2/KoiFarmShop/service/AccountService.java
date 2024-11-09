@@ -60,6 +60,8 @@ public class AccountService implements AccountServiceImp {
 //    private ForgotPasswordRepositoryI forgotPasswordRepository;
     @Autowired
     private FirebaseService firebaseService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Override
     public ApiReponse login(LoginRequest loginRequest) {
@@ -508,5 +510,10 @@ public class AccountService implements AccountServiceImp {
                 .build();
     }
 
-
+    public String checkRole(String token){
+        String emailFromToken = authenticationService.validateTokenByEmail(token);
+        Optional<Account> account = accountRepository.findByEmail(emailFromToken);
+        String role = account.get().getRole().getRoleName();
+        return role;
+    }
 }
