@@ -18,6 +18,7 @@ public class OrderDetailReponse {
     private boolean gender;
     private double koiSize;
     private String koiImg;
+    private CertificationReponse certification;
     private int batchId;
     private String avgSize;
     private int batchAge;

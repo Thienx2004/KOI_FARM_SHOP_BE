@@ -1,5 +1,6 @@
 package com.group2.KoiFarmShop.service;
 
+import com.group2.KoiFarmShop.dto.response.CertificationReponse;
 import com.group2.KoiFarmShop.dto.response.OrderDetailReponse;
 import com.group2.KoiFarmShop.dto.response.OrderHistoryReponse;
 import com.group2.KoiFarmShop.dto.response.PaginReponse;
@@ -298,6 +299,12 @@ public class OrderService implements OrderServiceImp {
 
             orderDetailReponse.setOrderDetailId(orderDetail.getOrderDetailID());
             if (orderDetail.getKoiFish() != null) {
+                CertificationReponse certificationReponse = new CertificationReponse();
+                certificationReponse.setId(orderDetail.getKoiFish().getCertificate().getId());
+                certificationReponse.setName(orderDetail.getKoiFish().getCertificate().getName());
+                certificationReponse.setImage(orderDetail.getKoiFish().getCertificate().getImage());
+                certificationReponse.setCreatedDate(orderDetail.getKoiFish().getCertificate().getCreatedDate());
+
                 orderDetailReponse.setCategoryName(orderDetail.getKoiFish().getCategory().getCategoryName());
                 orderDetailReponse.setKoiFishId(orderDetail.getKoiFish().getKoiID());
                 orderDetailReponse.setGender(orderDetail.getKoiFish().isGender());
@@ -305,6 +312,7 @@ public class OrderService implements OrderServiceImp {
                 orderDetailReponse.setKoiSize(orderDetail.getKoiFish().getSize());
                 orderDetailReponse.setPrice(orderDetail.getPrice());
                 orderDetailReponse.setKoiImg(orderDetail.getKoiFish().getKoiImage());
+                orderDetailReponse.setCertification(certificationReponse);
             } else {
                 orderDetailReponse.setCategoryName(orderDetail.getBatch().getCategory().getCategoryName());
                 orderDetailReponse.setBatchId(orderDetail.getBatch().getBatchID());
