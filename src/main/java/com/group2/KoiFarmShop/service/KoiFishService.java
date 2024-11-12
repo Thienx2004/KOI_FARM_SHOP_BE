@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -600,7 +601,8 @@ public class KoiFishService implements KoiFishServiceImp{
             koiFishReponse.setWater(koiFish.getWater());
             koiFishReponse.setPurebred(koiFish.getPurebred());
             koiFishReponse.setStatus(koiFish.getStatus());
-            Optional<Healthcare> healthcareToCheck = healthcareRepository.findById(koiFish.getKoiID());
+            Optional<Healthcare> healthcareToCheck = healthcareRepository.findLatestHealthcareByKoiFish(koiFish);
+
             HealthcareResponse healthcareResponse = new HealthcareResponse();
             if (healthcareToCheck.isPresent()) {
                 Healthcare healthcare = healthcareToCheck.get();
@@ -609,7 +611,10 @@ public class KoiFishService implements KoiFishServiceImp{
                 healthcareResponse.setGrowthStatus(healthcare.getGrowthStatus());
                 healthcareResponse.setNote(healthcare.getNote());
                 healthcareResponse.setChecked(healthcare.isChecked());
-
+                healthcareResponse.setDate(healthcare.getCreatedDate());
+                long differenceInMillis = Math.abs(new Date().getTime() - healthcare.getConsignmentDate().getTime());
+                long differenceInDays = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+                healthcareResponse.setDayRemain(differenceInDays);
             }
             koiFishReponse.setHealthcare(healthcareResponse);
             koiFishReponseList.add(koiFishReponse);

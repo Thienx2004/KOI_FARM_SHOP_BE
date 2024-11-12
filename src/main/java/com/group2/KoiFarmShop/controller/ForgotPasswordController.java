@@ -11,6 +11,7 @@ import com.group2.KoiFarmShop.repository.AccountRepository;
 import com.group2.KoiFarmShop.repository.VerificationTokenRepository;
 import com.group2.KoiFarmShop.service.EmailService;
 import com.group2.KoiFarmShop.ultils.ChangePassword;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -42,12 +43,12 @@ public class ForgotPasswordController {
 
     //send mail for otp
     @PostMapping("/forgotPassword/{email}")
-    public ApiReponse<String> verifyEmail(@PathVariable String email) {
+    public ApiReponse<String> verifyEmail(@PathVariable String email) throws MessagingException {
         ApiReponse apiReponse = new ApiReponse();
         Account account = accountRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.INVALIDACCOUNT));
 
-        int otp = otpGen();
-
+//        int otp = otpGen();
+        String otp = generateOTP();
         MailBody mailBody = MailBody.builder()
                 .to(email)
                 .text("Mã OTP của bạn là: " + otp + ". OTP sẽ hết hạn trong vòng 2 phút.")
@@ -57,7 +58,8 @@ public class ForgotPasswordController {
         verificationToken.setToken(String.valueOf(otp));
         verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(2)); // Hết hạn sau 10 phút
         verificationToken.setAccount(account);
-        emailService.sendSimpleMess(mailBody);
+//        emailService.sendSimpleMess(mailBody);
+        emailService.sendVerificationEmail(email,otp);
         verificationTokenRepository.save(verificationToken);
         apiReponse.setData("Đã gửi OTP");
         return apiReponse;
@@ -107,4 +109,10 @@ public class ForgotPasswordController {
         Random rand = new Random();
         return rand.nextInt(100_000, 999_999);
     }
+    public String generateOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
+
 }
