@@ -39,8 +39,8 @@ public class KoiFishSpecification {
             String likePattern = "%" + description.toLowerCase() + "%";
             return builder.or(
                     builder.like(root.join("healthcare").get("healthStatus"), likePattern),
-                    builder.like(root.join("healthcare").get("growthStatus"), likePattern),
-                    builder.like(root.join("healthcare").get("careEnvironment"), likePattern),
+//                    builder.like(root.join("healthcare").get("growthStatus"), likePattern),
+//                    builder.like(root.join("healthcare").get("careEnvironment"), likePattern),
                     builder.like(root.join("healthcare").get("note"), likePattern)
 
 

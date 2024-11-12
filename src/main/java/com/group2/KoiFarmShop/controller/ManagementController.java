@@ -207,7 +207,7 @@ public class ManagementController {
     }
 
     @GetMapping("/searchKoiByHealthCare")
-    @Operation(summary = "Tìm kiếm Koi theo health care", description ="healthStatus,growthStatus,careEnvironment,note")
+    @Operation(summary = "Tìm kiếm Koi theo health care", description ="healthStatus,note")
 
     public ApiReponse<KoiFishPageResponse> searchKoiByHealthCare(@RequestParam String keyword, @RequestParam int pageNum, @RequestParam int pageSize){
         KoiFishPageResponse resp = koiFishService.searchKoiFishByHealthCare(keyword, pageNum, pageSize);

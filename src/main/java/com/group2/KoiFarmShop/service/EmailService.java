@@ -369,7 +369,7 @@ public class EmailService {
                 "                display: inline-block;\n" +
                 "              \"\n" +
                 "            >\n" +
-                "              Mã đơn hàng: <strong style=\"color: #333\">"+transactionCode+"</strong>\n" +
+                "              Mã đơn hàng: <strong style=\"color: #333\"> "+transactionCode+" </strong>\n" +
                 "            </p>\n" +
                 "          </td>\n" +
                 "        </tr>\n" +
@@ -541,7 +541,7 @@ public class EmailService {
                 "        <p>\n" +
                 "          Vui lòng truy cập\n" +
                 "          <a\n" +
-                "            href=\"https:/https://koi-farm-shop-fe.vercel.app/payment-history\"\n" +
+                "            href=\"https://koi-farm-shop-fe.vercel.app/consignment-history\"\n" +
                 "            style=\"\n" +
                 "              color: #d84315;\n" +
                 "              text-decoration: none;\n" +
@@ -782,7 +782,7 @@ public class EmailService {
                 "              </li>\n" +
                 "              <li style=\"margin: 5px 0\">\n" +
                 "                Ghi chú:\n" +
-                "                <em>Đang tăng trưởng tích cực, tiếp tục theo dõi kỹ lưỡng.</em>\n" +
+                "                <em>"+consignmentKoiCare.getNote()+"</em>\n" +
                 "              </li>\n" +
                 "            </ul>\n" +
                 "            <p style=\"margin: 10px 0\">\n" +
@@ -964,10 +964,10 @@ public class EmailService {
                 "          \"\n" +
                 "        >\n" +
                 "          <p style=\"margin: 0; font-size: 16px; color: #856404\">\n" +
-                "            <strong>Mã đơn ký gửi:</strong> \" + consignmentID + \"\n" +
+                "            <strong>Mã đơn ký gửi:</strong>" + consignmentID + "\n" +
                 "          </p>\n" +
                 "          <p style=\"margin: 10px 0 0; font-size: 16px; color: #856404\">\n" +
-                "            <strong>Lý do từ chối:</strong> \" + rejectReason + \"\n" +
+                "            <strong>Lý do từ chối:</strong> " + rejectReason + "\n" +
                 "          </p>\n" +
                 "        </div>\n" +
                 "        <p>\n" +
@@ -1098,7 +1098,7 @@ public class EmailService {
                 "          \"\n" +
                 "        >\n" +
                 "          <p style=\"margin: 0; font-size: 16px; color: #004d40\">\n" +
-                "            <strong>Mã đơn ký gửi:</strong> \"" + consignmentID + "\"\n" +
+                "            <strong>Mã đơn ký gửi:</strong> " + consignmentID + "\n" +
                 "          </p>\n" +
                 "        </div>\n" +
                 "        <p>Chúng tôi sẽ sớm liên hệ với bạn qua thông tin bạn đã cung cấp.</p>\n" +
@@ -1211,7 +1211,7 @@ public class EmailService {
                 "        <p>Xin chào,</p>\n" +
                 "        <p>\n" +
                 "          Cảm ơn bạn đã tin tưởng dùng dịch vụ của chúng tôi. Cá Koi ký gửi của\n" +
-                "          bạn đã được mua bởi tài khoản: <strong>\"" + emailCustomer +" \"</strong>.\n" +
+                "          bạn đã được mua bởi tài khoản: <strong>" + emailCustomer +" </strong>.\n" +
                 "        </p>\n" +
                 "        <div\n" +
                 "          style=\"\n" +
@@ -1223,7 +1223,7 @@ public class EmailService {
                 "          \"\n" +
                 "        >\n" +
                 "          <p style=\"margin: 0; font-size: 16px; color: #155724\">\n" +
-                "            <strong>Mã đơn ký gửi:</strong> \"" + consignmentID + "\"\n" +
+                "            <strong>Mã đơn ký gửi:</strong> " + consignmentID + "\n" +
                 "          </p>\n" +
                 "        </div>\n" +
                 "        <p>\n" +
